@@ -103,6 +103,15 @@
                                     <li><a href="javascript:page('user/user-add.html');">添加管理员</a></li>
 								</ul>
 							</li>
+
+							<li class="menu-item">
+								<a href="javascript:;">系统设置管理<i class="icon-keyboard_arrow_left"></i></a>
+								<ul>
+									<li><a href="javascript:page('institution/libMessage.html');">图书馆信息</a></li>
+									<li><a href="javascript:page('reader/reader-add.html');">系统参数</a></li>
+								</ul>
+							</li>
+
 						</ul>
 					</div>
 				</div>
@@ -118,7 +127,6 @@
 			function page(url) {
 				document.getElementById('page').src = url;
 			}
-
 
 			document.addEventListener('DOMContentLoaded', function () {
 				// 获取所有顶级菜单项

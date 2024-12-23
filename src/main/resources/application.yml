@@ -20,6 +20,7 @@ spring:
     rollback-on-commit-failure: true
     dafult-timeout: 30
 
+#页面端口号
 mybatis:
   server:
     port:8080
