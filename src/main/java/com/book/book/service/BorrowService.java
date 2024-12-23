@@ -1,4 +1,4 @@
 package com.book.book.service;
 
-public interface UserService {
+public interface BorrowService {
 }
