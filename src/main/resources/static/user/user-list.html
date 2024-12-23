@@ -67,7 +67,8 @@
 					<th>操作</th>
 				</tr>
 				</thead>
-				<tbody id="tbody">
+				<!-- 用户数据将会在这里动态加载 -->
+				<tbody id="adminTable">
 				<!--<tr>-->
 				<!--<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
 				<!--<td>1</td>-->
@@ -83,8 +84,25 @@
 	</div>
 </div>
 
-
+<!--第一步：前端发送请求应该使用什么技术 axios(AJAX)-->
 <script src="/js/axios.min.js"></script>
-<script></script>
+<!--第二步:通过axios发送前端请求到服务器(后端)-->
+<script>
+	axios({
+		url: "http://localhost:8080/user/list",//请求路径
+		method: "post"//请求方式
+	}).then((response)=> {
+		//请求成功执行
+		if (response.data.code && response.data.code>0) {
+			//请求成功
+			const data = response.data.data;
+			const tableBody = document.getElementById('#adminTable');
+		}else {
+			alert('没有用户数据或数据为空');
+		}
+	}).catch((error) => {
+		alert('请求失败：' + error);
+	})
+</script>
 </body>
 </html>
