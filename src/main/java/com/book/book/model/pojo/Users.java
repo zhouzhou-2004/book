@@ -11,7 +11,6 @@ public class Users {
 
   private long id;
   private String address;
-  private String avatar;
   private String birthday;
   private String email;
   private long identity;
