@@ -53,25 +53,54 @@
                     <span class="form-txt">密码：</span>
                     <input type="password" class="form-input original" name="password" id="pass" placeholder="请输入密码" data-type="必填" error-pos="32" />
                 </div>
+                <div class="form-item captcha">
+                    <span class="form-txt">验证码：</span>
+                    <input type="text" class="form-input original" id="captcha" name="code" placeholder="请输入验证码" data-type="必填" error-pos="32" />
+                    <img src="/codeImage" onclick="changeImage(this);" style="position: absolute;height: 40px;width: 100px;"/>
+                </div>
                 <div class="form-item">
                     <input type="checkbox" id="remember" name="remember" required>记住我
                 </div>
                 <div class="form-btn">
-                    <input type="button" class="ui-button" id="save" onclick="login()" value="登录" />
+                    <input type="button"  class="btn" value="登录" />
                 </div>
             </form>
         </div>
     </div>
     <script src="/js/axios.min.js"></script>
     <script>
-        function login(){
-            var uname=document.querySelector("#uname").value;
-            var pass=document.querySelector("#pass").value;
-            var remember=document.querySelector("#remember").checked;
-            console.log(uname+" "+pass+" "+remember);
-            location.href="index.html"
+        let btn = document.querySelector(".btn");
+        btn.onclick = function (){
+            let uname=document.querySelector("#uname").value;
+            let pass=document.querySelector("#pass").value;
+            let code=document.querySelector("#code").checked;
+            let remember = document.querySelector("#remember").value;
+            axios({
+                url:"http://localhost:8081/tAdmin/register",
+                method:"post",
+                data:{
+                    username : uname,
+                    password : pass,
+                    remember: remember,
+                    code:code
+                }
+            }).then((result)=>{
+                console.log(result)
+                //登录
+                if (result.data.code == 200){
+                    alert("登录成功");
+                    location.href = "/yema.html";
+                }else if (result.data.code == 306){
+                    alert("验证码错误");
+                }else {
+                    alert("登录失败");
+                }
+            })
+        }
+        function changeImage(img) {
+            //图片重新加载src地址，因为图片是一个GET请求，浏览器有缓存  time 表示是一个随机参数 ，防止浏览器缓存
+            img.src="/codeImage?time="+new Date();
         }
     </script>
-<!--sxsxsss-->
 </body>
 </html>
