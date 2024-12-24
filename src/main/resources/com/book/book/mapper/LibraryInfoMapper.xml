@@ -5,8 +5,19 @@
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="library_name" property="libraryName" jdbcType="VARCHAR" />
         <result column="address" property="address" jdbcType="VARCHAR" />
-        <result column="open_time" property="openTime" jdbcType="INTEGER" />
+        <result column="open_time" property="openTime" jdbcType="VARCHAR" />
         <result column="contact_phone" property="contactPhone" jdbcType="VARCHAR" />
     </resultMap>
+    <sql id="Base_Column_List">
+        classno,cname,cteacher,
+        classroom
+    </sql>
+<!--    获取数据库中图书馆的信息-->
+    <select id="getLibraryById" resultMap="BaseResultMap">
+        select  * from library_info;
+    </select>
+<!--    编辑图书馆信息-->
+    <update id="update">
 
+    </update>
 </mapper>

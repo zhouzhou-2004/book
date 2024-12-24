@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- 字体图标 -->
+    <link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
+    <!-- 动画 -->
+    <link href="/javaex/pc/css/animate.css" rel="stylesheet" />
+    <!-- 骨架样式 -->
+    <link href="/javaex/pc/css/common.css" rel="stylesheet" />
+    <!-- 皮肤（缇娜） -->
+    <link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />
+    <!-- jQuery -->
+    <script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>
+    <!-- 全局动态修改 -->
+    <script src="/javaex/pc/js/common.js"></script>
+    <!-- 核心组件 -->
+    <script src="/javaex/pc/js/javaex.min.js"></script>
+    <!-- 表单验证 -->
+    <script src="/javaex/pc/js/javaex-formVerify.js"></script>
+    <title>后台管理</title>
+    <style>
+        /* 全局样式重置与基础设置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef4f8; /* 更清新的浅蓝色背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 内容区域样式，营造简洁大气的感觉 */
+        .list-content {
+            padding: 30px;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* 较淡的阴影效果 */
+        }
+
+        /* 块元素样式，简洁且有交互感 */
+        .block {
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 淡淡的阴影 */
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 标题样式，简约突出 */
+        .banner {
+            border-bottom: 2px solid #d8e2e8; /* 淡蓝色边框 */
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .banner p.tab.fixed {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2980b9; /* 主题蓝色标题文字 */
+        }
+
+        /* 表单样式，注重输入体验和视觉协调 */
+        form {
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: bold;
+            color: #555;
+            font-size: 18px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 1px solid #d1d9e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: 16px;
+            background-color: #f9f9f9;
+        }
+
+        input[type="text"]:focus {
+            border-color: #2980b9; /* 聚焦时边框变为主题蓝色 */
+            outline: none;
+            box-shadow: 0 0 8px rgba(41, 128, 185, 0.3);
+        }
+
+        /* 按钮样式，采用线性渐变背景，更具现代感 */
+        .unit.clear {
+            text-align: center;
+        }
+
+        .button {
+            border: none;
+            border-radius: 6px;
+            padding: 15px 35px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 0 15px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            background: linear-gradient(135deg, #3498db, #2980b9); /* 蓝色渐变背景 */
+            color: white;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #2980b9, #3498db); /* 鼠标悬停时渐变方向相反 */
+        }
+
+        .button:active {
+            transform: translateY(1px); /* 点击时微微下沉，模拟物理反馈 */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .button.no {
+            background: linear-gradient(135deg, #ccc, #a6acaf); /* 灰色系渐变返回按钮 */
+        }
+
+        .button.no:hover {
+            background: linear-gradient(135deg, #a6acaf, #ccc); /* 悬停时渐变方向相反 */
+        }
+
+        .button.no:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+<div class="list-content">
+    <!--块元素-->
+    <div class="block">
+        <!--修饰块元素名称-->
+        <div class="banner">
+            <p class="tab fixed">图书馆信息编辑</p>
+        </div>
+
+        <!--正文内容-->
+        <div class="main">
+            <form id="libraryInfoForm">
+                <label for="libraryName">图书馆名称：</label>
+                <input type="text" id="libraryName" /> <br />
+                <label for="address">地址：</label>
+                <input type="text" id="address" /> <br />
+                <label for="openTime">开放时间：</label>
+                <input type="text" id="openTime" /> <br />
+                <label for="contactPhone">联系电话：</label>
+                <input type="text" id="contactPhone" /> <br />
+                <!--提交按钮-->
+                <div class="unit.clear" style="width: 800px;">
+                    <div style="text-align: center;">
+                        <!--表单提交时，必须是input元素，并指定type类型为button，否则ajax提交时，会返回error回调函数-->
+                        <input type="button" id="return" class="button no" value="返回" />
+                        <input type="button" id="save" class="button true" value="保存" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/js/axios.min.js"></script>
+<!--编辑图书馆信息-->
+<script>
+    let isEditing = false; // 标记是否处于编辑状态
+    // 获取返回按钮和保存按钮元素
+    const returnButton = document.getElementById('return');
+    const saveButton = document.getElementById('save');
+
+    // 用于存储原始数据，以便取消编辑时恢复
+    let originalData = [];
+    // 点击保存按钮的事件处理函数
+    document.getElementById('save').addEventListener('click', function () {
+        if (isEditing) {
+            const libraryName = document.getElementById('libraryName').value;
+            const address = document.getElementById('address').value;
+            const openTime = document.getElementById('openTime').value;
+            const contactPhone = document.getElementById('contactPhone').value;
+
+            if (libraryName === "") {
+                javaex.optTip({
+                    content: "图书馆名称不能为空!",
+                    type: "error"
+                });
+                return false;
+            }
+            if (address === "") {
+                javaex.optTip({
+                    content: "地址不能为空!",
+                    type: "error"
+                });
+                return false;
+            }
+            if (openTime === "") {
+                javaex.optTip({
+                    content: "开放时间不能为空!",
+                    type: "error"
+                });
+                return false;
+            }
+            if (contactPhone === "") {
+                javaex.optTip({
+                    content: "联系电话不能为空!",
+                    type: "error"
+                });
+                return false;
+            }
+
+            // 构建要提交的数据对象，这里可根据后端要求调整数据结构
+            const dataToSave = {
+                libraryName: libraryName,
+                address: address,
+                openTime: openTime,
+                contactPhone: contactPhone
+            };
+
+            // 发送POST请求到后端保存编辑后的数据
+            axios({
+                url: 'http://localhost:8080/lib/update',
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: dataToSave
+            })
+                .then(function (response) {
+                    console.log(response);
+                    if (response.data.code === 200) {
+                        javaex.message({
+                            content: "编辑图书馆信息成功",
+                            type: "success"
+                        });
+                        // 更新原始数据记录，以便后续判断是否有未保存的修改等情况
+                        originalData.libraryName = libraryName;
+                        originalData.address = address;
+                        originalData.openTime = openTime;
+                        originalData.contactPhone = contactPhone;
+                        isEditing = false;
+                    } else {
+                        const errorMessage = response.data.message || '保存编辑信息失败，请检查数据';
+                        javaex.optTip({
+                            content: errorMessage,
+                            type: "error"
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    console.error('保存编辑信息出错：', error);
+                    javaex.optTip({
+                        content: '保存编辑信息出现异常，请检查网络或联系管理员',
+                        type: "error"
+                    });
+                });
+        }
+    });
+
+    // 点击返回按钮的事件处理函数
+    document.getElementById('return').addEventListener('click', function () {
+
+    });
+</script>
+</body>
+</html>
