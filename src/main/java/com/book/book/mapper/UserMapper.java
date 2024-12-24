@@ -1,6 +1,5 @@
 package com.book.book.mapper;
 
-import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
 import org.apache.ibatis.annotations.Select;
 
