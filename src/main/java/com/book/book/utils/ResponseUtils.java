@@ -12,6 +12,13 @@ public class ResponseUtils<T> {
     private String message;  //信息 响应的信息结果
     private T data;  //携带的数据
 
+    // 修改构造方法参数类型为int
+    public ResponseUtils(int code, String message, T data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
+
     public ResponseUtils(Integer code, String message) {
         this.code = code;
         this.message = message;

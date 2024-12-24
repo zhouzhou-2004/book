@@ -44,14 +44,12 @@
 			</div>
 
 			<!--表格上方的操作元素，添加、删除等-->
-			<!--
 			<div class="operation-wrap">
 				<div class="buttons-wrap">
 					<button class="button blue radius-3"><span class="icon-plus"></span> 添加</button>
 					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>
 				</div>
 			</div>
-			-->
 			<table id="table" class="table color2">
 				<thead>
 				<tr align="center">
@@ -69,11 +67,11 @@
 				</thead>
 				<!-- 用户数据将会在这里动态加载 -->
 				<tbody id="adminTable">
-				<!--<tr>-->
-				<!--<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
-				<!--<td>1</td>-->
-				<!--<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
-				<!--</tr>-->
+<!--				<tr>-->
+<!--				<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
+<!--				<td>1</td>-->
+<!--				<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
+<!--				</tr>-->
 				</tbody>
 			</table>
 
@@ -90,139 +88,101 @@
 <!--第二步:通过axios发送前端请求到服务器(后端)-->
 <script>
 	axios({
-		url: "http://localhost:8080/user/list",//请求路径
-		method: "post"//请求方式
-	}).then((response)=> {
-		//请求成功执行
-		if (response.data.code && response.data.code>0) {
-			//请求成功
+		url: "http://localhost:8080/user/list",
+		method: "post"
+	}).then((response) => {
+		if (response.data.code && response.data.code > 0) {
 			const data = response.data.data;
-			const tableBody = document.getElementById('#adminTable');
+			const tableBody = document.querySelector('#adminTable');
 
-			// 清空现有的表格内容
+			// 清空现有表格内容
 			tableBody.innerHTML = '';
 
 			// 循环遍历数据并添加到表格
-			data.forEach((user, index) => {
+			data.forEach(user => {
 				const row = document.createElement('tr');
 
-				// 创建序号单元格
-				const serialNumberCell = document.createElement('td');
-				serialNumberCell.textContent = index + 1;
-				row.appendChild(serialNumberCell);
+				// 序号单元格
+				const indexCell = document.createElement('td');
+				indexCell.style.textAlign = "center";
+				indexCell.textContent = user.id;
+				row.appendChild(indexCell);
 
-				// 创建昵称单元格
+				// 昵称单元格
 				const nicknameCell = document.createElement('td');
-				nicknameCell.textContent = user.nickname;
+				nicknameCell.style.textAlign = "center";
+				nicknameCell.textContent = user.nickname || '-';
 				row.appendChild(nicknameCell);
 
-				// 创建用户名单元格
+				// 用户名单元格
 				const usernameCell = document.createElement('td');
-				usernameCell.textContent = user.username;
+				usernameCell.style.textAlign = "center";
+				usernameCell.textContent = user.username || '-';
 				row.appendChild(usernameCell);
 
-				// 创建生日单元格
+				// 生日单元格
 				const birthdayCell = document.createElement('td');
-				birthdayCell.textContent = user.birthday;
+				birthdayCell.style.textAlign = "center";
+				birthdayCell.textContent = user.birthday || '-';
 				row.appendChild(birthdayCell);
 
-				// 创建电话单元格
+				// 电话单元格
 				const phoneCell = document.createElement('td');
-				phoneCell.textContent = user.phone;
+				phoneCell.style.textAlign = "center";
+				phoneCell.textContent = user.phone || '-';
 				row.appendChild(phoneCell);
 
-				// 创建邮箱单元格
+				// 邮箱单元格
 				const emailCell = document.createElement('td');
-				emailCell.textContent = user.email;
+				emailCell.style.textAlign = "center";
+				emailCell.textContent = user.email || '-';
 				row.appendChild(emailCell);
 
-				// 创建地址单元格
+				// 地址单元格
 				const addressCell = document.createElement('td');
-				addressCell.textContent = user.address;
+				addressCell.style.textAlign = "center";
+				addressCell.textContent = user.address || '-';
 				row.appendChild(addressCell);
 
-				// 创建可借数量单元格
-				const borrowCountCell = document.createElement('td');
-				borrowCountCell.textContent = user.borrowCount;
-				row.appendChild(borrowCountCell);
+				// 可借数量单元格
+				const maxBooksCell = document.createElement('td');
+				maxBooksCell.style.textAlign = "center";
+				maxBooksCell.textContent = user.maxBooks || '-';
+				row.appendChild(maxBooksCell);
 
-				// 创建身份单元格
-				const identityCell = document.createElement('td');
-				identityCell.textContent = user.identity;
-				row.appendChild(identityCell);
+				// 身份单元格
+				const roleCell = document.createElement('td');
+				roleCell.style.textAlign = "center";
+				roleCell.textContent = user.role === 1 ? '管理员' : '普通用户';
+				row.appendChild(roleCell);
 
-				// 创建操作单元格
+				// 操作单元格
 				const actionsCell = document.createElement('td');
+				actionsCell.style.textAlign = "center";
 
-				const editButton = document.createElement('button');
-				editButton.textContent = '编辑';
-				editButton.className = 'edit-button';
-				editButton.setAttribute('data-id', user.id);
-				editButton.setAttribute('data-nickname', user.nickname);
-				editButton.setAttribute('data-username', user.username);
-				editButton.setAttribute('data-birthday', user.birthday);
-				editButton.setAttribute('data-phone', user.phone);
-				editButton.setAttribute('data-email', user.email);
-				editButton.setAttribute('data-address', user.address);
-				editButton.setAttribute('data-borrowCount', user.borrowCount);
-				editButton.setAttribute('data-identity', user.identity);
-
-				// 为编辑按钮添加事件监听器
-				editButton.addEventListener('click', function (event) {
-					event.preventDefault();
-					const id = this.getAttribute('data-id');
-					const nickname = this.getAttribute('data-nickname');
-					const username = this.getAttribute('data-username');
-					const birthday = this.getAttribute('data-birthday');
-					const phone = this.getAttribute('data-phone');
-					const email = this.getAttribute('data-email');
-					const address = this.getAttribute('data-address');
-					const borrowCount = this.getAttribute('data-borrowCount');
-					const identity = this.getAttribute('data-identity');
-
-					// 这里可以添加显示编辑模态框并填充对应数据的逻辑，示例如下（你可根据实际模态框结构完善）
-					document.getElementById('editId').value = id;
-					document.getElementById('editNickname').value = nickname;
-					document.getElementById('editUsername').value = username;
-					document.getElementById('editBirthday').value = birthday;
-					document.getElementById('editPhone').value = phone;
-					document.getElementById('editEmail').value = email;
-					document.getElementById('editAddress').value = address;
-					document.getElementById('editBorrowCount').value = borrowCount;
-					document.getElementById('editIdentity').value = identity;
-					document.getElementById('editModal').style.display = 'block';
-				});
-
-				const deleteButton = document.createElement('button');
-				deleteButton.textContent = '删除';
-				deleteButton.setAttribute('data-user-id', user.id);
-
-				// 为删除按钮添加事件监听器
-				deleteButton.addEventListener('click', function (event) {
-					event.preventDefault();
-					if (confirm("您确定要删除该用户吗?")) {
-						const userId = event.target.getAttribute('data-user-id');
-
-						axios({
-							url: "http://localhost:8080/user/delete",
-							method: "post",
-							data: {
-								id: userId
-							}
-						}).then((response) => {
-							if (response.data.code == '305') {
-								alert("删除用户失败");
-							} else if (response.data.code == '306') {
-								alert("删除用户异常，请联系管理员");
-							} else {
-								alert("删除用户成功");
-								location.reload();
-							}
-						}).catch((error) => {
-							alert('请求失败：' + error);
-						});
-					}
-				});
+				// // 编辑按钮
+				// const editButton = document.createElement('button');
+				// editButton.className = 'button blue';
+				// editButton.textContent = '编辑';
+				// editButton.setAttribute('data-id', user.id);
+				// editButton.addEventListener('click', function(event) {
+				// 	event.preventDefault();
+				// 	const userId = this.getAttribute('data-id');
+				// 	// TODO: 实现编辑逻辑
+				// });
+				//
+				// // 删除按钮
+				// const deleteButton = document.createElement('button');
+				// deleteButton.className = 'button red';
+				// deleteButton.textContent = '删除';
+				// deleteButton.setAttribute('data-id', user.id);
+				// deleteButton.addEventListener('click', function(event) {
+				// 	event.preventDefault();
+				// 	if (confirm('确定要删除该用户吗？')) {
+				// 		const userId = this.getAttribute('data-id');
+				// 		// TODO: 实现删除逻辑
+				// 	}
+				// });
 
 				actionsCell.appendChild(editButton);
 				actionsCell.appendChild(deleteButton);
@@ -231,10 +191,10 @@
 				// 将新行添加到表格主体
 				tableBody.appendChild(row);
 			});
-		}else {
+		} else {
 			alert('没有用户数据或数据为空');
 		}
 	}).catch((error) => {
 		alert('请求失败：' + error);
-	})
+	});
 </script>

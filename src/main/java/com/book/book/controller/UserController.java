@@ -1,6 +1,7 @@
 package com.book.book.controller;
 
 import com.book.book.model.pojo.Users;
+import com.book.book.model.vo.UserVO;
 import com.book.book.service.UserService;
 import com.book.book.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,8 @@ public class UserController {
     @RequestMapping("/list")
     private ResponseUtils list(){
         try {
-            List<Users> allUser = userService.getAllUser();
+            List<UserVO> allUser = userService.getAllUser();
+//            System.out.println("查询结果："+allUser);
             if (allUser != null){
                 //查询成功
                 return new ResponseUtils(200,"查询成功",allUser);

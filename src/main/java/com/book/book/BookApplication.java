@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan
+@MapperScan("com.book.book.mapper") // 扫描mapper接口
 public class BookApplication {
 
 	public static void main(String[] args) {
