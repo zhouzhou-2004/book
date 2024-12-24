@@ -1,4 +1,4 @@
-package com.book.book.control_dx;
+package com.book.book.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
