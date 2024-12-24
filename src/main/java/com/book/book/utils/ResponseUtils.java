@@ -23,4 +23,9 @@ public class ResponseUtils<T> {
         this.code = code;
         this.message = message;
     }
+    public ResponseUtils(Integer code, String message, T data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
 }
