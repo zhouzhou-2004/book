@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.book.book.mapper.LibraryInfoMapper">
+    <resultMap id="BaseResultMap" type="com.book.book.model.pojo.LibraryInfo" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="library_name" property="libraryName" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="open_time" property="openTime" jdbcType="INTEGER" />
+        <result column="contact_phone" property="contactPhone" jdbcType="VARCHAR" />
+    </resultMap>
+
+</mapper>

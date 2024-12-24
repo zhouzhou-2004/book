@@ -76,7 +76,7 @@
             let code=document.querySelector("#code").checked;
             let remember = document.querySelector("#remember").value;
             axios({
-                url:"http://localhost:8081/tAdmin/register",
+                url:"http://localhost:8080/login",
                 method:"post",
                 data:{
                     username : uname,
@@ -89,7 +89,7 @@
                 //登录
                 if (result.data.code == 200){
                     alert("登录成功");
-                    location.href = "/yema.html";
+                    location.href = "/index.html";
                 }else if (result.data.code == 306){
                     alert("验证码错误");
                 }else {

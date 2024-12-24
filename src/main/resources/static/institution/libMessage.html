@@ -19,6 +19,108 @@
     <!-- 表单验证 -->
     <script src="/javaex/pc/js/javaex-formVerify.js"></script>
     <title>后台管理</title>
+    <style>
+        /* 整体页面布局 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* 浅灰色背景，营造简洁氛围 */
+        }
+
+        /* 内容区域样式 */
+        .list-content {
+            padding: 20px;
+            max-width: 1200px; /* 限制最大宽度，避免内容过宽 */
+            margin: 0 auto; /* 水平居中 */
+        }
+
+        /* 块元素样式 */
+        .block {
+            background-color: white; /* 白色背景，突出块内容 */
+            border-radius: 5px; /* 圆角 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 轻微阴影，增加立体感 */
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* 标题样式 */
+        .banner {
+            border-bottom: 2px solid #e9ecef; /* 底部边框，区分标题和内容 */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .banner p.tab.fixed {
+            font-size: 20px;
+            font-weight: bold;
+            color: #343a40; /* 深灰色标题文字 */
+        }
+
+        /* 表单样式 */
+        form {
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057; /* 稍深的灰色文字，增强可读性 */
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da; /* 淡灰色边框 */
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease; /* 边框颜色过渡效果，增强交互感 */
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff; /* 获得焦点时边框变蓝色 */
+            outline: none; /* 去除默认的聚焦轮廓 */
+        }
+
+        /* 按钮样式 */
+        .unit.clear {
+            text-align: center;
+        }
+
+        .button {
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* 背景色和缩放过渡效果 */
+        }
+
+        .button.no {
+            background-color: #6c757d; /* 灰色背景，用于返回按钮 */
+            color: white;
+            line-height: 15px;
+        }
+
+        .button.yes {
+            background-color: #007bff; /* 蓝色背景，用于保存按钮 */
+            color: white;
+            line-height: 15px;
+        }
+
+        .button.no:hover {
+            background-color: #5a6268; /* 鼠标悬停时加深灰色 */
+            transform: translateY(-2px); /* 微微上移，增加点击感 */
+        }
+
+        .button.yes:hover {
+            background-color: #0056b3; /* 鼠标悬停时加深蓝色 */
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 
 <body>
@@ -32,19 +134,118 @@
 
         <!--正文内容-->
         <div class="main">
-            <form>
-<!--                <label for="libraryName">图书馆名称：</label>-->
-<!--                <input type="text" th:field="*{libraryName}" id="libraryName" /> <br />-->
-<!--                <label for="address">地址：</label>-->
-<!--                <input type="text" th:field="*{address}" id="address" /> <br />-->
-<!--                <label for="openTime">开放时间：</label>-->
-<!--                <input type="text" th:field="*{openTime}" id="openTime" /> <br />-->
-<!--                <label for="contactPhone">联系电话：</label>-->
-<!--                <input type="text" th:field="*{contactPhone}" id="contactPhone" /> <br />-->
-<!--                <input type="submit" value="保存" />-->
+            <form id="libraryInfoForm">
+                <label for="libraryName">图书馆名称：</label>
+                <input type="text" id="libraryName" /> <br />
+                <label for="address">地址：</label>
+                <input type="text" id="address" /> <br />
+                <label for="openTime">开放时间：</label>
+                <input type="text" id="openTime" /> <br />
+                <label for="contactPhone">联系电话：</label>
+                <input type="text" id="contactPhone" /> <br />
+                <!--提交按钮-->
+                <div class="unit clear" style="width: 800px;">
+                    <div style="text-align: center;">
+                        <!--表单提交时，必须是input元素，并指定type类型为button，否则ajax提交时，会返回error回调函数-->
+                        <input type="button" id="return" class="button no" value="返回" />
+                        <input type="button" id="save" class="button yes" value="保存" />
+                    </div>
+                </div>
             </form>
         </div>
     </div>
 </div>
 </body>
 </html>
+<script src="/js/axios.min.js"></script>
+<script>
+    document.getElementById('save').addEventListener('click', function () {
+        // 获取表单输入的值
+        const libraryName = document.getElementById('libraryName').value;
+        const address = document.getElementById('address').value;
+        const openTime = document.getElementById('openTime').value;
+        const contactPhone = document.getElementById('contactPhone').value;
+
+        // 校验文本
+        if (libraryName === "") {
+            javaex.optTip({
+                content: "图书馆名称不能为空!",
+                type: "error"
+            });
+            return false;
+        }
+        if (address === "") {
+            javaex.optTip({
+                content: "地址不能为空!",
+                type: "error"
+            });
+            return false;
+        }
+        if (openTime === "") {
+            javaex.optTip({
+                content: "开放时间不能为空!",
+                type: "error"
+            });
+            return false;
+        }
+        if (contactPhone === "") {
+            javaex.optTip({
+                content: "联系电话不能为空!",
+                type: "error"
+            });
+            return false;
+        }
+
+        // 构建要提交的数据对象
+        const data = {
+            libraryName: libraryName,
+            address: address,
+            openTime: openTime,
+            contactPhone: contactPhone
+        };
+
+        // 使用完整的axios函数调用形式发送POST请求
+        axios({
+            url: 'updateLibraryInfo.php',
+            method: 'post',
+            headers: {
+                // 表明发送的数据是 JSON 格式的，将构建好的 json 对象作为请求数据发送给后端。
+                'Content-Type': 'application/json'
+            },
+            data: data
+        })
+            .then(function (response) {
+                console.log(response);
+                // 根据后端返回数据中的code属性判断操作是否成功
+                if (response.data.code === 200) {
+                    javaex.message({
+                        content: "图书馆信息更新成功",
+                        type: "success"
+                    });
+                    // 跳转至列表，这里假设跳转到/library/list页面
+                    setTimeout(function () {
+                        window.location.href = "/library/list";
+                    }, 1500);
+                } else {
+                    // 如果失败，弹出后端返回的提示信息（如果有），这里假设后端返回的错误提示信息在message属性里
+                    const errorMessage = response.data.message || '更新失败，请检查数据';
+                    javaex.optTip({
+                        content: errorMessage,
+                        type: "error"
+                    });
+                }
+            })
+            .catch(function (error) {
+                console.error('提交数据出错：', error);
+                javaex.optTip({
+                    content: '提交数据出现异常，请检查网络或联系管理员',
+                    type: "error"
+                });
+            });
+    });
+
+    // 返回按钮点击事件处理
+    document.getElementById('return').addEventListener('click', function () {
+        window.history.back();// 回到上一个浏览页面
+    });
+</script>
