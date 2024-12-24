@@ -47,59 +47,64 @@
                 </div>
                 <div class="form-item">
                     <span class="form-txt">账号：</span>
-                    <input type="text" class="form-input original" id="uname" name="loginName" placeholder="请输入账号" data-type="必填" error-pos="32" />
+                    <input type="text" class="form-input original" id="uname" name="username" placeholder="请输入账号" data-type="必填" error-pos="32" />
                 </div>
                 <div class="form-item">
                     <span class="form-txt">密码：</span>
-                    <input type="password" class="form-input original" name="password" id="pass" placeholder="请输入密码" data-type="必填" error-pos="32" />
+                    <input type="password" class="form-input original"  id="pass" name="password" placeholder="请输入密码" data-type="必填" error-pos="32" />
                 </div>
                 <div class="form-item captcha">
                     <span class="form-txt">验证码：</span>
-                    <input type="text" class="form-input original" id="captcha" name="code" placeholder="请输入验证码" data-type="必填" error-pos="32" />
+                    <input type="text" class="form-input original" id="code"  placeholder="请输入验证码" data-type="必填" error-pos="32" />
                     <img src="/codeImage" onclick="changeImage(this);" style="position: absolute;height: 40px;width: 100px;"/>
                 </div>
                 <div class="form-item">
                     <input type="checkbox" id="remember" name="remember" required>记住我
                 </div>
                 <div class="form-btn">
-                    <input type="button"  class="btn" value="登录" />
+                    <button type="button" id="btn" name="btn"  class="ui-button" >登录</button>
                 </div>
             </form>
         </div>
     </div>
     <script src="/js/axios.min.js"></script>
     <script>
-        let btn = document.querySelector(".btn");
-        btn.onclick = function (){
-            let uname=document.querySelector("#uname").value;
-            let pass=document.querySelector("#pass").value;
-            let code=document.querySelector("#code").checked;
-            let remember = document.querySelector("#remember").value;
+        // 修正这里，正确获取按钮元素，类名是 "ui-button"，id是 "btn"，使用正确的选择器
+        let btn = document.getElementById("btn");
+        btn.onclick = function () {
+            // 获取用户名输入框的值，正确的id是 "uname"
+            let username = document.getElementById("uname").value;
+            // 获取密码输入框的值，正确的id是 "pass"
+            let password = document.getElementById("pass").value;
+            // 获取验证码输入框的值，这里原代码使用了 checked 方法错误，应该也是获取 value
+            let code = document.getElementById("code").value;
+            // 获取记住我复选框是否被选中，使用 checked 属性判断是否选中
+            let remember = document.getElementById("remember").checked;
             axios({
-                url:"http://localhost:8081/tAdmin/register",
-                method:"post",
-                data:{
-                    username : uname,
-                    password : pass,
+                url: "http://localhost:8080/tAdmin/login",
+                method: "post",
+                data: {
+                    username: username,
+                    password: password,
                     remember: remember,
-                    code:code
+                    code: code
                 }
-            }).then((result)=>{
+            }).then((result) => {
                 console.log(result)
-                //登录
-                if (result.data.code == 200){
+                // 登录
+                if (result.data.code == 200) {
                     alert("登录成功");
-                    location.href = "/yema.html";
-                }else if (result.data.code == 306){
+                    location.href = "/index.html";
+                } else if (result.data.code == 500) {
                     alert("验证码错误");
-                }else {
+                } else {
                     alert("登录失败");
                 }
             })
         }
         function changeImage(img) {
-            //图片重新加载src地址，因为图片是一个GET请求，浏览器有缓存  time 表示是一个随机参数 ，防止浏览器缓存
-            img.src="/codeImage?time="+new Date();
+            // 图片重新加载src地址，因为图片是一个GET请求，浏览器有缓存  time 表示是一个随机参数 ，防止浏览器缓存
+            img.src = "/codeImage?time=" + new Date();
         }
     </script>
 </body>

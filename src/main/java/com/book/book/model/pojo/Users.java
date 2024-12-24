@@ -3,6 +3,7 @@ package com.book.book.model.pojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Data
 @AllArgsConstructor
@@ -20,4 +21,39 @@ public class Users {
   private long size;
   private String tel;
   private String username;
+  private String code;
+
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  @Override
+  public String toString() {
+    return "Users{" +
+            "password='" + password + '\'' +
+            ", username='" + username + '\'' +
+            ", code='" + code + '\'' +
+            '}';
+  }
 }
