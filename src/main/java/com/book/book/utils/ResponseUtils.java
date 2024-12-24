@@ -18,7 +18,7 @@ public class ResponseUtils<T> {
         this.message = message;
         this.data = data;
     }
-
+    //现有构造器
     public ResponseUtils(Integer code, String message) {
         this.code = code;
         this.message = message;
