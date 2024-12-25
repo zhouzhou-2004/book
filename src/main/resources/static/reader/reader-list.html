@@ -77,40 +77,14 @@
 			</table>
 			<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
 				<tr>
-					<td height="6"><img src="../images/spacer.gif" width="1" height="1" /></td>
+					<td height="6"><img src="/javaex/pc/css/icomoon.css" width="1" height="1" /></td>
 				</tr>
 				<tr>
 					<td height="33">
-			<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="right-font08">
-				<tr>
-					<td width="50%">共 <span class="right-text09">0</span> 页 | 第 <span class="right-text09">1</span> 页
-					</td>
-					<td width="49%" align="right">
-						[<a href="javascript:void(0)" class="right-font08">首页</a> |
-						<a href="javascript:void(0)" class="right-font08">上一页</a> |
-						<a href="javascript:void(0)" class="right-font08">下一页</a> |
-						<a href="javascript:void(0)" class="right-font08">末页</a>]
-						转至：
-					</td>
-					<td width="1%">
-						<table width="20" border="0" cellspacing="0" cellpadding="0">
-							<tr>
-								<td width="1%">
-									<input name="textfield3" type="text" class="right-textfield03" size="1" />
-								</td>
-								<td width="87%">
-									<input name="Submit23222" type="button" class="right-button06" value="跳转" />
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-						<!-- 修改分页部分 -->
+									<!-- 修改分页部分 -->
 						<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="right-font08">
 							<tr>
-								<td width="50%">共 <span class="right-text09" id="totalPages">0</span> 页 | 第 <span class="right-text09"
-																													 id="currentPage">1</span> 页</td>
+								<td width="50%">共 <span class="right-text09" id="totalPages">0</span> 页 | 第 <span class="right-text09" id="currentPage">1</span> 页</td>
 								<td width="49%" align="right">
 									[<a href="javascript:void(0)" onclick="changePage(1)" class="right-font08">首页</a> |
 									<a href="javascript:void(0)" onclick="changePage(currentPage-1)" class="right-font08">上一页</a> |
@@ -122,8 +96,7 @@
 									<table width="20" border="0" cellspacing="0" cellpadding="0">
 										<tr>
 											<td width="1%"><input name="pageNum" type="text" class="right-textfield03" size="1" /></td>
-											<td width="87%"><input name="Submit23222" type="button" class="right-button06" value=" "
-																   onclick="goToPage()" /></td>
+											<td width="87%"><input name="Submit23222" type="button" class="right-button06" value="跳转" onclick="goToPage()" /></td>
 										</tr>
 									</table>
 								</td>
@@ -143,7 +116,7 @@
 </html>
 <!--第一步：前端发送请求应该使用什么技术 axios(AJAX)-->
 <script src="../js/axios.min.js"></script>
-<script src="../js/axiosConfig.js"></script>
+
 
 <!--第二步:通过axios发送前端请求到服务器(后端)-->
 <script>
@@ -155,18 +128,27 @@
 	/**
 	 * 加载学生列表数据
 	 */
-	function loadStudentList(page = 1) {
-		const classNo = document.querySelector('select[name="select2"]').value;
-		const name = document.querySelector('input[name="textfield"]').value;
-
+	function loadReaderList(page = 1) {
+		// const selectElement = document.querySelector('select[name="select2"]');
+		// const inputElement = document.querySelector('input[name="textfield"]');
+		//
+		// if (!selectElement || !inputElement) {
+		// 	console.error('Select or input element not found.');
+		// 	return;
+		// }
+		//
+		// const classNo = selectElement.value;
+		// const name = inputElement.value;
+		//
+		// console.log(`Class No: ${classNo}, Name: ${name}`); // 调试信息
 		axios({
 			url: "http://localhost:8080/reader/list",
 			method: "post",
 			data: {
 				pageNum: page,
-				pageSize: pageSize,
-				classNo: classNo,
-				name: name
+				pageSize: pageSize
+				// classNo: classNo,
+				// name: name
 			}
 		}).then((response) => {
 			if (response.data.code === 200) {
@@ -177,30 +159,54 @@
 				document.getElementById('currentPage').textContent = currentPage;
 				document.getElementById('totalPages').textContent = totalPages;
 
+// 				// 更新表格内容
+// 				const tbody = document.getElementById('studentTableBody');
+// 				tbody.innerHTML = ''; // 清空现有内容
+//
+// 				data.list.forEach(user => {
+// 					// 格式化日期
+// 					// const birthDate = student.birth ? new Date(student.birth).toLocaleDateString() : '';
+//
+// 					const row = `
+//             <tr>
+//                 <td bgcolor="#FFFFFF">${user.nickname || ''}</td> <!-- 昵称 -->
+// <td bgcolor="#FFFFFF">${user.username || ''}</td> <!-- 用户名 -->
+// <td bgcolor="#FFFFFF">${user.birthday || ''}</td> <!-- 生日 -->
+// <td bgcolor="#FFFFFF">${user.tel || ''}</td>      <!-- 电话 -->
+// <td bgcolor="#FFFFFF">${user.email || ''}</td>     <!-- 邮箱 -->
+// <td bgcolor="#FFFFFF">${user.address || ''}</td>   <!-- 地址 -->
+// <td bgcolor="#FFFFFF">${user.size || ''}</td>      <!-- 可借数量 -->
+// <td bgcolor="#FFFFFF">${user.identity || ''}</td>  <!-- 身份 -->
+//                 <td bgcolor="#FFFFFF">
+//                     <a href="javascript:void(0)" onclick="deleteBook('${user.id}')">删除</a>&nbsp;|&nbsp;
+//                     <a href="javascript:void(0)" onclick="editBook('${user.id}')">修改</a>
+//                 </td>
+//             </tr>
+//         `;
+// 					tbody.innerHTML += row;
 				// 更新表格内容
-				const tbody = document.getElementById('studentTableBody');
+				const tbody = document.getElementById('tbody'); // 使用正确的ID
 				tbody.innerHTML = ''; // 清空现有内容
 
-				data.list.forEach(student => {
-					// 格式化日期
-					const birthDate = student.birth ? new Date(student.birth).toLocaleDateString() : '';
+				data.list.forEach(user => {
+					// 格式化日期等操作...
 
 					const row = `
-            <tr>
-                <td bgcolor="#FFFFFF">${user.nickname || ''}</td> <!-- 昵称 -->
-<td bgcolor="#FFFFFF">${user.username || ''}</td> <!-- 用户名 -->
-<td bgcolor="#FFFFFF">${user.birthday || ''}</td> <!-- 生日 -->
-<td bgcolor="#FFFFFF">${user.tel || ''}</td>      <!-- 电话 -->
-<td bgcolor="#FFFFFF">${user.email || ''}</td>     <!-- 邮箱 -->
-<td bgcolor="#FFFFFF">${user.address || ''}</td>   <!-- 地址 -->
-<td bgcolor="#FFFFFF">${user.size || ''}</td>      <!-- 可借数量 -->
-<td bgcolor="#FFFFFF">${user.identity || ''}</td>  <!-- 身份 -->
-                <td bgcolor="#FFFFFF">
-                    <a href="javascript:void(0)" onclick="deleteStudent('${user.id}')">删除</a>&nbsp;|&nbsp;
-                    <a href="javascript:void(0)" onclick="editStudent('${user.id}')">修改</a>
-                </td>
-            </tr>
-        `;
+        <tr>
+            <td bgcolor="#FFFFFF">${user.nickname || ''}</td> <!-- 昵称 -->
+            <td bgcolor="#FFFFFF">${user.username || ''}</td> <!-- 用户名 -->
+            <td bgcolor="#FFFFFF">${user.birthday || ''}</td> <!-- 生日 -->
+            <td bgcolor="#FFFFFF">${user.tel || ''}</td>      <!-- 电话 -->
+            <td bgcolor="#FFFFFF">${user.email || ''}</td>     <!-- 邮箱 -->
+            <td bgcolor="#FFFFFF">${user.address || ''}</td>   <!-- 地址 -->
+            <td bgcolor="#FFFFFF">${user.size || ''}</td>      <!-- 可借数量 -->
+            <td bgcolor="#FFFFFF">${user.identity || ''}</td>  <!-- 身份 -->
+            <td bgcolor="#FFFFFF">
+                <a href="javascript:void(0)" onclick="deleteBook('${user.id}')">删除</a>&nbsp;|&nbsp;
+                <a href="javascript:void(0)" onclick="editBook('${user.id}')">修改</a>
+            </td>
+        </tr>
+    `;
 					tbody.innerHTML += row;
 				});
 			} else {
@@ -219,7 +225,7 @@
 			alert('页码超出范围！');
 			return;
 		}
-		loadStudentList(page);
+		loadReaderList(page);
 	}
 
 	/**
@@ -232,29 +238,52 @@
 			alert('请输入有效的页码！');
 			return;
 		}
-		loadStudentList(page);
+		loadReaderList(page);
 	}
 
 	// 修改现有的DOMContentLoaded事件处理
+	// document.addEventListener('DOMContentLoaded', function () {
+	// 	// 获取select元素
+	// 	const selectElement = document.querySelector('select[name="select2"]');
+	//
+	//
+	// 	// 初始加载学生列表
+	// 	loadReaderList();
+	//
+	// 	// 监听班级选择变化
+	// 	selectElement.addEventListener('change', function () {
+	// 		loadReaderList(1); // 切换班级时重置到第一页
+	// 	});
+	//
+	// 	// 添加查询按钮点击事件
+	// 	document.querySelector('input[name="Submit"]').addEventListener('click', function () {
+	// 		loadReaderList(1); // 查询时重置到第一页
+	// 	});
+	// });
+
 	document.addEventListener('DOMContentLoaded', function () {
-		// 获取select元素
+		// 初始加载读者列表
+		loadReaderList();
+
+		// 如果有需要的select元素，这里应该检查其存在性
 		const selectElement = document.querySelector('select[name="select2"]');
+		if (selectElement) {
+			selectElement.addEventListener('change', function () {
+				loadReaderList(1); // 切换班级时重置到第一页
+			});
+		} else {
+			console.warn('Select element not found.');
+		}
 
-		// 加载班级列表
-		loadClassList();
-
-		// 初始加载学生列表
-		loadStudentList();
-
-		// 监听班级选择变化
-		selectElement.addEventListener('change', function () {
-			loadStudentList(1); // 切换班级时重置到第一页
-		});
-
-		// 添加查询按钮点击事件
-		document.querySelector('input[name="Submit"]').addEventListener('click', function () {
-			loadStudentList(1); // 查询时重置到第一页
-		});
+		// 查询按钮点击事件，假设使用的是带有id "searchBtn" 的button元素
+		const searchButton = document.getElementById('searchBtn');
+		if (searchButton) {
+			searchButton.addEventListener('click', function () {
+				loadReaderList(1); // 查询时重置到第一页
+			});
+		} else {
+			console.warn('Search button not found.');
+		}
 	});
 
 	// // 修改模糊查询的代码
