@@ -1,8 +1,6 @@
 package com.book.book.service.impl;
 
 import com.book.book.mapper.UserMapper;
-import com.book.book.mapper.UsersMapper;
-import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
 import com.book.book.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

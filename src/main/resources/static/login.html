@@ -69,17 +69,18 @@
     </div>
     <script src="/js/axios.min.js"></script>
     <script>
-        // 修正这里，正确获取按钮元素，类名是 "ui-button"，id是 "btn"，使用正确的选择器
+        // 获取按钮元素
         let btn = document.getElementById("btn");
         btn.onclick = function () {
-            // 获取用户名输入框的值，正确的id是 "uname"
+            // 获取用户名输入框的值
             let username = document.getElementById("uname").value;
-            // 获取密码输入框的值，正确的id是 "pass"
+            // 获取密码输入框的值
             let password = document.getElementById("pass").value;
-            // 获取验证码输入框的值，这里原代码使用了 checked 方法错误，应该也是获取 value
+            // 获取验证码输入框的值
             let code = document.getElementById("code").value;
-            // 获取记住我复选框是否被选中，使用 checked 属性判断是否选中
+            // 获取记住我复选框是否被选中
             let remember = document.getElementById("remember").checked;
+
             axios({
                 url: "http://localhost:8080/tAdmin/login",
                 method: "post",
@@ -90,21 +91,72 @@
                     code: code
                 }
             }).then((result) => {
-                console.log(result)
+                console.log(result);
                 // 登录
                 if (result.data.code == 200) {
-                    alert("登录成功");
                     location.href = "/index.html";
+                    if (remember) {
+                        setCookie("uname", username, 30); // 保存用户名到cookie，有效期30天
+                        setCookie("pword", password, 30); // 保存密码到cookie，有效期30天
+                        setCookie("rememberMe", "true", 30); // 保存记住我状态到cookie，有效期30天
+                    } else {
+                        deleteCookie("uname");
+                        deleteCookie("pword");
+                        deleteCookie("rememberMe");
+                    }
                 } else if (result.data.code == 500) {
                     alert("验证码错误");
                 } else {
                     alert("登录失败");
                 }
-            })
+            });
+        };
+
+        // 传入cookie名能够拿到cookie的值
+        function getCookieValue(name) {
+            let value = `; ${document.cookie}`;
+            let parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
         }
+
+        // 设置cookie
+        function setCookie(name, value, days) {
+            let d = new Date();
+            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        // 删除cookie
+        function deleteCookie(name) {
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+
+        // 获取cookie值 渲染到input框中
+        function populateFields() {
+            let usernameValue = getCookieValue("uname");
+            let passwordValue = getCookieValue("pword");
+            if (usernameValue) {
+                document.getElementById('uname').value = usernameValue;
+            }
+            if (passwordValue) {
+                document.getElementById('pass').value = passwordValue;
+            }
+            // 如果需要记住我，勾选复选框
+            let rememberMeValue = getCookieValue("rememberMe");
+            if (rememberMeValue === "true") {
+                document.getElementById('remember').checked = true;
+            }
+        }
+
+        // 页面加载
+        window.onload = function () {
+            populateFields();
+        }
+
         function changeImage(img) {
             // 图片重新加载src地址，因为图片是一个GET请求，浏览器有缓存  time 表示是一个随机参数 ，防止浏览器缓存
-            img.src = "/codeImage?time=" + new Date();
+            img.src = "/codeImage?time=" + new Date().getTime();
         }
     </script>
 </body>

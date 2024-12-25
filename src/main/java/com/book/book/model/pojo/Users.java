@@ -22,6 +22,7 @@ public class Users {
   private String tel;
   private String username;
   private String code;
+  private boolean remember;
 
 
   public String getPassword() {
@@ -55,5 +56,13 @@ public class Users {
             ", username='" + username + '\'' +
             ", code='" + code + '\'' +
             '}';
+  }
+
+  public boolean isRemember() {
+    return remember;
+  }
+
+  public void setRemember(boolean remember) {
+    this.remember = remember;
   }
 }

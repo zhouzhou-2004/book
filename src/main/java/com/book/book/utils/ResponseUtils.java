@@ -25,11 +25,11 @@ public class ResponseUtils<T> {
     }
 
 
-    public ResponseUtils(int code, String message, T data) {
-        this.code = code;
-        this.message = message;
-        this.data = data;
-    }
+//    public ResponseUtils(int code, String message, T data) {
+//        this.code = code;
+//        this.message = message;
+//        this.data = data;
+//    }
 
     // Getters and setters
     public int getCode() {
