@@ -24,3 +24,4 @@ spring:
 mybatis:
   server:
     port:8080
+
