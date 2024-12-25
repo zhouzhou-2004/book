@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.book.book.mapper.ReaderMapper">
+    <!-- SQL 映射语句 -->
+    <select id="selectTotal" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM users WHERE class_no = #{classNo} AND name LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="selectReaderList" parameterType="map" resultType="com.book.book.model.pojo.Users">
+        SELECT * FROM users LIMIT #{offset}, #{pageSize}
+    </select>
+</mapper>
