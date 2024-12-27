@@ -168,10 +168,7 @@
 <script src="/js/axios.min.js"></script>
 
 <script>
-    <!--获取图书馆中的信息-->
-    // 获取编辑按钮元素
-    const bianjiButton = document.getElementById('bianji');
-
+    <!--从后端获取图书馆中的信息-->
     // 用于存储从后端获取到的图书馆信息数据
     let library = null;
 
@@ -213,6 +210,48 @@
             console.warn('未接收到有效的图书馆信息');
         }
     }
+    // 获取编辑按钮元素
+    const bianjiButton = document.getElementById('bianji');
+    // 为编辑按钮添加点击事件监听器
+    // 修改编辑按钮点击事件处理函数
+    bianjiButton.addEventListener('click', function () {
+        // 获取当前表单中的值
+        const libraryName = document.getElementById('libraryName').value;
+        const address = document.getElementById('address').value;
+        const openTime = document.getElementById('openTime').value;
+        const contactPhone = document.getElementById('contactPhone').value;
+
+        // 构建带参数的URL
+        const url = `libMessage_update.html?libraryName=${encodeURIComponent(libraryName)}&address=${encodeURIComponent(address)}&openTime=${encodeURIComponent(openTime)}&contactPhone=${encodeURIComponent(contactPhone)}`;
+
+        // 跳转到编辑页面
+        window.location.href = url;
+    });
+
+    // 在页面加载时执行
+    window.onload = function() {
+        // 从URL中获取图书馆ID（假设是通过查询字符串传递）
+        const urlParams = new URLSearchParams(window.location.search);
+        const libraryId = urlParams.get('id');
+
+        if (libraryId) {
+            // 发起axios请求获取特定图书馆信息数据
+            axios({
+                url: `http://localhost:8080/lib/${libraryId}`, // 假设API支持按ID查询
+                method: "get"
+            }).then((result) => {
+                if (result.data.code == 200) {
+                    const library = result.data.data;
+                    renderDataToForm(library);
+                }
+            }).catch((error) => {
+                console.error("获取数据出现错误:", error);
+                alert("获取图书馆信息失败，请稍后重试！");
+            });
+        }
+    };
+
+
 </script>
 </body>
 </html>

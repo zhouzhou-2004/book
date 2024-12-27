@@ -18,6 +18,20 @@
     </select>
 <!--    编辑图书馆信息-->
     <update id="update">
-
+        update library_info
+        <set>
+            <if test="libraryName!= null">
+                library_name = #{libraryName},
+            </if>
+            <if test="address!= null">
+                address = #{address},
+            </if>
+            <if test="openTime!= null">
+                open_time = #{openTime},
+            </if>
+            <if test="contactPhone!= null">
+                contact_phone = #{contactPhone}
+            </if>
+        </set>
     </update>
 </mapper>
