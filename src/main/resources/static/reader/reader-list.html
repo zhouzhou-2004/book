@@ -68,11 +68,11 @@
 				</tr>
 				</thead>
 				<tbody id="tbody">
-				<!--<tr>-->
-				<!--<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
-				<!--<td>1</td>-->
-				<!--<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
-				<!--</tr>-->
+<!--				<tr>-->
+<!--				<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
+<!--				<td>1</td>-->
+<!--				<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
+<!--				</tr>-->
 				</tbody>
 			</table>
 			<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -159,31 +159,6 @@
 				document.getElementById('currentPage').textContent = currentPage;
 				document.getElementById('totalPages').textContent = totalPages;
 
-// 				// 更新表格内容
-// 				const tbody = document.getElementById('studentTableBody');
-// 				tbody.innerHTML = ''; // 清空现有内容
-//
-// 				data.list.forEach(user => {
-// 					// 格式化日期
-// 					// const birthDate = student.birth ? new Date(student.birth).toLocaleDateString() : '';
-//
-// 					const row = `
-//             <tr>
-//                 <td bgcolor="#FFFFFF">${user.nickname || ''}</td> <!-- 昵称 -->
-// <td bgcolor="#FFFFFF">${user.username || ''}</td> <!-- 用户名 -->
-// <td bgcolor="#FFFFFF">${user.birthday || ''}</td> <!-- 生日 -->
-// <td bgcolor="#FFFFFF">${user.tel || ''}</td>      <!-- 电话 -->
-// <td bgcolor="#FFFFFF">${user.email || ''}</td>     <!-- 邮箱 -->
-// <td bgcolor="#FFFFFF">${user.address || ''}</td>   <!-- 地址 -->
-// <td bgcolor="#FFFFFF">${user.size || ''}</td>      <!-- 可借数量 -->
-// <td bgcolor="#FFFFFF">${user.identity || ''}</td>  <!-- 身份 -->
-//                 <td bgcolor="#FFFFFF">
-//                     <a href="javascript:void(0)" onclick="deleteBook('${user.id}')">删除</a>&nbsp;|&nbsp;
-//                     <a href="javascript:void(0)" onclick="editBook('${user.id}')">修改</a>
-//                 </td>
-//             </tr>
-//         `;
-// 					tbody.innerHTML += row;
 				// 更新表格内容
 				const tbody = document.getElementById('tbody'); // 使用正确的ID
 				tbody.innerHTML = ''; // 清空现有内容
