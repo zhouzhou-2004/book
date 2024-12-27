@@ -19,6 +19,8 @@ spring:
   transaction:
     rollback-on-commit-failure: true
     dafult-timeout: 30
+  jackson:
+    default-property-inclusion: non_empty
 
 #页面端口号
 mybatis:

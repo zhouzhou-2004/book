@@ -16,9 +16,17 @@ public interface ReaderMapper {
     /**
      * 分页查询相关数据
      */
+//    List<Users> selectReaderList(
+//                                     @Param("offset") Integer offset,
+//                                     @Param("pageSize") Integer pageSize);
+
     List<Users> selectReaderList(
-                                     @Param("offset") Integer offset,
-                                     @Param("pageSize") Integer pageSize);
+            @Param("offset") int offset,
+            @Param("pageSize") int pageSize,
+            @Param("classNo") String classNo,
+            @Param("name") String name
+    );
+
 //    /**
 //     * 模糊查询
 //     */

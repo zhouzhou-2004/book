@@ -22,9 +22,20 @@ public class ReaderController {
 
     @RequestMapping("/list")
     public ResponseUtils list (@RequestBody QueryRequest queryRequest){
+
         PageResult<Users> usersPageResult = readerService.selectReaderList(queryRequest);
+        // 调试输出
+        System.out.println("PageResult: " + usersPageResult);
         return new ResponseUtils(200,"success",usersPageResult);
     }
+//        try{
+//            PageResult<Users> usersPageResult = readerService.selectReaderList(queryRequest);
+//            return new ResponseUtils(200,"success",usersPageResult);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            return new ResponseUtils(500,"Internal Server Error",null);
+//        }
+
 
 //    @RequestMapping("/like")
 //    public ResponseUtils selectByLike(@RequestBody Users users){
