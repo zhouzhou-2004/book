@@ -1,0 +1,251 @@
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 500px;
+    min-height: 300px;
+    resize: both;
+    overflow: auto;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+#editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+#editForm label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+#editForm input, #editForm select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#editForm input:focus, #editForm select:focus {
+    outline: none;
+    border-color: #4A90E2;
+    box-shadow: 0 0 5px rgba(74,144,226,0.3);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.updateButton, .cancel {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.updateButton {
+    background-color: #4A90E2;
+    color: white;
+}
+
+.updateButton:hover {
+    background-color: #357ABD;
+}
+
+.cancel {
+    background-color: #e2e2e2;
+    color: #333;
+}
+
+.cancel:hover {
+    background-color: #d1d1d1;
+}
+
+/* 添加新样式 */
+.modal-header {
+    cursor: move;
+    padding: 10px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 15px;
+    height: 15px;
+    cursor: se-resize;
+    background: linear-gradient(135deg, transparent 50%, #4A90E2 50%);
+}
+
+/* 确保表单内容可以滚动 */
+#editForm {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+/* 输入框禁用状态样式 */
+#editForm input[readonly] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+
+
+/* 按钮样式 */
+.button {
+    display: inline-flex;  /* 使用 inline-flex 来保持按钮的行内特性 */
+    align-items: center;   /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    min-width: 80px;      /* 设置最小宽度确保按钮大小一致 */
+    height: 32px;         /* 固定高度 */
+    padding: 5px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    margin: 0 5px;        /* 按钮之间的间距 */
+}
+.button.blue {
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+    text-align: center;
+}
+
+.button.red {
+    background-color: #FF4B4B;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button.blue:hover {
+    background-color: #357ABD;
+}
+
+.button.red:hover {
+    background-color: #E63939;
+}
+
+/*分页查询*/
+.pagination-container {
+    margin: 10px 0;
+    padding: 8px 15px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* 添加以下属性使整个控件居中 */
+    justify-content: center;
+}
+
+.page-btn {
+    padding: 4px 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px; /* 设置最小宽度保持按钮大小一致 */
+    text-align: center;
+}
+
+.page-btn:hover {
+    background: #f0f0f0;
+}
+
+.page-btn:disabled {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.page-info {
+    color: #666;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    min-width: 120px; /* 设置最小宽度保持布局稳定 */
+    justify-content: center;
+}
+
+.page-input {
+    width: 50px;
+    padding: 3px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.page-jump {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* 添加以下属性使跳转部分的文字也居中对齐 */
+    justify-content: center;
+}

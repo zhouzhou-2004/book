@@ -50,7 +50,7 @@
 				<li>
 					<a href="javascript:;">欢迎您，<span id="nickname">管理员</span></a>
 					<ul class="dropdown-menu" style="right: 10px;">
-						<li><a href="/login.html">退出当前账号</a></li>
+						<li><a onclick="logout()" class="dropdown-menu" style="right: 10px;">退出当前账号</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -154,6 +154,22 @@
 					}
 				});
 			});
+			function logout() {
+				fetch('tAdmin/logout', {method: 'GET'})
+						.then(response => response.json())
+						.then(data => {
+							if (data.code === 200) {
+								alert('退出成功');
+								window.location.href = '/login.html'; // 重定向到首页或其他页面
+							} else {
+								alert('退出失败');
+							}
+						})
+						.catch(error => {
+							console.error('Error:', error);
+							alert('网络错误，请稍后再试');
+						});
+			}
 		</script>
 	</div>
 </body>

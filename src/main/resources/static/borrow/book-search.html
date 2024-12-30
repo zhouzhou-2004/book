@@ -1,4 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
+<!--PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"-->
 <html>
 <head>
 <meta charset="utf-8">
@@ -38,23 +39,23 @@
 			<!--表格上方的搜索操作-->
 			<div class="main">
 				<div class="input-group">
-					<input id="keyword" type="text" class="text" style="width: 400px" placeholder="搜索想要借阅的图书" />
+					<input id="keyword" type="text" class="text" style="width: 400px" placeholder="搜索想要了解的图书" />
 					<button id="searchBtn" class="button blue" onclick="search();">搜索</button>
 				</div>
 			</div>
 
 			<!--表格上方的操作元素，添加、删除等-->
-			<!--
-			<div class="operation-wrap">
-				<div class="buttons-wrap">
-					<button class="button blue radius-3"><span class="icon-plus"></span> 添加</button>
-					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>
-				</div>
-			</div>
-			-->
-			<table id="table" class="table color2">
+<!--			............................-->
+<!--			<div class="operation-wrap">-->
+<!--				<div class="buttons-wrap">-->
+<!--					<button class="button blue radius-3"><span class="icon-plus"></span> 添加</button>-->
+<!--					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			...............................-->
+			<table id="usersTable" class="table color2">
 				<thead>
-				<tr align="center">
+				<tr>
 					<th>序号</th>
 					<th>书名</th>
 					<th>作者</th>
@@ -64,25 +65,145 @@
 					<th>出版社</th>
 					<th>出版时间</th>
 					<th>库存数量</th>
-					<th>翻译</th>
 					<th>分类</th>
 					<th>操作</th>
 				</tr>
 				</thead>
-				<tbody id="tbody">
-				<!--<tr>-->
-				<!--<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
-				<!--<td>1</td>-->
-				<!--<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
-				<!--</tr>-->
+				<tbody>
+				<!-- 用户数据将会在这里动态加载 -->
 				</tbody>
 			</table>
 
-			<div class="page">
-				<ul id="page" class="pagination"></ul>
-			</div>
+<!--			<div class="page">-->
+<!--				<ul id="page" class="pagination"></ul>-->
+<!--			</div>-->
 		</div>
 	</div>
 </div>
 </body>
 </html>
+<!--注入axios-->
+<script src="/borrow/js/axios.min.js"></script>
+<script>
+	// 发送 axios 请求，查询所有的用户信息
+	axios({
+		url: "http://localhost:8080/borrow/select",
+		method: "post"
+	}).then((response) => {
+		console.log('接收到的响应数据：', response);
+
+		// 检查响应是否包含数据
+		if (response.data.code === 200 && response.data.data) {
+			const data = response.data.data;
+			const tableBody = document.querySelector('#usersTable tbody');
+
+			// 清空现有的表格内容
+			tableBody.innerHTML = '';
+
+			// 循环遍历数据并添加到表格
+			data.forEach((book, index) => {
+				const row = document.createElement('tr');
+				row.align = 'center';
+
+				// 创建所有单元格
+				const cells = [
+					index + 1,
+					book.name,
+					book.author,
+					book.isbn,
+					book.pages,
+					book.price,
+					book.publish,
+					book.publishTime,
+					book.size,
+					book.type
+				];
+
+				// 添加数据单元格
+				cells.forEach(cellData => {
+					const cell = document.createElement('td');
+					cell.textContent = cellData || '';  // 处理空值
+					row.appendChild(cell);
+				});
+
+				// 创建操作单元格
+				const actionsCell = document.createElement('td');
+				const editButton = document.createElement('button');
+				editButton.className = 'button blue';
+				editButton.textContent = '编辑';
+				const deleteButton = document.createElement('button');
+				deleteButton.className = 'button red';
+				deleteButton.textContent = '删除';
+
+				// 添加按钮事件监听器
+				editButton.addEventListener('click', () => {
+					console.log('编辑图书：', book.id);
+
+				});
+				deleteButton.addEventListener('click', () => {
+					console.log('删除图书：', book.id);
+				});
+
+				actionsCell.appendChild(editButton);
+				actionsCell.appendChild(deleteButton);
+				row.appendChild(actionsCell);
+
+				// 将新行添加到表格主体
+				tableBody.appendChild(row);
+			});
+		} else {
+			console.log('没有图书数据或数据为空');
+			javaex.message({
+				content : "暂无图书数据",
+				type : "info"
+			});
+		}
+	}).catch((error) => {
+		console.error('请求失败：', error);
+		javaex.message({
+			content : "获取数据失败",
+			type : "error"
+		});
+	});
+	// 删除功能
+	// deleteButton.addEventListener('click', () => {
+	// 	// 添加确认对话框
+	// 	javaex.confirm({
+	// 		content : "确定要删除这本图书吗？",
+	// 		callback : function(rtn) {
+	// 			if (rtn) {
+	// 				// 用户点击确定
+	// 				axios({
+	// 					url: "http://localhost:8080/borrow/delete",
+	// 					method: "post",
+	// 					data: {
+	// 						id: book.id
+	// 					}
+	// 				}).then((response) => {
+	// 					if (response.data.code === 200) {
+	// 						// 删除成功
+	// 						javaex.message({
+	// 							content : "删除成功",
+	// 							type : "success"
+	// 						});
+	// 						// 刷新页面
+	// 						location.reload();
+	// 					} else {
+	// 						// 删除失败
+	// 						javaex.message({
+	// 							content : response.data.msg || "删除失败",
+	// 							type : "error"
+	// 						});
+	// 					}
+	// 				}).catch((error) => {
+	// 					console.error('删除请求失败：', error);
+	// 					javaex.message({
+	// 						content : "删除失败",
+	// 						type : "error"
+	// 					});
+	// 				});
+	// 			}
+	// 		}
+	// 	});
+	// });
+</script>

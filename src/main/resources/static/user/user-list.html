@@ -19,6 +19,8 @@
 	<!-- 表单验证 -->
 	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
 	<title>后台管理</title>
+	<link rel="stylesheet" href="/javaex/m/css/userlistmodify.css" />
+	<script src="/javaex/m/js/userlistmodif.js"></script>
 </head>
 
 <body>
@@ -38,8 +40,8 @@
 			<!--表格上方的搜索操作-->
 			<div class="admin-search">
 				<div class="input-group">
-					<input id="keyword" type="text" class="text" placeholder="搜索用户名或者昵称" />
-					<button id="searchBtn" class="button blue" onclick="search();">搜索</button>
+					<input id="keyword" type="text" class="text userNameText" placeholder="搜索用户名或者昵称" />
+					<button id="searchBtn" class="button blue right-button02" onclick="search();">搜索</button>
 				</div>
 			</div>
 
@@ -67,65 +69,496 @@
 				</thead>
 				<!-- 用户数据将会在这里动态加载 -->
 				<tbody id="adminTable">
-<!--				<tr>-->
-<!--				<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
-<!--				<td>1</td>-->
-<!--				<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
-<!--				</tr>-->
+				<!--				<tr>-->
+				<!--				<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
+				<!--				<td>1</td>-->
+				<!--				<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
+				<!--				</tr>-->
 				</tbody>
+
 			</table>
-			<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="right-font08">
-				<tr>
-					<td width="50%">共 <span class="right-text09">0</span> 页 | 第 <span class="right-text09">1</span> 页
-					</td>
-					<td width="49%" align="right">
-						[<a href="javascript:void(0)" class="right-font08">首页</a> |
-						<a href="javascript:void(0)" class="right-font08">上一页</a> |
-						<a href="javascript:void(0)" class="right-font08">下一页</a> |
-						<a href="javascript:void(0)" class="right-font08">末页</a>]
-						转至：
-					</td>
-					<td width="1%">
-						<table width="20" border="0" cellspacing="0" cellpadding="0">
-							<tr>
-								<td width="1%">
-									<input name="textfield3" type="text" class="right-textfield03" size="1" />
-								</td>
-								<td width="87%">
-									<input name="Submit23222" type="button" class="right-button06" value="跳转" />
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-			<div class="page">
-				<ul id="page" class="pagination"></ul>
+			<!-- 分页部分 -->
+			<div class="pagination-container">
+				<div class="pagination-controls">
+					<button class="page-btn" id="firstPage">首页</button>
+					<button class="page-btn" id="prevPage">上一页</button>
+					<span class="page-info">
+            <span id="currentPage">1</span>/<span id="totalPages">1</span>页
+            (共<span id="totalRecords">0</span>条)
+        </span>
+					<button class="page-btn" id="nextPage">下一页</button>
+					<button class="page-btn" id="lastPage">末页</button>
+					<div class="page-jump">
+						跳转到<input type="number" id="pageInput" min="1" class="page-input">页
+						<button class="page-btn" id="jumpBtn">GO</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<!-- 模态框 -->
+<div id="editModal" class="modal">
+	<div class="modal-content">
+		<!-- 添加拖动句柄 -->
+		<div class="modal-header">
+			<span class="close">&times;</span>
+			<h2>编辑用户信息</h2>
+			<form id="editForm">
+				<div class="form-group">
+					<label for="editId">序号:</label>
+					<input type="text" id="editId" name="editId" readonly>
+				</div>
+
+				<div class="form-group">
+					<label for="editNickname">昵称:</label>
+					<input type="text" id="editNickname" name="editNickname">
+				</div>
+
+				<div class="form-group">
+					<label for="editUsername">用户名:</label>
+					<input type="text" id="editUsername" name="editUsername">
+				</div>
+
+				<div class="form-group">
+					<label for="editBirthday">生日:</label>
+					<input type="date" id="editBirthday" name="editBirthday">
+				</div>
+
+				<div class="form-group">
+					<label for="editTel">电话:</label>
+					<input type="tel" id="editTel" name="editTel">
+				</div>
+
+				<div class="form-group">
+					<label for="editEmail">邮箱:</label>
+					<input type="email" id="editEmail" name="editEmail">
+				</div>
+
+				<div class="form-group">
+					<label for="editAddress">地址:</label>
+					<input type="text" id="editAddress" name="editAddress">
+				</div>
+
+				<div class="form-group">
+					<label for="editSize">可借数量:</label>
+					<input type="number" id="editSize" name="editSize">
+				</div>
+
+				<div class="form-group">
+					<label for="editIdentity">身份:</label>
+					<select id="editIdentity" name="editIdentity">
+						<option value="0">学生</option>
+						<option value="1">教师</option>
+						<option value="2">社会人士</option>
+						<option value="3">管理员</option>
+					</select>
+				</div>
+
+				<div class="button-group">
+					<button type="button" class="cancel">取消</button>
+					<button type="button" class="updateButton">保存</button>
+				</div>
+			</form>
+		</div>
+		<!-- 添加调整大小的句柄 -->
+		<div class="resize-handle"></div>
+	</div>
+</div>
+
 </body>
 </html>
 <!--第一步：前端发送请求应该使用什么技术 axios(AJAX)-->
 <script src="/js/axios.min.js"></script>
 <!--第二步:通过axios发送前端请求到服务器(后端)-->
 <script>
-	axios.get({
-		url: "http://localhost:8080/user/list",
-		method: "get",  // 改为 get 请求
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json'
-		}
+	// 获取并显示用户列表
+	axios({
+		url: "http://localhost:8080/user/list/select",
+		method: "post"
 	}).then((response) => {
-		if (response.data.code && response.data.code > 0) {
+		if (response.data.data && response.data.data.length > 0) {
 			const data = response.data.data;
 			const tableBody = document.querySelector('#adminTable');
-		} else {
-			alert('没有用户数据或数据为空');
+
+			// 清空现有表格内容
+			tableBody.innerHTML = '';
+
+			// 遍历数据并创建表格行
+			data.forEach(user => {
+				const row = document.createElement('tr');
+
+				// 添加所有列
+				row.innerHTML = `
+                <td align="center">${user.id}</td>
+                <td align="center">${user.nickname || ''}</td>
+                <td align="center">${user.username || ''}</td>
+                <td align="center">${user.birthday || ''}</td>
+                <td align="center">${user.tel || ''}</td>
+                <td align="center">${user.email || ''}</td>
+                <td align="center">${user.address || ''}</td>
+                <td align="center">${user.size || ''}</td>
+                <td align="center">${getUserType(user.identity)}</td>
+                <td align="center">
+    				<button class="edit-button button blue"
+            			data-id="${user.id}"
+         				data-nickname="${user.nickname || ''}"
+         				data-username="${user.username || ''}"
+         				data-birthday="${user.birthday || ''}"
+         				data-tel="${user.tel || ''}"
+         				data-email="${user.email || ''}"
+         				data-address="${user.address || ''}"
+         				data-size="${user.size || ''}"
+         				data-identity="${user.identity || ''}">
+        				编辑
+    				</button>
+    				<button class="delete-button button red" data-id="${user.id}">
+        				删除
+    				</button>
+				</td>
+            `;
+
+				tableBody.appendChild(row);
+			});
+
+			// 为所有编辑按钮添加点击事件
+			document.querySelectorAll('.edit-button').forEach(button => {
+				button.addEventListener('click', function(event) {
+					event.preventDefault();
+
+					// 从按钮的data属性获取用户数据
+					const userData = this.dataset;
+
+					// 填充模态框
+					document.getElementById('editId').value = userData.id;
+					document.getElementById('editNickname').value = userData.nickname;
+					document.getElementById('editUsername').value = userData.username;
+					document.getElementById('editBirthday').value = userData.birthday;
+					document.getElementById('editTel').value = userData.tel;
+					document.getElementById('editEmail').value = userData.email;
+					document.getElementById('editAddress').value = userData.address;
+					document.getElementById('editSize').value = userData.size;
+					document.getElementById('editIdentity').value = userData.identity;
+
+					// 显示模态框
+					document.getElementById('editModal').style.display = 'block';
+				});
+			});
+
+			// 为所有删除按钮添加点击事件
+			document.querySelectorAll('.delete-button').forEach(button => {
+				button.addEventListener('click', function(event) {
+					event.preventDefault();
+					const userId = this.dataset.id;
+
+					if (confirm("您确定要删除该用户吗?")) {
+						axios({
+							url: "http://localhost:8080/user/list/delete",
+							method: "post",
+							data: {
+								id: userId
+							}
+						}).then((response) => {
+							if (response.data.code == '305') {
+								alert("删除用户失败");
+							} else if (response.data.code == '400') {
+								alert("删除用户异常，请联系管理员");
+							} else if (response.data.code == '200') {
+								alert("删除用户成功");
+								location.reload();
+							}
+						}).catch((error) => {
+							alert('删除失败：' + error);
+						});
+					}
+				});
+			});
 		}
 	}).catch((error) => {
-		alert('请求失败：' + error);
+		alert('获取用户列表失败：' + error);
+	});
+
+	// 保存按钮点击事件
+	let updateButton = document.querySelector('.updateButton');
+	updateButton.addEventListener('click', (event) => {
+		// 阻止表单默认提交行为
+		event.preventDefault();
+
+		// 获取表单中的所有数据
+		let userId = document.querySelector('#editId').value;
+		let nickname = document.querySelector('#editNickname').value;
+		let username = document.querySelector('#editUsername').value;
+		let birthday = document.querySelector('#editBirthday').value;
+		let tel = document.querySelector('#editTel').value;
+		let email = document.querySelector('#editEmail').value;
+		let address = document.querySelector('#editAddress').value;
+		let size = document.querySelector('#editSize').value;
+		let identity = document.querySelector('#editIdentity').value;
+
+		// 表单验证
+		if (!username) {
+			alert("用户名不能为空！");
+			return;
+		}
+		if (!nickname) {
+			alert("昵称不能为空！");
+			return;
+		}
+
+		// 发送更新请求
+		axios({
+			url: "http://localhost:8080/user/list/update",
+			method: "post",
+			data: {
+				id: userId,
+				nickname: nickname,
+				username: username,
+				birthday: birthday,
+				tel: tel,
+				email: email,
+				address: address,
+				size: size,
+				identity: identity
+			}
+		}).then((response) => {
+			// 处理响应
+			if (response.data.code == '305') {
+				alert("修改用户失败");
+			} else if (response.data.code == '400') {
+				alert("修改用户异常，请联系管理员");
+			} else if (response.data.code == '200') {
+				alert("修改用户成功");
+				// 关闭模态框
+				document.getElementById('editModal').style.display = 'none';
+				// 刷新页面
+				location.href = 'user-list.html';
+			}
+		}).catch((error) => {
+			// 处理错误
+			alert('请求失败：' + error);
+		});
+	});
+
+	// 模态框关闭事件（配合更新功能使用）
+	document.querySelector('.close').addEventListener('click', function() {
+		document.getElementById('editModal').style.display = 'none';
+	});
+
+	document.querySelector('.cancel').addEventListener('click', function() {
+		document.getElementById('editModal').style.display = 'none';
+	});
+
+	// 点击模态框外部关闭
+	window.onclick = function(event) {
+		const modal = document.getElementById('editModal');
+		if (event.target === modal) {
+			modal.style.display = 'none';
+		}
+	};
+
+	// 用户类型转换函数
+	function getUserType(type) {
+		switch (type) {
+			case 0: return '学生';
+			case 1: return '教师';
+			case 2: return '社会人士';
+			case 3: return '管理员';
+			default: return '未知';
+		}
+	}
+
+	// 模态框关闭相关事件监听
+	document.querySelector('.close').addEventListener('click', function() {
+		document.getElementById('editModal').style.display = 'none';
+	});
+
+	document.querySelector('.cancel').addEventListener('click', function() {
+		document.getElementById('editModal').style.display = 'none';
+	});
+
+	window.onclick = function(event) {
+		const modal = document.getElementById('editModal');
+		if (event.target === modal) {
+			modal.style.display = 'none';
+		}
+	};
+	// 模糊查询
+	let selectButton = document.querySelector(".right-button02");
+	selectButton.onclick = function () {
+		axios({
+			url: "http://localhost:8080/user/list/selectLike",
+			method: "post",
+			data: {
+				userText: document.querySelector(".userNameText").value
+			}
+		}).then((response) => {
+			if (response.data.code == '400') {
+				alert("查询失败");
+			} else if (response.data.code == '200') {
+				// 获取数据并渲染表格
+				renderTable(response.data.data);
+				// 渲染表格的函数
+				function renderTable(data) {
+					const tableBody = document.querySelector('#adminTable');
+					// 清空现有的表格内容
+					tableBody.innerHTML = '';
+
+					// 遍历数据并创建表格行
+					data.forEach(user => {
+						const row = document.createElement('tr');
+
+						// 添加所有列的单元格
+						row.innerHTML = `
+                <td align="center">${user.id}</td>
+                <td align="center">${user.nickname}</td>
+                <td align="center">${user.username}</td>
+                <td align="center">${user.birthday || ''}</td>
+                <td align="center">${user.tel || ''}</td>
+                <td align="center">${user.email || ''}</td>
+                <td align="center">${user.address || ''}</td>
+                <td align="center">${user.size || ''}</td>
+                <td align="center">${getUserType(user.identity)}</td>
+                <td align="center">
+                    <button class="button blue" onclick="editUser(${user.id})">编辑</button>
+                    <button class="button red" onclick="deleteUser(${user.id})">删除</button>
+                </td>
+            `;
+
+						tableBody.appendChild(row);
+					});
+				}
+			}else {
+				alert('没有用户数据或数据为空');
+			}
+		}).catch((error) => {
+			alert('请求失败：' +"请输入用户名或昵称");
+		});
+	}
+
+	// 定义分页相关变量，与 QueryRequest 默认值保持一致
+	let currentPage = 1;
+	let totalPages = 0;
+	let totalRecords = 0;
+	const pageSize = 10;
+
+	/**
+	 * 加载用户列表数据
+	 */
+	function loadUserList(page = 1) {
+		// 创建完全匹配 QueryRequest 的请求对象
+		const queryRequest = new QueryRequest(page);
+
+		axios({
+			url: "http://localhost:8080/user/list",
+			method: "post",
+			data: queryRequest
+		}).then((response) => {
+			if (response.data.code === 200) {
+				const data = response.data.data;
+				updatePagination(data);
+				updateTableContent(data.records);
+			} else {
+				alert('获取用户列表失败：' + response.data.message);
+			}
+		}).catch((error) => {
+			console.error('请求失败：', error);
+			alert('请求失败：' + error);
+		});
+	}
+
+	/**
+	 * QueryRequest 类，与后端 DTO 保持一致
+	 */
+	class QueryRequest {
+		constructor(page = 1) {
+			this.pageNum = page;
+			this.pageSize = 10; // 与后端默认值保持一致
+			this.username = document.querySelector('input[name="textfield"]').value || '';
+		}
+	}
+
+	/**
+	 * 更新分页信息
+	 */
+	function updatePagination(data) {
+		// 使用与后端一致的字段名
+		currentPage = data.pageNum;
+		totalPages = data.pages;
+		totalRecords = data.total;
+
+		document.getElementById('currentPage').textContent = currentPage;
+		document.getElementById('totalPages').textContent = totalPages;
+		document.getElementById('totalRecords').textContent = totalRecords;
+
+		// 更新按钮状态
+		document.getElementById('firstPage').disabled = currentPage === 1;
+		document.getElementById('prevPage').disabled = currentPage === 1;
+		document.getElementById('nextPage').disabled = currentPage === totalPages;
+		document.getElementById('lastPage').disabled = currentPage === totalPages;
+	}
+
+	/**
+	 * 更新表格内容
+	 */
+	function updateTableContent(users) {
+		const tbody = document.getElementById('userTableBody');
+		tbody.innerHTML = '';
+
+		users.forEach(user => {
+			const row = `
+            <tr>
+                <td bgcolor="#FFFFFF"><input type="checkbox" name="delid" /></td>
+                <td height="20" bgcolor="#FFFFFF">${user.id || ''}</td>
+                <td bgcolor="#FFFFFF">${user.username || ''}</td>
+                <td bgcolor="#FFFFFF">${user.nickname || ''}</td>
+                <td bgcolor="#FFFFFF">${user.email || ''}</td>
+                <td bgcolor="#FFFFFF">${user.phone || ''}</td>
+                <td bgcolor="#FFFFFF">${user.status || ''}</td>
+                <td bgcolor="#FFFFFF">
+                    <a href="javascript:void(0)" onclick="deleteUser('${user.id}')">删除</a>&nbsp;|&nbsp;
+                    <a href="javascript:void(0)" onclick="editUser('${user.id}')">修改</a>
+                </td>
+            </tr>
+        `;
+			tbody.innerHTML += row;
+		});
+	}
+
+	/**
+	 * 切换页码
+	 */
+	function changePage(page) {
+		if (page < 1 || page > totalPages) {
+			alert('页码超出范围！');
+			return;
+		}
+		loadUserList(page);
+	}
+
+	/**
+	 * 跳转到指定页
+	 */
+	function goToPage() {
+		const pageInput = document.getElementById('pageInput');
+		const page = parseInt(pageInput.value);
+		if (isNaN(page) || page < 1 || page > totalPages) {
+			alert('请输入有效的页码！');
+			return;
+		}
+		loadUserList(page);
+	}
+
+	/**
+	 * 搜索功能
+	 */
+	function handleSearch() {
+		currentPage = 1;
+		loadUserList(1);
+	}
+
+	// 初始化
+	document.addEventListener('DOMContentLoaded', () => {
+		initPagination();
+		loadUserList(1);
 	});
 </script>

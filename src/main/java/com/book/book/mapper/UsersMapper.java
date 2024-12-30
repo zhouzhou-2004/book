@@ -1,29 +1,26 @@
 package com.book.book.mapper;
 
+import com.book.book.model.vo.UserVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 
-/**
- * @Description
- * @Date 2024/12/18 19:57
- * @Author by me
- */
 @Mapper
 @Component
 public interface UsersMapper {
-
-    /**
-     * 模糊分页查询用户
-     * @param keyword 关键字
-     * @return
-     */
-    //List<Users> findListByLike(String keyword);
-
-    /**
-     * 编辑用户
-     * @param map
-     * @return
-     */
-    //int updateUsers(Map<String,Object> map);
+    //获取所有用户
+    @Select("select * from users where is_admin = 0")
+    List<UserVO> getAllUser();
+    //模糊查询(用户名或昵称)
+    @Select("select * from users where username like concat('%',#{username},'%') or nickname  like concat('%',#{username},'%') and is_admin=0")
+    List<UserVO> selectLike(String LikeName);
+    //根据id修改管理员功能
+    @Update("update users set nickname=#{nickname},username=#{username},birthday=#{birthday},tel=#{tel},email=#{email},address=#{address},size=#{size},identity=#{identity} where id=#{id}")
+    int updateUser(UserVO userVO);
+    //删除功能
+    @Update("update users set is_admin = 1 where id=#{id}")
+    int deleteUser(int id);
 }
