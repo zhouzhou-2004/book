@@ -42,9 +42,28 @@ public class BorrowController {
                 return new ResponseUtils(200, "查询成功", books);
             }
         } catch (Exception e) {
-           throw new RuntimeException(e);
+            e.printStackTrace();
+            return new ResponseUtils(400,"删除异常");
         }
     }
 
-
+    /**
+     * 删除图书
+     */
+//        @RequestMapping("/delete")
+//        public ResponseUtils deleteBook(@RequestBody BookLogin bookLogin) {
+//            try {
+//                //拿到参数之后我们就可以去执行sql删除用户了
+//                int result = borrowService.deleteBook(bookLogin.getId());
+//                if (result == 1){
+//                    //删除成功
+//                    return new ResponseUtils(200,"删除成功");
+//                }else {
+//                    return new ResponseUtils(500,"删除失败");
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return new ResponseUtils(400,"删除异常");
+//            }
+//        }
 }
