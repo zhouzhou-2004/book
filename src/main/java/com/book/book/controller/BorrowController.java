@@ -1,6 +1,9 @@
 package com.book.book.controller;
 
 import cn.hutool.core.date.DateUtil;
+import com.book.book.model.pojo.Book;
+import com.book.book.service.BorrowService;
+import com.book.book.utils.ResponseUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,31 @@ import java.util.List;
 @RestController
 @RequestMapping("/borrow")
 public class BorrowController {
+    @Autowired
+    private BorrowService borrowService;
+/**
+ * 搜索图书页面
+ */
+//获取所有图书信息
+    @RequestMapping("/select")
+    public ResponseUtils selectBookAll(){
+//        System.out.print("111");
+        //前端没有携带参数，直接操作数据库
+        try {
+            List<Book> books = borrowService.selectBooKAll();
+////        查询出来的结果
+            System.out.println("查询出来的结果"+books);
+            if (books == null) {
+    //            查询为空
+                return new ResponseUtils(500, "查询失败");
+            }else {
+    //            查询成功
+                return new ResponseUtils(200, "查询成功", books);
+            }
+        } catch (Exception e) {
+           throw new RuntimeException(e);
+        }
+    }
 
 
 }

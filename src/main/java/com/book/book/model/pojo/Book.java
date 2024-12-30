@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Book {
 
-  private long id;
+  private int id;
+  private String name;
   private String author;
   private String isbn;
-  private String name;
-  private long pages;
+  private int pages;
   private double price;
   private String publish;
   private String publishTime;
-  private long size;
-  private String translate;
+  private int size;
   private String type;
+
 
 }
