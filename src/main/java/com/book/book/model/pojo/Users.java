@@ -1,5 +1,6 @@
 package com.book.book.model.pojo;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,23 @@ public class Users {
   private String username;
   private String code;
   private boolean remember;
+  private  String verifyCode;
 
+  public String getTel() {
+    return tel;
+  }
+
+  public void setTel(String tel) {
+    this.tel = tel;
+  }
+
+  public String getVerifyCode() {
+    return verifyCode;
+  }
+
+  public void setVerifyCode(String verifyCode) {
+    this.verifyCode = verifyCode;
+  }
 
   public String getPassword() {
     return password;
