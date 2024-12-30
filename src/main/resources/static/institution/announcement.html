@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- 字体图标 -->
+    <link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
+    <!-- 动画 -->
+    <link href="/javaex/pc/css/animate.css" rel="stylesheet" />
+    <!-- 骨架样式 -->
+    <link href="/javaex/pc/css/common.css" rel="stylesheet" />
+    <!-- 皮肤（缇娜） -->
+    <link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />
+    <!-- jQuery -->
+    <script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>
+    <!-- 全局动态修改 -->
+    <script src="/javaex/pc/js/common.js"></script>
+    <!-- 核心组件 -->
+    <script src="/javaex/pc/js/javaex.min.js"></script>
+    <title>系统公告</title>
+    <style>
+        .announcement-list {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .announcement-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .announcement-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .announcement-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .announcement-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .announcement-preview {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .announcement-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .status-new {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-important {
+            background-color: #fbe9e7;
+            color: #d84315;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-button:hover {
+            background-color: #1565c0;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background-color: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .add-button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .add-button:hover {
+            background-color: #45a049;
+        }
+
+        .announcement-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .announcement-content {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .edit-btn {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #1976d2;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="announcement-list">
+        <div class="page-header">
+            <h1 class="page-title">系统公告</h1>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="搜索公告...">
+            <button class="search-button">搜索</button>
+            <button class="add-button" onclick="location.href='announcement-edit.html'">新增公告</button>
+        </div>
+        <!-- 用于渲染公告的容器 -->
+        <div id="announcements"></div>
+
+        <!-- 用于显示错误信息 -->
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <script src="/js/axios.min.js"></script>
+    <script>
+        // 用于存储从后端获取到的公告数据
+        let announcements = null;
+
+        // 初始化时加载所有公告
+        window.onload = async function() {
+            await loadAnnouncements();
+        };
+
+        // 从服务器加载公告数据
+        async function loadAnnouncements() {
+            try {
+                const response = await axios.post("http://localhost:8080/library_notice/all");
+                if (response.data.code === 200) {
+                    announcements = response.data.data;
+                    renderAnnouncements(announcements);
+                } else {
+                    showErrorMessage("获取公告信息失败，请稍后重试！");
+                }
+            } catch (error) {
+                console.error("获取数据出现错误:", error);
+                showErrorMessage("获取公告信息失败，请稍后重试！");
+            }
+        }
+
+        // 将公告数据渲染到页面
+        function renderAnnouncements(announcements) {
+            const announcementsContainer = document.getElementById('announcements');
+            announcementsContainer.innerHTML = ''; // 清空现有内容
+
+            if (!announcements || announcements.length === 0) {
+                announcementsContainer.innerHTML = '<p>暂无公告。</p>';
+                return;
+            }
+
+            announcements.forEach((announcement) => {
+                const announcementElement = document.createElement('div');
+                announcementElement.classList.add('announcement');
+
+                const titleElement = document.createElement('h2');
+                titleElement.classList.add('announcement-title');
+                titleElement.textContent = announcement.title;
+
+                const dateElement = document.createElement('p');
+                dateElement.classList.add('announcement-date');
+                dateElement.textContent = `日期: ${new Date(announcement.datePosted).toLocaleString()}`;
+
+                const contentElement = document.createElement('p');
+                contentElement.classList.add('announcement-content');
+                contentElement.innerHTML = announcement.content;
+
+                announcementElement.appendChild(titleElement);
+                announcementElement.appendChild(dateElement);
+                announcementElement.appendChild(contentElement);
+
+                announcementsContainer.appendChild(announcementElement);
+            });
+        }
+
+        // 显示错误信息
+        function showErrorMessage(message) {
+            const errorMessageElement = document.getElementById('errorMessage');
+            errorMessageElement.textContent = message;
+        }
+
+        // 搜索公告
+        // function searchAnnouncements() {
+        //     const searchValue = document.getElementById('searchInput').value.trim().toLowerCase();
+        //     if (!searchValue) {
+        //         renderAnnouncements(announcements); // 如果搜索框为空，显示所有公告
+        //         return;
+        //     }
+        //
+        //     const filteredAnnouncements = announcements.filter(announcement =>
+        //         announcement.title.toLowerCase().includes(searchValue) ||
+        //         announcement.content.toLowerCase().includes(searchValue)
+        //     );
+        //
+        //     renderAnnouncements(filteredAnnouncements);
+        // }
+
+        function viewDetail(id) {
+            location.href = `announcement-detail.html?id=${id}`;
+        }
+
+        function editAnnouncement(id) {
+            location.href = `announcement-edit.html?id=${id}`;
+        }
+
+        //删除功能
+        // function deleteAnnouncement(id) {
+        //     if (confirm('确定要删除这条公告吗？')) {
+        //         // 调用删除接口
+        //         axios.delete(`/api/announcements/${id}`)
+        //             .then(response => {
+        //                 if (response.data.code === 200) {
+        //                     javaex.message({
+        //                         content : "删除成功",
+        //                         type : "success"
+        //                     });
+        //                     // 刷新页面或重新加载列表
+        //                     location.reload();
+        //                 } else {
+        //                     javaex.message({
+        //                         content : "删除失败",
+        //                         type : "error"
+        //                     });
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error('删除失败:', error);
+        //                 javaex.message({
+        //                     content : "删除失败",
+        //                     type : "error"
+        //                 });
+        //             });
+        //     }
+        // }
+
+        // 改进搜索功能
+        // document.querySelector('.search-button').addEventListener('click', function() {
+        //     const searchText = document.querySelector('.search-input').value;
+        //     // 调用搜索接口
+        //     axios.get(`/api/announcements/search?keyword=${searchText}`)
+        //         .then(response => {
+        //             if (response.data.code === 200) {
+        //                 // 更新公告列表
+        //                 updateAnnouncementList(response.data.data);
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('搜索失败:', error);
+        //         });
+        // });
+
+        //更新功能
+        // function updateAnnouncementList(announcements) {
+        //     // 更新列表显示逻辑
+        //     const container = document.querySelector('.announcement-list');
+        //     // ... 根据返回数据重新渲染列表
+        // }
+
+        // 分页功能
+        // document.querySelectorAll('.pagination button').forEach(button => {
+        //     button.addEventListener('click', function() {
+        //         if (!this.classList.contains('active')) {
+        //             document.querySelector('.pagination button.active').classList.remove('active');
+        //             this.classList.add('active');
+        //             // 实现分页逻辑
+        //             console.log('切换到页码:', this.textContent);
+        //         }
+        //     });
+        // });
+    </script>
+</body>
+</html> 
