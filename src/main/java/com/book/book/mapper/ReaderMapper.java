@@ -21,8 +21,8 @@ public interface ReaderMapper {
 //                                     @Param("pageSize") Integer pageSize);
 
     List<Users> selectReaderList(
-            @Param("offset") int offset,
-            @Param("pageSize") int pageSize,
+            @Param("offset") Integer offset,
+            @Param("pageSize") Integer pageSize,
             @Param("classNo") String classNo,
             @Param("name") String name
     );
