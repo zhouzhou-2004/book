@@ -83,6 +83,8 @@ public class LoginController {
                             cookie1.setPath("/");
                             cookie2.setPath("/");
                         }
+                        //获取用户信息,拦截器
+                        session.setAttribute("userLogin",userLogin);
                         return new ResponseUtils<>(200, "登录成功");
                     } else {
                         return new ResponseUtils<>(500, "验证码错误");
@@ -114,5 +116,39 @@ public class LoginController {
         }
     }
 
+    //
 
+    @RequestMapping("logout")
+    @ResponseBody
+    public ResponseUtils logout(HttpServletResponse response, HttpServletRequest request) {
+        try {
+            // 获取当前会话
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                // 清除会话中的用户信息
+                session.removeAttribute("userLogin");
+                // 使整个会话失效
+                session.invalidate();
+            }
+
+            // 删除与用户相关的Cookie
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("Name".equals(cookie.getName()) || "Pass".equals(cookie.getName())) {
+                        cookie.setValue("");
+                        cookie.setPath("/");
+                        cookie.setMaxAge(0); // 设置为0表示立即删除
+                        response.addCookie(cookie);
+                    }
+                }
+            }
+
+            return new ResponseUtils<>(200, "退出成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils<>(500, "退出失败");
+        }
+    }
 }
+
