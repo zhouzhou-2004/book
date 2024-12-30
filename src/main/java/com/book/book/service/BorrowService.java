@@ -9,4 +9,6 @@ import java.util.List;
 public interface BorrowService {
     //功能1：获取所有图书信息
     List<Book> selectBooKAll();
+//    删除图书
+    int deleteBook(int id);
 }

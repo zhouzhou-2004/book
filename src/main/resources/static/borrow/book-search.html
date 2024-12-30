@@ -87,7 +87,7 @@
 <script>
 	// 发送 axios 请求，查询所有的用户信息
 	axios({
-		url: "/borrow/select",
+		url: "http://localhost:8080/borrow/select",
 		method: "post"
 	}).then((response) => {
 		console.log('接收到的响应数据：', response);
@@ -163,6 +163,47 @@
 		javaex.message({
 			content : "获取数据失败",
 			type : "error"
+		});
+	});
+	// 删除功能
+	deleteButton.addEventListener('click', () => {
+		// 添加确认对话框
+		javaex.confirm({
+			content : "确定要删除这本图书吗？",
+			callback : function(rtn) {
+				if (rtn) {
+					// 用户点击确定
+					axios({
+						url: "http://localhost:8080/borrow/delete",
+						method: "post",
+						data: {
+							id: book.id
+						}
+					}).then((response) => {
+						if (response.data.code === 200) {
+							// 删除成功
+							javaex.message({
+								content : "删除成功",
+								type : "success"
+							});
+							// 刷新页面
+							location.reload();
+						} else {
+							// 删除失败
+							javaex.message({
+								content : response.data.msg || "删除失败",
+								type : "error"
+							});
+						}
+					}).catch((error) => {
+						console.error('删除请求失败：', error);
+						javaex.message({
+							content : "删除失败",
+							type : "error"
+						});
+					});
+				}
+			}
 		});
 	});
 </script>
