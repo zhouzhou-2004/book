@@ -1,13 +1,12 @@
-package com.book.book.model.vo;
+package com.book.book.model.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+/**
+ * 专门用来结收前端参数的类
+ */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserVO {
+public class UsersDto {
     private Integer id; //序号
     private String nickname; //昵称
     private String username; //用户名
@@ -17,7 +16,7 @@ public class UserVO {
     private String address; //地址
     private Integer size; //可借数量
     private Integer identity; //身份
-    private Integer isAdmin;
+    private String userText;
 
     public Integer getId() {
         return id;
@@ -91,27 +90,11 @@ public class UserVO {
         this.identity = identity;
     }
 
-    public Integer getIsAdmin() {
-        return isAdmin;
+    public String getUserText() {
+        return userText;
     }
 
-    public void setIsAdmin(Integer isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-
-    @Override
-    public String toString() {
-        return "UserVO{" +
-                "id=" + id +
-                ", nickname='" + nickname + '\'' +
-                ", username='" + username + '\'' +
-                ", birthday='" + birthday + '\'' +
-                ", tel='" + tel + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", size=" + size +
-                ", identity=" + identity +
-                ", isAdmin=" + isAdmin +
-                '}';
+    public void setUserText(String userText) {
+        this.userText = userText;
     }
 }
