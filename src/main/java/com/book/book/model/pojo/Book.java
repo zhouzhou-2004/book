@@ -20,7 +20,6 @@ public class Book {
   private String publishTime;
   private int size;
   private String type;
-  private Integer isDelete;
 
 
 }

@@ -1,4 +1,4 @@
-package com.book.book.model.dto;
+package com.book.book.model.dto.queryRequest;
 
 import lombok.Data;
 

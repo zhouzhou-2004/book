@@ -23,19 +23,4 @@ public class BorrowServiceImpl implements BorrowService {
             return null;
         }
     }
-
-    @Override
-    public int deleteBook(int id) {
-        try {
-            int result = borrowMapper. deleteBook(id);
-            if (result > 0){
-                //添加成功
-                return 1;
-            }else {
-                return 0;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

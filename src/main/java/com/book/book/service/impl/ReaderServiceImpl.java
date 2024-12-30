@@ -1,14 +1,16 @@
 package com.book.book.service.impl;
 
 import com.book.book.mapper.ReaderMapper;
-import com.book.book.model.dto.QueryRequest;
+import com.book.book.model.dto.queryRequest.QueryRequest;
 import com.book.book.model.pojo.Users;
 import com.book.book.service.ReaderService;
 import com.book.book.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReaderServiceImpl implements ReaderService {

@@ -1,7 +1,7 @@
 package com.book.book.controller;
 
 
-import com.book.book.model.dto.QueryRequest;
+import com.book.book.model.dto.queryRequest.QueryRequest;
 import com.book.book.model.pojo.Users;
 import com.book.book.service.ReaderService;
 
@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/reader")
