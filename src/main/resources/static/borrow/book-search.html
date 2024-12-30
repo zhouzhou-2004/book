@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<!--PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"-->
 <html>
 <head>
-<meta charset="utf-8">
+	<meta charset="utf-8">
 	<!-- 字体图标 -->
 	<link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
 	<!-- 动画 -->
@@ -13,47 +12,25 @@
 	<link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />
 	<!-- jQuery -->
 	<script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>
-	<!-- 全局动态修改 -->
-	<script src="/javaex/pc/js/common.js"></script>
 	<!-- 核心组件 -->
 	<script src="/javaex/pc/js/javaex.min.js"></script>
-	<!-- 表单验证 -->
-	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
-	<title>后台管理</title>
+	<title>图书信息</title>
 </head>
 
-<body>
-<!--主体内容-->
-<div class="list-content">
-	<!--块元素-->
-	<div class="block">
-		<!--页面有多个表格时，可以用于标识表格-->
-		<h2>图书搜索</h2>
-		<!--右上角的返回按钮-->
-		<a href="javascript:history.back();">
-			<button class="button indigo radius-3" style="position: absolute;right: 20px;top: 16px;"><span class="icon-arrow_back"></span> 返回</button>
-		</a>
 
-		<!--正文内容-->
+<body>
+<div class="list-content">
+	<div class="block">
+		<h2>图书信息列表</h2>
 		<div class="main">
-			<!--表格上方的搜索操作-->
-			<div class="main">
-				<div class="input-group">
-					<input id="keyword" type="text" class="text" style="width: 400px" placeholder="搜索想要了解的图书" />
-					<button id="searchBtn" class="button blue" onclick="search();">搜索</button>
-				</div>
+			<!--搜索框-->
+			<div class="input-group">
+				<input id="searchInput" type="text" class="text" style="width: 400px" placeholder="请输入书名搜索" />
+				<button class="button blue" onclick="searchBooks()">搜索</button>
 			</div>
 
-			<!--表格上方的操作元素，添加、删除等-->
-<!--			............................-->
-<!--			<div class="operation-wrap">-->
-<!--				<div class="buttons-wrap">-->
-<!--					<button class="button blue radius-3"><span class="icon-plus"></span> 添加</button>-->
-<!--					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--			...............................-->
-			<table id="usersTable" class="table color2">
+			<!--表格-->
+			<table id="booksTable" class="table color2">
 				<thead>
 				<tr>
 					<th>序号</th>
@@ -66,36 +43,68 @@
 					<th>出版时间</th>
 					<th>库存数量</th>
 					<th>分类</th>
-					<th>操作</th>
+					<th>操作</th>  <!-- 新增操作列 -->
 				</tr>
 				</thead>
 				<tbody>
-				<!-- 用户数据将会在这里动态加载 -->
+				<!-- 图书数据将在这里动态加载 -->
 				</tbody>
 			</table>
-
-<!--			<div class="page">-->
-<!--				<ul id="page" class="pagination"></ul>-->
-<!--			</div>-->
 		</div>
 	</div>
 </div>
 </body>
 </html>
+
 <!--注入axios-->
 <script src="/borrow/js/axios.min.js"></script>
 <script>
-	// 发送 axios 请求，查询所有的用户信息
-	axios({
-		url: "http://localhost:8080/borrow/select",
-		method: "post"
-	}).then((response) => {
-		console.log('接收到的响应数据：', response);
+	// 页面加载时执行查询
+	window.onload = function() {
+		loadBooks();
+	};
 
+	// 加载所有图书
+	function loadBooks() {
+		// 发送 axios 请求，查询所有图书信息
+		axios({
+			url: "/borrow/select",
+			method: "post"
+		}).then((response) => {
+			console.log('接收到的响应数据：', response);
+			displayBooks(response);
+		}).catch((error) => {
+			console.error('请求失败：', error);
+		});
+	}
+
+	// 搜索图书
+	function searchBooks() {
+		const keyword = document.getElementById('searchInput').value.trim();
+		if (!keyword) {
+			console.log('请输入搜索关键词');
+			return;
+		}
+
+		// 发送搜索请求
+		axios({
+			url: "/borrow/search",
+			method: "post",
+			data: { keyword: keyword }
+		}).then((response) => {
+			console.log('搜索结果：', response);
+			displayBooks(response);
+		}).catch((error) => {
+			console.error('搜索失败：', error);
+		});
+	}
+
+	// 显示图书数据
+	function displayBooks(response) {
 		// 检查响应是否包含数据
-		if (response.data.code === 200 && response.data.data) {
+		if (response.data.data && response.data.data.length > 0) {
 			const data = response.data.data;
-			const tableBody = document.querySelector('#usersTable tbody');
+			const tableBody = document.querySelector('#booksTable tbody');
 
 			// 清空现有的表格内容
 			tableBody.innerHTML = '';
@@ -105,45 +114,73 @@
 				const row = document.createElement('tr');
 				row.align = 'center';
 
-				// 创建所有单元格
-				const cells = [
-					index + 1,
-					book.name,
-					book.author,
-					book.isbn,
-					book.pages,
-					book.price,
-					book.publish,
-					book.publishTime,
-					book.size,
-					book.type
-				];
+				// 创建序号单元格
+				const indexCell = document.createElement('td');
+				indexCell.textContent = index + 1;
+				row.appendChild(indexCell);
 
-				// 添加数据单元格
-				cells.forEach(cellData => {
-					const cell = document.createElement('td');
-					cell.textContent = cellData || '';  // 处理空值
-					row.appendChild(cell);
-				});
+				// 创建书名单元格
+				const nameCell = document.createElement('td');
+				nameCell.textContent = book.name;
+				row.appendChild(nameCell);
+
+				// 创建作者单元格
+				const authorCell = document.createElement('td');
+				authorCell.textContent = book.author;
+				row.appendChild(authorCell);
+
+				// 创建ISBN单元格
+				const isbnCell = document.createElement('td');
+				isbnCell.textContent = book.isbn;
+				row.appendChild(isbnCell);
+
+				// 创建页数单元格
+				const pagesCell = document.createElement('td');
+				pagesCell.textContent = book.pages;
+				row.appendChild(pagesCell);
+
+				// 创建定价单元格
+				const priceCell = document.createElement('td');
+				priceCell.textContent = book.price;
+				row.appendChild(priceCell);
+
+				// 创建出版社单元格
+				const publishCell = document.createElement('td');
+				publishCell.textContent = book.publish;
+				row.appendChild(publishCell);
+
+				// 创建出版时间单元格
+				const publishTimeCell = document.createElement('td');
+				publishTimeCell.textContent = book.publishTime;
+				row.appendChild(publishTimeCell);
+
+				// 创建库存数量单元格
+				const sizeCell = document.createElement('td');
+				sizeCell.textContent = book.size;
+				row.appendChild(sizeCell);
+
+				// 创建分类单元格
+				const typeCell = document.createElement('td');
+				typeCell.textContent = book.type;
+				row.appendChild(typeCell);
 
 				// 创建操作单元格
 				const actionsCell = document.createElement('td');
+
+				// 创建编辑按钮
 				const editButton = document.createElement('button');
-				editButton.className = 'button blue';
 				editButton.textContent = '编辑';
+				editButton.className = 'button blue';
+				editButton.style.marginRight = '5px';
+				editButton.onclick = () => editBook(book);
+
+				// 创建删除按钮
 				const deleteButton = document.createElement('button');
-				deleteButton.className = 'button red';
 				deleteButton.textContent = '删除';
+				deleteButton.className = 'button red';
+				deleteButton.onclick = () => deleteBook(book.id);
 
-				// 添加按钮事件监听器
-				editButton.addEventListener('click', () => {
-					console.log('编辑图书：', book.id);
-
-				});
-				deleteButton.addEventListener('click', () => {
-					console.log('删除图书：', book.id);
-				});
-
+				// 将按钮添加到操作单元格
 				actionsCell.appendChild(editButton);
 				actionsCell.appendChild(deleteButton);
 				row.appendChild(actionsCell);
@@ -153,59 +190,49 @@
 			});
 		} else {
 			console.log('没有图书数据或数据为空');
-			javaex.message({
-				content : "暂无图书数据",
-				type : "info"
+			const tableBody = document.querySelector('#booksTable tbody');
+			tableBody.innerHTML = '';
+		}
+	}
+
+	// 编辑图书
+	function editBook(book) {
+		console.log('编辑图书：', book);
+		// 发送编辑请求
+		axios({
+			url: "/borrow/update",
+			method: "post",
+			data: book
+		}).then((response) => {
+			console.log('编辑成功：', response);
+			loadBooks(); // 重新加载数据
+		}).catch((error) => {
+			console.error('编辑失败：', error);
+		});
+	}
+
+	// 删除图书
+	function deleteBook(bookId) {
+		console.log('删除图书：', bookId);
+		if (confirm('确定要删除这本图书吗？')) {
+			// 发送删除请求
+			axios({
+				url: "/borrow/delete",
+				method: "post",
+				data: { id: bookId }
+			}).then((response) => {
+				console.log('删除成功：', response);
+				loadBooks(); // 重新加载数据
+			}).catch((error) => {
+				console.error('删除失败：', error);
 			});
 		}
-	}).catch((error) => {
-		console.error('请求失败：', error);
-		javaex.message({
-			content : "获取数据失败",
-			type : "error"
-		});
-	});
-	// 删除功能
-	// deleteButton.addEventListener('click', () => {
-	// 	// 添加确认对话框
-	// 	javaex.confirm({
-	// 		content : "确定要删除这本图书吗？",
-	// 		callback : function(rtn) {
-	// 			if (rtn) {
-	// 				// 用户点击确定
-	// 				axios({
-	// 					url: "http://localhost:8080/borrow/delete",
-	// 					method: "post",
-	// 					data: {
-	// 						id: book.id
-	// 					}
-	// 				}).then((response) => {
-	// 					if (response.data.code === 200) {
-	// 						// 删除成功
-	// 						javaex.message({
-	// 							content : "删除成功",
-	// 							type : "success"
-	// 						});
-	// 						// 刷新页面
-	// 						location.reload();
-	// 					} else {
-	// 						// 删除失败
-	// 						javaex.message({
-	// 							content : response.data.msg || "删除失败",
-	// 							type : "error"
-	// 						});
-	// 					}
-	// 				}).catch((error) => {
-	// 					console.error('删除请求失败：', error);
-	// 					javaex.message({
-	// 						content : "删除失败",
-	// 						type : "error"
-	// 					});
-	// 				});
-	// 			}
-	// 		}
-	// 	});
-	// });
-// 	搜索图书
+	}
 
+	// 添加回车搜索功能
+	document.getElementById('searchInput').addEventListener('keypress', function(e) {
+		if (e.key === 'Enter') {
+			searchBooks();
+		}
+	});
 </script>
