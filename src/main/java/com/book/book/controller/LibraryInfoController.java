@@ -36,7 +36,18 @@ public class LibraryInfoController {
     //编辑图书馆信息功能
     @RequestMapping("/update")
     public ResponseUtils update(@RequestBody LibraryInfo libraryInfo){
-        return null;
+        try {
+            int updateM = libraryInfoService.update(libraryInfo);
+            System.out.println(libraryInfo);
+            if(updateM > 0){
+                return new ResponseUtils(200,"修改成功",libraryInfo);
+            }else {
+                return new ResponseUtils(400,"修改失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 
 }

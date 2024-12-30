@@ -74,7 +74,31 @@
 <!--				</tr>-->
 				</tbody>
 			</table>
-
+			<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="right-font08">
+				<tr>
+					<td width="50%">共 <span class="right-text09">0</span> 页 | 第 <span class="right-text09">1</span> 页
+					</td>
+					<td width="49%" align="right">
+						[<a href="javascript:void(0)" class="right-font08">首页</a> |
+						<a href="javascript:void(0)" class="right-font08">上一页</a> |
+						<a href="javascript:void(0)" class="right-font08">下一页</a> |
+						<a href="javascript:void(0)" class="right-font08">末页</a>]
+						转至：
+					</td>
+					<td width="1%">
+						<table width="20" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td width="1%">
+									<input name="textfield3" type="text" class="right-textfield03" size="1" />
+								</td>
+								<td width="87%">
+									<input name="Submit23222" type="button" class="right-button06" value="跳转" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
 			<div class="page">
 				<ul id="page" class="pagination"></ul>
 			</div>
@@ -87,110 +111,17 @@
 <script src="/js/axios.min.js"></script>
 <!--第二步:通过axios发送前端请求到服务器(后端)-->
 <script>
-	axios({
+	axios.get({
 		url: "http://localhost:8080/user/list",
-		method: "post"
+		method: "get",  // 改为 get 请求
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json'
+		}
 	}).then((response) => {
 		if (response.data.code && response.data.code > 0) {
 			const data = response.data.data;
 			const tableBody = document.querySelector('#adminTable');
-
-			// 清空现有表格内容
-			tableBody.innerHTML = '';
-
-			// 循环遍历数据并添加到表格
-			data.forEach(user => {
-				const row = document.createElement('tr');
-
-				// 序号单元格
-				const indexCell = document.createElement('td');
-				indexCell.style.textAlign = "center";
-				indexCell.textContent = user.id;
-				row.appendChild(indexCell);
-
-				// 昵称单元格
-				const nicknameCell = document.createElement('td');
-				nicknameCell.style.textAlign = "center";
-				nicknameCell.textContent = user.nickname || '-';
-				row.appendChild(nicknameCell);
-
-				// 用户名单元格
-				const usernameCell = document.createElement('td');
-				usernameCell.style.textAlign = "center";
-				usernameCell.textContent = user.username || '-';
-				row.appendChild(usernameCell);
-
-				// 生日单元格
-				const birthdayCell = document.createElement('td');
-				birthdayCell.style.textAlign = "center";
-				birthdayCell.textContent = user.birthday || '-';
-				row.appendChild(birthdayCell);
-
-				// 电话单元格
-				const phoneCell = document.createElement('td');
-				phoneCell.style.textAlign = "center";
-				phoneCell.textContent = user.phone || '-';
-				row.appendChild(phoneCell);
-
-				// 邮箱单元格
-				const emailCell = document.createElement('td');
-				emailCell.style.textAlign = "center";
-				emailCell.textContent = user.email || '-';
-				row.appendChild(emailCell);
-
-				// 地址单元格
-				const addressCell = document.createElement('td');
-				addressCell.style.textAlign = "center";
-				addressCell.textContent = user.address || '-';
-				row.appendChild(addressCell);
-
-				// 可借数量单元格
-				const maxBooksCell = document.createElement('td');
-				maxBooksCell.style.textAlign = "center";
-				maxBooksCell.textContent = user.maxBooks || '-';
-				row.appendChild(maxBooksCell);
-
-				// 身份单元格
-				const roleCell = document.createElement('td');
-				roleCell.style.textAlign = "center";
-				roleCell.textContent = user.role === 1 ? '管理员' : '普通用户';
-				row.appendChild(roleCell);
-
-				// 操作单元格
-				const actionsCell = document.createElement('td');
-				actionsCell.style.textAlign = "center";
-
-				// // 编辑按钮
-				// const editButton = document.createElement('button');
-				// editButton.className = 'button blue';
-				// editButton.textContent = '编辑';
-				// editButton.setAttribute('data-id', user.id);
-				// editButton.addEventListener('click', function(event) {
-				// 	event.preventDefault();
-				// 	const userId = this.getAttribute('data-id');
-				// 	// TODO: 实现编辑逻辑
-				// });
-				//
-				// // 删除按钮
-				// const deleteButton = document.createElement('button');
-				// deleteButton.className = 'button red';
-				// deleteButton.textContent = '删除';
-				// deleteButton.setAttribute('data-id', user.id);
-				// deleteButton.addEventListener('click', function(event) {
-				// 	event.preventDefault();
-				// 	if (confirm('确定要删除该用户吗？')) {
-				// 		const userId = this.getAttribute('data-id');
-				// 		// TODO: 实现删除逻辑
-				// 	}
-				// });
-
-				actionsCell.appendChild(editButton);
-				actionsCell.appendChild(deleteButton);
-				row.appendChild(actionsCell);
-
-				// 将新行添加到表格主体
-				tableBody.appendChild(row);
-			});
 		} else {
 			alert('没有用户数据或数据为空');
 		}

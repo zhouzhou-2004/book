@@ -47,59 +47,116 @@
                 </div>
                 <div class="form-item">
                     <span class="form-txt">账号：</span>
-                    <input type="text" class="form-input original" id="uname" name="loginName" placeholder="请输入账号" data-type="必填" error-pos="32" />
+                    <input type="text" class="form-input original" id="uname" name="username" placeholder="请输入账号" data-type="必填" error-pos="32" />
                 </div>
                 <div class="form-item">
                     <span class="form-txt">密码：</span>
-                    <input type="password" class="form-input original" name="password" id="pass" placeholder="请输入密码" data-type="必填" error-pos="32" />
+                    <input type="password" class="form-input original"  id="pass" name="password" placeholder="请输入密码" data-type="必填" error-pos="32" />
                 </div>
                 <div class="form-item captcha">
                     <span class="form-txt">验证码：</span>
-                    <input type="text" class="form-input original" id="captcha" name="code" placeholder="请输入验证码" data-type="必填" error-pos="32" />
+                    <input type="text" class="form-input original" id="code"  placeholder="请输入验证码" data-type="必填" error-pos="32" />
                     <img src="/codeImage" onclick="changeImage(this);" style="position: absolute;height: 40px;width: 100px;"/>
                 </div>
                 <div class="form-item">
                     <input type="checkbox" id="remember" name="remember" required>记住我
                 </div>
                 <div class="form-btn">
-                    <input type="button"  class="btn" value="登录" />
+                    <button type="button" id="btn" name="btn"  class="ui-button" >登录</button>
                 </div>
             </form>
         </div>
     </div>
     <script src="/js/axios.min.js"></script>
     <script>
-        let btn = document.querySelector(".btn");
-        btn.onclick = function (){
-            let uname=document.querySelector("#uname").value;
-            let pass=document.querySelector("#pass").value;
-            let code=document.querySelector("#code").checked;
-            let remember = document.querySelector("#remember").value;
+        // 获取按钮元素
+        let btn = document.getElementById("btn");
+        btn.onclick = function () {
+            // 获取用户名输入框的值
+            let username = document.getElementById("uname").value;
+            // 获取密码输入框的值
+            let password = document.getElementById("pass").value;
+            // 获取验证码输入框的值
+            let code = document.getElementById("code").value;
+            // 获取记住我复选框是否被选中
+            let remember = document.getElementById("remember").checked;
+
             axios({
-                url:"http://localhost:8080/login",
-                method:"post",
-                data:{
-                    username : uname,
-                    password : pass,
+                url: "http://localhost:8080/tAdmin/login",
+                method: "post",
+                data: {
+                    username: username,
+                    password: password,
                     remember: remember,
-                    code:code
+                    code: code
                 }
-            }).then((result)=>{
-                console.log(result)
-                //登录
-                if (result.data.code == 200){
-                    alert("登录成功");
+            }).then((result) => {
+                console.log(result);
+                // 登录
+                if (result.data.code == 200) {
                     location.href = "/index.html";
-                }else if (result.data.code == 306){
+                    if (remember) {
+                        setCookie("uname", username, 30); // 保存用户名到cookie，有效期30天
+                        setCookie("pword", password, 30); // 保存密码到cookie，有效期30天
+                        setCookie("rememberMe", "true", 30); // 保存记住我状态到cookie，有效期30天
+                    } else {
+                        deleteCookie("uname");
+                        deleteCookie("pword");
+                        deleteCookie("rememberMe");
+                    }
+                } else if (result.data.code == 500) {
                     alert("验证码错误");
-                }else {
+                } else {
                     alert("登录失败");
                 }
-            })
+            });
+        };
+
+        // 传入cookie名能够拿到cookie的值
+        function getCookieValue(name) {
+            let value = `; ${document.cookie}`;
+            let parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
         }
+
+        // 设置cookie
+        function setCookie(name, value, days) {
+            let d = new Date();
+            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        // 删除cookie
+        function deleteCookie(name) {
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+
+        // 获取cookie值 渲染到input框中
+        function populateFields() {
+            let usernameValue = getCookieValue("uname");
+            let passwordValue = getCookieValue("pword");
+            if (usernameValue) {
+                document.getElementById('uname').value = usernameValue;
+            }
+            if (passwordValue) {
+                document.getElementById('pass').value = passwordValue;
+            }
+            // 如果需要记住我，勾选复选框
+            let rememberMeValue = getCookieValue("rememberMe");
+            if (rememberMeValue === "true") {
+                document.getElementById('remember').checked = true;
+            }
+        }
+
+        // 页面加载
+        window.onload = function () {
+            populateFields();
+        }
+
         function changeImage(img) {
-            //图片重新加载src地址，因为图片是一个GET请求，浏览器有缓存  time 表示是一个随机参数 ，防止浏览器缓存
-            img.src="/codeImage?time="+new Date();
+            // 图片重新加载src地址，因为图片是一个GET请求，浏览器有缓存  time 表示是一个随机参数 ，防止浏览器缓存
+            img.src = "/codeImage?time=" + new Date().getTime();
         }
     </script>
 </body>

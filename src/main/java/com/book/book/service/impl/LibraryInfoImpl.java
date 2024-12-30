@@ -16,7 +16,7 @@ public class LibraryInfoImpl implements LibraryInfoService {
     @Autowired
     private LibraryInfoMapper libraryInfoMapper;
 
-//    获取图书馆信息
+    //    获取图书馆信息
     @Override
     public List<LibraryInfo> getLibraryInfo() {
         List<LibraryInfo> libraryById = libraryInfoMapper.getLibraryById();
@@ -28,11 +28,18 @@ public class LibraryInfoImpl implements LibraryInfoService {
     }
 
     //保存更新的图书馆信息
-//    @Override
-//    public int saveLibraryInfo(LibraryInfo libraryInfo) {
-//        int result = libraryInfoMapper.updateLibrary(libraryInfo);
-//        return result;
-//    }
+    @Override
+    public int update(LibraryInfo libraryInfo) {
+        int updateM = libraryInfoMapper.update(libraryInfo);
+        if (updateM > 0){
+            return updateM;
+        }else {
+            return 0;
+        }
+    }
+
+
+
 
 
 

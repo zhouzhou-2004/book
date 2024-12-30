@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LibraryInfoService {
     //修改图书馆信息功能
-    //int update(LibraryInfo libraryInfo);
+    int update(LibraryInfo libraryInfo);
 
     //获取图书馆信息
     List<LibraryInfo> getLibraryInfo();
