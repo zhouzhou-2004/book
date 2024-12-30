@@ -129,18 +129,6 @@
 	 * 加载学生列表数据
 	 */
 	function loadReaderList(page = 1) {
-		// const selectElement = document.querySelector('select[name="select2"]');
-		// const inputElement = document.querySelector('input[name="textfield"]');
-		//
-		// if (!selectElement || !inputElement) {
-		// 	console.error('Select or input element not found.');
-		// 	return;
-		// }
-		//
-		// const classNo = selectElement.value;
-		// const name = inputElement.value;
-		//
-		// console.log(`Class No: ${classNo}, Name: ${name}`); // 调试信息
 		axios({
 			url: "http://localhost:8080/reader/list",
 			method: "post",
@@ -156,6 +144,7 @@
 				// 更新分页信息
 				currentPage = data.pageNum;
 				totalPages = data.pages;
+				totalPages = Math.ceil(data.total / pageSize);
 				document.getElementById('currentPage').textContent = currentPage;
 				document.getElementById('totalPages').textContent = totalPages;
 
@@ -168,6 +157,7 @@
 
 					const row = `
         <tr>
+        	<td bgcolor="#FFFFFF">${user.id || ''}</td> <!-- 序号 -->
             <td bgcolor="#FFFFFF">${user.nickname || ''}</td> <!-- 昵称 -->
             <td bgcolor="#FFFFFF">${user.username || ''}</td> <!-- 用户名 -->
             <td bgcolor="#FFFFFF">${user.birthday || ''}</td> <!-- 生日 -->
@@ -240,15 +230,15 @@
 		// 初始加载读者列表
 		loadReaderList();
 
-		// 如果有需要的select元素，这里应该检查其存在性
-		const selectElement = document.querySelector('select[name="select2"]');
-		if (selectElement) {
-			selectElement.addEventListener('change', function () {
-				loadReaderList(1); // 切换班级时重置到第一页
-			});
-		} else {
-			console.warn('Select element not found.');
-		}
+		// // 如果有需要的select元素，这里应该检查其存在性
+		// const selectElement = document.querySelector('select[name="select2"]');
+		// if (selectElement) {
+		// 	selectElement.addEventListener('change', function () {
+		// 		loadReaderList(1); // 切换班级时重置到第一页
+		// 	});
+		// } else {
+		// 	console.warn('Select element not found.');
+		// }
 
 		// 查询按钮点击事件，假设使用的是带有id "searchBtn" 的button元素
 		const searchButton = document.getElementById('searchBtn');
