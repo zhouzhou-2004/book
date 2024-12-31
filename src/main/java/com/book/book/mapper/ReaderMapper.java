@@ -1,6 +1,7 @@
 package com.book.book.mapper;
 
 import com.book.book.model.pojo.Users;
+import com.book.book.model.vo.UserVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -16,11 +17,9 @@ public interface ReaderMapper {
     /**
      * 分页查询相关数据
      */
-//    List<Users> selectReaderList(
-//                                     @Param("offset") Integer offset,
-//                                     @Param("pageSize") Integer pageSize);
 
-    List<Users> selectReaderList(
+
+    List<UserVO> selectReaderList(
             @Param("offset") Integer offset,
             @Param("pageSize") Integer pageSize,
             @Param("classNo") String classNo,

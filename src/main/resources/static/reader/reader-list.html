@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta charset="utf-8">
+	<meta charset="utf-8">
 	<!-- 字体图标 -->
 	<link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
 	<!-- 动画 -->
@@ -18,11 +18,13 @@
 	<script src="/javaex/pc/js/javaex.min.js"></script>
 	<!-- 表单验证 -->
 	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
-<title>后台管理</title>
+	<title>后台管理</title>
+	<link rel="stylesheet" href="/javaex/m/css/userlistmodify.css" />
+	<script src="/javaex/m/js/userlistmodif.js"></script>
 </head>
 
 <body>
-    <!--主体内容-->
+<!--主体内容-->
 <div class="list-content">
 	<!--块元素-->
 	<div class="block">
@@ -32,7 +34,7 @@
 		<a href="javascript:history.back();">
 			<button class="button indigo radius-3" style="position: absolute;right: 20px;top: 16px;"><span class="icon-arrow_back"></span> 返回</button>
 		</a>
-		
+
 		<!--正文内容-->
 		<div class="main">
 			<!--表格上方的搜索操作-->
@@ -42,16 +44,12 @@
 					<button id="searchBtn" class="button blue" onclick="search();">搜索</button>
 				</div>
 			</div>
-
 			<!--表格上方的操作元素，添加、删除等-->
-			<!--
 			<div class="operation-wrap">
 				<div class="buttons-wrap">
-					<button class="button blue radius-3"><span class="icon-plus"></span> 添加</button>
 					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>
 				</div>
 			</div>
-			-->
 			<table id="table" class="table color2">
 				<thead>
 				<tr align="center">
@@ -68,11 +66,11 @@
 				</tr>
 				</thead>
 				<tbody id="tbody">
-<!--				<tr>-->
-<!--				<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
-<!--				<td>1</td>-->
-<!--				<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
-<!--				</tr>-->
+								<tr>
+								<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>
+								<td>1</td>
+								<td><button class="button blue">编辑</button><button class="button red">删除</button></td>
+								</tr>
 				</tbody>
 			</table>
 			<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -81,7 +79,7 @@
 				</tr>
 				<tr>
 					<td height="33">
-									<!-- 修改分页部分 -->
+						<!-- 修改分页部分 -->
 						<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="right-font08">
 							<tr>
 								<td width="50%">共 <span class="right-text09" id="totalPages">0</span> 页 | 第 <span class="right-text09" id="currentPage">1</span> 页</td>
@@ -110,7 +108,7 @@
 				<ul id="page" class="pagination"></ul>
 			</div>
 		</div>
-    </div>
+	</div>
 </div>
 </body>
 </html>
@@ -124,6 +122,22 @@
 	let currentPage = 1;//当前页
 	let totalPages = 0; //总页数
 	const pageSize = 10; // 每页显示的记录数
+
+	// 全局定义 escapeHtml 函数
+	function escapeHtml(unsafe) {
+		if (unsafe == null) { // 处理 null 和 undefined
+			return ''; // 或者根据需要返回其他默认值
+		}
+		if (typeof unsafe !== 'string') {
+			return String(unsafe); // 将非字符串类型转换为字符串
+		}
+		return unsafe
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/"/g, "&quot;")
+				.replace(/'/g, "&#039;");
+	}
 
 	/**
 	 * 加载学生列表数据
@@ -141,10 +155,11 @@
 		}).then((response) => {
 			if (response.data.code === 200) {
 				const data = response.data.data;
+
 				// 更新分页信息
 				currentPage = data.pageNum;
 				totalPages = data.pages;
-				totalPages = Math.ceil(data.total / pageSize);
+				// totalPages = Math.ceil(data.total / pageSize);
 				document.getElementById('currentPage').textContent = currentPage;
 				document.getElementById('totalPages').textContent = totalPages;
 
@@ -152,30 +167,78 @@
 				const tbody = document.getElementById('tbody'); // 使用正确的ID
 				tbody.innerHTML = ''; // 清空现有内容
 
-				data.list.forEach(user => {
-					// 格式化日期等操作...
 
+				// 身份映射表
+				const identityMap = {
+					'1': '学生',
+					'2': '教师',
+					'3': '其他'
+				};
+
+
+				data.list.forEach(user => {
+					console.log('Processing user:', user); // 打印当前处理的用户对象
+					// 格式化日期
+					const birthdayFormatted = user.birthday ? new Date(user.birthday).toLocaleDateString() : '';
+
+					// 映射身份值
+					const identityText = identityMap[user.identity] || '未知';
+
+					// 确保所有字段都是字符串，并使用默认值
+					const nickname = escapeHtml(user.nickname || '');
+					const username = escapeHtml(user.username || '');
+					const tel = escapeHtml(user.tel || '');
+					const email = escapeHtml(user.email || '');
+					const address = escapeHtml(user.address || '');
+	// 								const row = `
+    //     <tr>
+    //     	<td bgcolor="#FFFFFF">${user.id || ''}</td> <!-- 序号 -->
+    //         <td bgcolor="#FFFFFF">${user.nickname || ''}</td> <!-- 昵称 -->
+    //         <td bgcolor="#FFFFFF">${user.username || ''}</td> <!-- 用户名 -->
+    //         <td bgcolor="#FFFFFF">${user.birthday || ''}</td> <!-- 生日 -->
+    //         <td bgcolor="#FFFFFF">${user.tel || ''}</td>      <!-- 电话 -->
+    //         <td bgcolor="#FFFFFF">${user.email || ''}</td>     <!-- 邮箱 -->
+    //         <td bgcolor="#FFFFFF">${user.address || ''}</td>   <!-- 地址 -->
+    //         <td bgcolor="#FFFFFF">${user.size || ''}</td>      <!-- 可借数量 -->
+    //         <td bgcolor="#FFFFFF">${user.identity || ''}</td>  <!-- 身份 -->
+    //         <td bgcolor="#FFFFFF">
+    //             <a href="javascript:void(0)" onclick="deleteBook('${user.id}')">删除</a>&nbsp;|&nbsp;
+    //             <a href="javascript:void(0)" onclick="editBook('${user.id}')">修改</a>
+    //         </td>
+    //     </tr>
+    // `;
 					const row = `
-        <tr>
-        	<td bgcolor="#FFFFFF">${user.id || ''}</td> <!-- 序号 -->
-            <td bgcolor="#FFFFFF">${user.nickname || ''}</td> <!-- 昵称 -->
-            <td bgcolor="#FFFFFF">${user.username || ''}</td> <!-- 用户名 -->
-            <td bgcolor="#FFFFFF">${user.birthday || ''}</td> <!-- 生日 -->
-            <td bgcolor="#FFFFFF">${user.tel || ''}</td>      <!-- 电话 -->
-            <td bgcolor="#FFFFFF">${user.email || ''}</td>     <!-- 邮箱 -->
-            <td bgcolor="#FFFFFF">${user.address || ''}</td>   <!-- 地址 -->
-            <td bgcolor="#FFFFFF">${user.size || ''}</td>      <!-- 可借数量 -->
-            <td bgcolor="#FFFFFF">${user.identity || ''}</td>  <!-- 身份 -->
-            <td bgcolor="#FFFFFF">
-                <a href="javascript:void(0)" onclick="deleteBook('${user.id}')">删除</a>&nbsp;|&nbsp;
-                <a href="javascript:void(0)" onclick="editBook('${user.id}')">修改</a>
-            </td>
-        </tr>
-    `;
-					tbody.innerHTML += row;
+                    <tr>
+                        <td bgcolor="#FFFFFF">${user.id}</td> <!-- 序号 -->
+                        <td bgcolor="#FFFFFF">${nickname}</td> <!-- 昵称 -->
+                        <td bgcolor="#FFFFFF">${username}</td> <!-- 用户名 -->
+                        <td bgcolor="#FFFFFF">${birthdayFormatted}</td> <!-- 生日 -->
+                        <td bgcolor="#FFFFFF">${tel}</td> <!-- 电话 -->
+                        <td bgcolor="#FFFFFF">${email}</td> <!-- 邮箱 -->
+                        <td bgcolor="#FFFFFF">${address}</td> <!-- 地址 -->
+                        <td bgcolor="#FFFFFF">${user.size}</td> <!-- 可借数量 -->
+                        <td bgcolor="#FFFFFF">${identityText}</td> <!-- 身份 -->
+                        <td bgcolor="#FFFFFF">
+                            <a href="javascript:void(0)" onclick="deleteBook('${escapeHtml(String(user.id))}')">删除</a>&nbsp;|&nbsp;
+                            <a href="javascript:void(0)" onclick="editBook('${escapeHtml(String(user.id))}')">修改</a>
+                        </td>
+                    </tr>
+                `;
+
+
+	// 				tbody.innerHTML += row;
+	// 			});
+	// 		} else {
+	// 			alert('获取学生列表失败：' + response.data.message);
+	// 		}
+	// 	}).catch((error) => {
+	// 		alert('请求失败：' + error);
+	// 	});
+	// }
+					tbody.insertAdjacentHTML('beforeend', row);
 				});
 			} else {
-				alert('获取学生列表失败：' + response.data.message);
+				alert('获取读者列表失败：' + response.data.message);
 			}
 		}).catch((error) => {
 			alert('请求失败：' + error);
@@ -271,4 +334,4 @@
 	// 		alert('请求失败：' + error);
 	// 	});
 	// }
-	</script>
+</script>

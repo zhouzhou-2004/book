@@ -3,6 +3,7 @@ package com.book.book.service.impl;
 import com.book.book.mapper.ReaderMapper;
 import com.book.book.model.dto.QueryRequest;
 import com.book.book.model.pojo.Users;
+import com.book.book.model.vo.UserVO;
 import com.book.book.service.ReaderService;
 import com.book.book.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class ReaderServiceImpl implements ReaderService {
     private ReaderMapper readerMapper;
 
     @Override
-    public PageResult<Users> selectReaderList(QueryRequest queryRequest) {
+    public PageResult<UserVO> selectReaderList(QueryRequest queryRequest) {
         // 计算偏移量(起始索引) （查询页码-1）*每页显示记录数。
         int offset = (queryRequest.getPageNum() - 1) * queryRequest.getPageSize();
 //        //查询总记录数
@@ -31,8 +32,14 @@ public class ReaderServiceImpl implements ReaderService {
                 queryRequest.getName()
         );
 
-        // 查询分页数据，只传递 offset 和 pageSize 参数
-        List<Users> users = readerMapper.selectReaderList(
+//         查询分页数据，只传递 offset 和 pageSize 参数
+//        List<Users> users = readerMapper.selectReaderList(
+//                offset,
+//                queryRequest.getPageSize(),
+//                queryRequest.getClassNo(),
+//                queryRequest.getName()
+//        );
+        List<UserVO> users = readerMapper.selectReaderList(
                 offset,
                 queryRequest.getPageSize(),
                 queryRequest.getClassNo(),
