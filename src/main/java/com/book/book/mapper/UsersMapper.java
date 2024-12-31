@@ -1,6 +1,8 @@
 package com.book.book.mapper;
 
+import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -23,4 +25,10 @@ public interface UsersMapper {
     //删除功能
     @Update("update users set is_admin = 1 where id=#{id}")
     int deleteUser(int id);
+    //新增功能
+    @Insert("insert into users(id, nickname, username, password, birthday, tel, identity, email, address, size, is_admin) values(null, #{nickname}, #{username}, #{password}, #{birthday}, #{tel}, #{identity}, #{email}, #{address}, #{size}, 0)")
+    int addUser(Users users);
+    //判断用户是否存在
+    @Select("select * from users where username=#{username} and is_admin=0")
+    Users checkUsername(String username);
 }

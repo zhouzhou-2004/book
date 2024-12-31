@@ -2,6 +2,7 @@ package com.book.book.service.impl;
 
 
 import com.book.book.mapper.UsersMapper;
+import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
 import com.book.book.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,36 @@ public class UsersServiceImpl implements UsersService {
             int deleteUser = usersMapper.deleteUser(id);
             if (deleteUser > 0){
                 //删除成功
+                return 1;
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int addUser(Users users) {
+        try {
+            int addUser = usersMapper.addUser(users);
+            if (addUser > 0){
+                //添加成功
+                return 1;
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int checkUsername(String username) {
+        try {
+            Users checkUsername = usersMapper.checkUsername(username);
+            if (checkUsername != null){
+                //该用户存在
                 return 1;
             }else {
                 return 0;

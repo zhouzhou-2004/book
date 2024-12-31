@@ -1,6 +1,7 @@
 package com.book.book.controller;
 
 import com.book.book.model.dto.UsersDto;
+import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
 import com.book.book.service.UsersService;
 import com.book.book.utils.ResponseUtils;
@@ -97,7 +98,39 @@ public class UsersController {
     }
 
     /**
-     * 分页查询功能
+     * 添加功能
      */
+    @RequestMapping("/add")
+    private ResponseUtils add(@RequestBody Users users){
+        try {
+            int addUser = usersService.addUser(users);
+            if (addUser == 1){
+                return new ResponseUtils(200,"添加成功");
+            }else {
+                return new ResponseUtils(500,"添加失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400,"添加异常");
+        }
+    }
+
+    /**
+     * 判断用户是否存在
+     */
+    @RequestMapping("/checkUsername")
+    private ResponseUtils checkUsername(@RequestBody Users users){
+        try {
+            int checked = usersService.checkUsername(users.getUsername());
+            if (checked == 1){
+                return new ResponseUtils(305,"该用户名存在");
+            }else {
+                return new ResponseUtils(200,"该用户名可用");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new RuntimeException();
+        }
+    }
 }
 
