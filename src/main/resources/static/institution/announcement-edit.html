@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
+    <link href="/javaex/pc/css/animate.css" rel="stylesheet" />
+    <link href="/javaex/pc/css/common.css" rel="stylesheet" />
+    <link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />
+    <script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>
+    <script src="/javaex/pc/js/common.js"></script>
+    <script src="/javaex/pc/js/javaex.min.js"></script>
+    <title>新增公告</title>
+    <style>
+        .edit-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #1976d2;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #757575;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <h2 id="pageTitle">新增公告</h2>
+        <form id="announcementForm">
+            <div class="form-group">
+                <label for="title">标题</label>
+                <input type="text" id="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="content">内容</label>
+                <textarea id="content" class="form-control" rows="10" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="status">状态</label>
+                <select id="status" class="form-control">
+                    <option value="normal">普通</option>
+                    <option value="important">重要</option>
+                    <option value="new">最新</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="history.back()">取消</button>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="/js/axios.min.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        
+        if (id) {
+            document.getElementById('pageTitle').textContent = '编辑公告';
+            // 加载公告数据
+            loadAnnouncementData(id);
+        }
+
+        function loadAnnouncementData(id) {
+            axios.get(`/api/announcements/${id}`)
+                .then(response => {
+                    if (response.data.code === 200) {
+                        const data = response.data.data;
+                        document.getElementById('title').value = data.title;
+                        document.getElementById('content').value = data.content;
+                        document.getElementById('status').value = data.status;
+                    }
+                })
+                .catch(error => {
+                    console.error('加载数据失败:', error);
+                });
+        }
+
+        document.getElementById('announcementForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const data = {
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                status: document.getElementById('status').value
+            };
+
+            const url = id ? `/api/announcements/${id}` : '/api/announcements';
+            const method = id ? 'put' : 'post';
+
+            axios[method](url, data)
+                .then(response => {
+                    if (response.data.code === 200) {
+                        javaex.message({
+                            content : "保存成功",
+                            type : "success"
+                        });
+                        setTimeout(() => {
+                            location.href = 'announcement.html';
+                        }, 1500);
+                    } else {
+                        javaex.message({
+                            content : "保存失败",
+                            type : "error"
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('保存失败:', error);
+                    javaex.message({
+                        content : "保存失败",
+                        type : "error"
+                    });
+                });
+        });
+    </script>
+</body>
+</html> 
