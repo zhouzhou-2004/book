@@ -36,6 +36,16 @@
     .form-input{border: 0;outline: 0;font-size: 14px;color: #595961;width: 155px;}
     .form-btn{margin-top: 40px;}
     .ui-button{display: block;width: 320px;height: 50px;text-align: center;color: #fff;background: #2589ff;border-radius: 6px;font-size: 16px;border: 0;outline: 0;}
+    .register-link {
+        float: right;
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    .register-link:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
     </style>
 </head>
 <body>
@@ -60,6 +70,7 @@
                 </div>
                 <div class="form-item">
                     <input type="checkbox" id="remember" name="remember" required>记住我
+                    <a href="register.html" class="register-link">点击注册</a>
                 </div>
                 <div class="form-btn">
                     <button type="button" id="btn" name="btn"  class="ui-button" >登录</button>
@@ -69,6 +80,7 @@
     </div>
     <script src="/js/axios.min.js"></script>
     <script>
+        //
         // 获取按钮元素
         let btn = document.getElementById("btn");
         btn.onclick = function () {

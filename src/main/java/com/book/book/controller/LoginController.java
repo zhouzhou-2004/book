@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 @RestController
 @RequestMapping("/tAdmin")
 public class LoginController {
+    //
 
     //董的登录后端
 
@@ -103,12 +104,22 @@ public class LoginController {
     @ResponseBody
     public ResponseUtils register(@RequestBody Users users ,HttpServletRequest request) {
         //1.获取参数
-        System.out.println(users.getUsername());
-        System.out.println(users.getPassword());
+//        System.out.println(users.getUsername());
+//        System.out.println(users.getPassword());
         //2.添加到数据库
+        //先拿到用户输入的验证码是否正确,再去操作数据库
+        //拿到用户输入的验证码和Session储存的验证码
+        HttpSession session = request.getSession();
+        System.out.println("用户输入的验证码"+users.getVerifyCode());
+        String uuiDcode = (String) session.getAttribute("UUIDcode");
+        System.out.println("系统生成的验证码"+uuiDcode);
         try {
+            if (users.getVerifyCode().equals(uuiDcode)){
                 int result = loginService.register(users);
                 return (result == 1) ? new ResponseUtils<String>(200,"注册成功") : new ResponseUtils<String>(500,"注册失败");
+            }else {
+                return new ResponseUtils<String>(500,"手机验证码错误");
+            }
         } catch (Exception e) {
             e.printStackTrace();//打印错误报告
             return new ResponseUtils<String>(500,"数据异常,注册失败");
@@ -116,8 +127,7 @@ public class LoginController {
         }
     }
 
-    //
-
+    //退出登录功能
     @RequestMapping("logout")
     @ResponseBody
     public ResponseUtils logout(HttpServletResponse response, HttpServletRequest request) {
@@ -148,6 +158,20 @@ public class LoginController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseUtils<>(500, "退出失败");
+        }
+    }
+
+    //手机号验证码
+    @RequestMapping("/sendCode")
+    @ResponseBody
+    public ResponseUtils sendCode(@RequestBody Users users,HttpServletRequest request){
+       //        手机号与用户绑定
+        Users result = loginService.selectPhone(users.getTel(),request);
+        if (result == null){
+            System.out.println("验证码来了");
+            return new ResponseUtils<>(200,"验证码已发送");
+        }else {
+            return new ResponseUtils<>(500,"手机号已被注册");
         }
     }
 }
