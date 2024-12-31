@@ -97,6 +97,26 @@ public class UsersController {
         }
     }
 
+
+    /**
+     * 根据用户名查询个人信息功能
+     */
+    @RequestMapping("/info")
+    private ResponseUtils info(@RequestBody Users users){
+        System.out.println(users);
+        try {
+            Users userById = usersService.getUserById(users.getUsername());
+            if (userById != null){
+                return new ResponseUtils(200,"查询成功",userById);
+            }else {
+                return new ResponseUtils(400,"查询失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new RuntimeException();
+        }
+    }
+
     /**
      * 添加功能
      */

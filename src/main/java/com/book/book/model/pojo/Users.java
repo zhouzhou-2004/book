@@ -20,6 +20,79 @@ public class Users {
   private long isAdmin;
   private String nickname;
   private String password;
+
+  public long getId() {
+    return id;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
+  public String getBirthday() {
+    return birthday;
+  }
+
+  public void setBirthday(String birthday) {
+    this.birthday = birthday;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public long getIdentity() {
+    return identity;
+  }
+
+  public void setIdentity(long identity) {
+    this.identity = identity;
+  }
+
+  public long getIsAdmin() {
+    return isAdmin;
+  }
+
+  public void setIsAdmin(long isAdmin) {
+    this.isAdmin = isAdmin;
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  public long getSize() {
+    return size;
+  }
+
+  public void setSize(long size) {
+    this.size = size;
+  }
+
+  public String getTel() {
+    return tel;
+  }
+
+  public void setTel(String tel) {
+    this.tel = tel;
+  }
+
   private long size;
   private String tel;
   private String username;
