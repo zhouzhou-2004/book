@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Users {
+  //
 
   private long id;
   private String address;

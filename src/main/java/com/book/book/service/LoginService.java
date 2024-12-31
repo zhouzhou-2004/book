@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 public interface LoginService {
+    //
 
     //检查用户名是否重复
     Users checkName(Users users);
