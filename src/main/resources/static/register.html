@@ -36,7 +36,7 @@
         .form-input{border: 0;outline: 0;font-size: 14px;color: #595961;width: 155px;}
         .form-btn{margin-top: 40px;}
         .ui-button{display: block;width: 320px;height: 50px;text-align: center;color: #fff;background: #2589ff;border-radius: 6px;font-size: 16px;border: 0;outline: 0;}
-        .checkUsername, .checkPassWord, .checkConfirmPassword {
+        .checkUsername, .checkPassWord, .checkConfirmPassword, .checkPhone {
             display: block;
             margin-top: -4px;
             font-size: 12px;
@@ -53,6 +53,9 @@
         <form id="registerForm">
             <div class="form-title">
                 <span>图书管理后台注册</span>
+                <a href="login.html" style=" color: rgba(255, 255, 255, 0.5); /* 白色半透明 */text-decoration: none; /* 去掉下划线 */">
+                    点击登录
+                </a>
             </div>
             <div class="form-item">
                 <span class="form-txt">账号：</span>
@@ -73,7 +76,8 @@
             <div class="form-item">
                 <label for="phone">手机号:</label>
                 <input type="tel" id="phone" name="phone" pattern="[0-9]{11}" required>
-                <button type="button" id="sendCode" class="btn-code">发送验证码</button>
+                <button type="button" id="sendCode" class="btn-code" disabled>发送验证码</button>
+                <span class="checkPhone"></span>
             </div>
             <!-- 添加验证码输入框 -->
             <div class="form-item">
@@ -152,33 +156,33 @@
         }
         updateRegisterButton();
     };
+    //检验手机号格式是否正确
+    document.getElementById('phone').onkeyup = function () {
+        let phone = document.getElementById('phone').value;
+        let checkPhone = document.querySelector('.checkPhone');
+        let sendCode = document.getElementById('sendCode');
 
-    // 更新注册按钮的状态
-    function updateRegisterButton() {
-        let checkUsername = document.querySelector('.checkUsername');
-        let checkPassWord = document.querySelector('.checkPassWord');
-        let checkConfirmPassword = document.querySelector('.checkConfirmPassword');
-        let regBtn = document.getElementById('reg_btn');
+        // 手机号正则表达式，这里以中国大陆手机号为例
+        const phoneRegex = /^1[3-9]\d{9}$/;
 
-        if (checkUsername.style.color === 'green' &&
-            checkPassWord.style.color === 'green' &&
-            checkConfirmPassword.style.color === 'green') {
-            regBtn.disabled = false;
+        if (phoneRegex.test(phone)) {
+            checkPhone.innerText = '手机号格式正确';
+            checkPhone.style.color = 'green';
+            sendCode.disabled = false;
         } else {
-            regBtn.disabled = true;
+            checkPhone.innerText = '手机号格式不正确';
+            checkPhone.style.color = 'red';
+            sendCode.disabled = true;
         }
-    }
+
+        updateRegisterButton();
+    };
+
     <!-- 添加发送验证码的逻辑 -->
 
     document.getElementById('sendCode').addEventListener('click', function () {
         const phone = document.getElementById('phone').value;
         const button = this;
-
-        // 验证手机号格式
-        if (!/^1[3-9]\d{9}$/.test(phone)) {
-            alert('请输入正确的手机号码');
-            return;
-        }
 
         // 发送验证码
         axios({
@@ -212,6 +216,25 @@
             alert('请求失败：' + error);
         });
     });
+
+    // 更新注册按钮的状态
+    function updateRegisterButton() {
+        let checkUsername = document.querySelector('.checkUsername');
+        let checkPassWord = document.querySelector('.checkPassWord');
+        let checkConfirmPassword = document.querySelector('.checkConfirmPassword');
+        let checkPhone = document.querySelector('.checkPhone');
+        let regBtn = document.getElementById('reg_btn');
+
+        if (checkUsername.style.color === 'green' &&
+            checkPassWord.style.color === 'green' &&
+            checkPhone.style.color === 'green' &&
+            checkConfirmPassword.style.color === 'green') {
+            regBtn.disabled = false;
+        } else {
+            regBtn.disabled = true;
+        }
+    }
+
 
     // 注册按钮点击事件
     document.getElementById('reg_btn').onclick = function () {
