@@ -1,17 +1,13 @@
 package com.book.book.model.pojo;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Users {
-  //
-
   private long id;
   private String address;
   private String birthday;
@@ -85,13 +81,7 @@ public class Users {
     this.size = size;
   }
 
-  public String getTel() {
-    return tel;
-  }
 
-  public void setTel(String tel) {
-    this.tel = tel;
-  }
 
   private long size;
   private String tel;
