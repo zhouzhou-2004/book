@@ -71,6 +71,23 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public Users getUserById(String username) {
+        try {
+            Users userById = usersMapper.getUserById(username);
+            if (userById != null){
+                //该用户存在
+                return userById;
+            }else {
+                return null;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    @Override
     public int addUser(Users users) {
         try {
             int addUser = usersMapper.addUser(users);

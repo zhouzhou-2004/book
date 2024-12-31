@@ -25,6 +25,9 @@ public interface UsersMapper {
     //删除功能
     @Update("update users set is_admin = 1 where id=#{id}")
     int deleteUser(int id);
+    //根据用户名查询个人信息功能
+    @Select("select * from users where username=#{username}")
+    Users getUserById(String username);
     //新增功能
     @Insert("insert into users(id, nickname, username, password, birthday, tel, identity, email, address, size, is_admin) values(null, #{nickname}, #{username}, #{password}, #{birthday}, #{tel}, #{identity}, #{email}, #{address}, #{size}, 0)")
     int addUser(Users users);
