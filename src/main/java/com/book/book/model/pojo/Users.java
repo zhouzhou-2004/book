@@ -16,7 +16,9 @@ public class Users {
   private long isAdmin;
   private String nickname;
   private String password;
-
+  private long size;
+  private String tel;
+  private String username;
   public long getId() {
     return id;
   }
@@ -81,11 +83,6 @@ public class Users {
     this.size = size;
   }
 
-
-
-  private long size;
-  private String tel;
-  private String username;
   private String code;
   private boolean remember;
   private  String verifyCode;
