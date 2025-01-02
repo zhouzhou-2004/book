@@ -26,9 +26,10 @@ public interface ReaderMapper {
             @Param("name") String name
     );
 
-//    /**
-//     * 模糊查询
-//     */
-//    @Select(" SELECT * FROM users where username like concat('%',#{likeName},'%')")
-//    List<Users> selectByLike(String likeName);
+    /**
+     * 模糊查询
+     */
+
+    @Select("select * from users where username like concat('%',#{username},'%') or nickname  like concat('%',#{username},'%') and is_admin=0")
+    List<UserVO> selectByLike(String LikeName);
 }
