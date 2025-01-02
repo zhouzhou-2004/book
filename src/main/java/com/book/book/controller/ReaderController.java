@@ -3,6 +3,7 @@ package com.book.book.controller;
 
 import com.book.book.model.dto.QueryRequest;
 import com.book.book.model.pojo.Users;
+import com.book.book.model.vo.UserVO;
 import com.book.book.service.ReaderService;
 
 import com.book.book.utils.PageResult;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/reader")
 public class ReaderController {
@@ -19,20 +22,29 @@ public class ReaderController {
     private ReaderService readerService;
 
     @RequestMapping("/list")
-    public ResponseUtils list (@RequestBody QueryRequest queryRequest){
-
-        PageResult<Users> usersPageResult = readerService.selectReaderList(queryRequest);
-        // 调试输出
-        System.out.println("PageResult: " + usersPageResult);
-        return new ResponseUtils(200,"success",usersPageResult);
+//    public ResponseUtils list (@RequestBody QueryRequest queryRequest){
+//
+//        PageResult<Users> usersPageResult = readerService.selectReaderList(queryRequest);
+//        // 调试输出
+//        System.out.println("PageResult: " + usersPageResult);
+//        return new ResponseUtils(200,"success",usersPageResult);
+//    }
+    private ResponseUtils selectReaderList(@RequestBody QueryRequest queryRequest) {
+        try {
+            PageResult<UserVO> userVO = readerService.selectReaderList(queryRequest);
+            if (userVO == null) {
+                //查询为空(失败)
+                return new ResponseUtils(500, "查询失败");
+            } else {
+                //查询成功
+                return new ResponseUtils(200, "查询成功", userVO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400, "查询异常");
+        }
     }
-//        try{
-//            PageResult<Users> usersPageResult = readerService.selectReaderList(queryRequest);
-//            return new ResponseUtils(200,"success",usersPageResult);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            return new ResponseUtils(500,"Internal Server Error",null);
-//        }
+
 
 
 //    @RequestMapping("/like")

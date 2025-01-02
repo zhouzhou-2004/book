@@ -46,6 +46,12 @@
         color: #0056b3;
         text-decoration: underline;
     }
+    body {
+        background-image: url('javaex/img/050.jpeg'); /* 替换成您的图片 URL */
+        background-size: cover; /* 使背景图覆盖整个视口 */
+        background-position: center; /* 将背景图置于中心 */
+        background-repeat: no-repeat; /* 不重复背景图 */
+    }
     </style>
 </head>
 <body>
@@ -118,6 +124,7 @@
                     }
                 } else if (result.data.code == 500) {
                     alert("验证码错误");
+                    changeImage(document.querySelector('.captcha img')); // 刷新验证码图片
                 } else {
                     alert("登录失败");
                 }
