@@ -4,18 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Announcements {
 
-  private Integer id;
+  private int id;
   private String title;
   private String status;
-  private java.sql.Timestamp publishTime;
+  private String publishTime;
   private String publisher;
   private String preview;
-
+  private long isDelete;
 
 
 }
