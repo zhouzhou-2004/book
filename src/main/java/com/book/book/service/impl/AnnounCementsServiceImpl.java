@@ -17,6 +17,7 @@ public class AnnounCementsServiceImpl implements AnnounCementsService {
     @Autowired
     private AnnounCementsMapper announCementsMapper;
 
+    //查询所有公告
     @Override
     public List<Announcements> selectAllNotices() {
         List<Announcements> announcements = announCementsMapper.selectAllNotices();
@@ -24,6 +25,38 @@ public class AnnounCementsServiceImpl implements AnnounCementsService {
             return announcements;
         }else {
             return null;
+        }
+    }
+
+    //添加公告
+    @Override
+    public int insertNotice(Announcements announcements) {
+        try {
+            int insert = announCementsMapper.insertNotice(announcements);
+            if(insert > 0){
+                return 1;//添加成功 result > 0
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    //删除公告
+    @Override
+    public int deleteNotice(int id) {
+        try {
+            int i = announCementsMapper.deleteNoticeById(id);
+            if(i != 0){
+                return 1;//删除成功
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
         }
     }
 }
