@@ -1,15 +1,14 @@
 package com.book.book.controller;
 
-import cn.hutool.core.date.DateUtil;
+
+import com.book.book.model.dto.BookLogin;
+import com.book.book.model.dto.QueryRequest;
 import com.book.book.model.pojo.Book;
 import com.book.book.service.BorrowService;
+import com.book.book.utils.PageResult;
 import com.book.book.utils.ResponseUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,24 +45,36 @@ public class BorrowController {
             return new ResponseUtils(400,"删除异常");
         }
     }
+    /**
+     * 搜索图书
+     */
+    @RequestMapping("/search")
+    public ResponseUtils searchBook(@RequestBody BookLogin bookLogin){
+        try {
+            List<Book> books = borrowService.searchBook(bookLogin.getName());
+            System.out.println(books);
+            if (books != null) {
+                return new ResponseUtils(200, "查询成功", books);
+            } else {
+                return new ResponseUtils(400, "查询失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+    }
+    /**
+     * 分页查询
+     */
+
+    @RequestMapping("/page")
+    public ResponseUtils list(@RequestBody QueryRequest queryRequest){
+        PageResult<Book> BookPageResult = borrowService.selectBookPage(queryRequest);
+        return new ResponseUtils(200,"success",BookPageResult);
+    }
 
     /**
      * 删除图书
      */
-//        @RequestMapping("/delete")
-//        public ResponseUtils deleteBook(@RequestBody BookLogin bookLogin) {
-//            try {
-//                //拿到参数之后我们就可以去执行sql删除用户了
-//                int result = borrowService.deleteBook(bookLogin.getId());
-//                if (result == 1){
-//                    //删除成功
-//                    return new ResponseUtils(200,"删除成功");
-//                }else {
-//                    return new ResponseUtils(500,"删除失败");
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return new ResponseUtils(400,"删除异常");
-//            }
-//        }
 }

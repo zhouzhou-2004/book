@@ -4,28 +4,62 @@ package com.book.book.model.pojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.javassist.runtime.Inner;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Book {
 
-  private int id;
+  private Integer id;
   private String name;
   private String author;
   private String isbn;
-  private int pages;
+  private Integer pages;
   private double price;
   private String publish;
   private String publishTime;
-  private int size;
+  private Integer size;
   private String type;
+  private Integer isDelete;
 
-  public int getPages() {
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public String getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
+
+  public Integer getPages() {
     return pages;
   }
 
-  public void setPages(int pages) {
+  public void setPages(Integer pages) {
     this.pages = pages;
   }
 
@@ -53,11 +87,11 @@ public class Book {
     this.publishTime = publishTime;
   }
 
-  public int getSize() {
+  public Integer getSize() {
     return size;
   }
 
-  public void setSize(int size) {
+  public void setSize(Integer size) {
     this.size = size;
   }
 
@@ -69,35 +103,11 @@ public class Book {
     this.type = type;
   }
 
-  public String getIsbn() {
-    return isbn;
+  public Integer getIsDelete() {
+    return isDelete;
   }
 
-  public void setIsbn(String isbn) {
-    this.isbn = isbn;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(String author) {
-    this.author = author;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
+  public void setIsDelete(Integer isDelete) {
+    this.isDelete = isDelete;
   }
 }
