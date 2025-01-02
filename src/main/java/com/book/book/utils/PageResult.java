@@ -26,6 +26,7 @@ public class PageResult<T> {
         this.pages = (int) Math.ceil((double) total / pageSize);//据公式可得
 
     }
+
     public List<T> getList() {
         return list;
     }

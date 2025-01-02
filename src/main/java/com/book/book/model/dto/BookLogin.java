@@ -1,7 +1,11 @@
 package com.book.book.model.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Data
 public class BookLogin {
     private Integer id;

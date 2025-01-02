@@ -1,14 +1,12 @@
 package com.book.book.model.pojo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Date;
-
+@Setter
+@Getter
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Announcements {
 
   private int id;
@@ -18,6 +16,5 @@ public class Announcements {
   private String publisher;
   private String preview;
   private long isDelete;
-
 
 }
