@@ -58,6 +58,7 @@
         /* 禁用状态的样式 */
         .btn-code:disabled {
             background-color: #cccccc;
+            padding: 5px 10px;
             cursor: not-allowed;
         }
         body {
@@ -65,6 +66,10 @@
             background-size: cover; /* 使背景图覆盖整个视口 */
             background-position: center; /* 将背景图置于中心 */
             background-repeat: no-repeat; /* 不重复背景图 */
+        }
+        .phone {
+            width: 120px;
+            height: 21px;
         }
     </style>
 </head>
@@ -96,7 +101,7 @@
             <!-- 添加手机号输入框和发送验证码按钮 -->
             <div class="form-item">
                 <label for="phone">手机号:</label>
-                <input type="tel" id="phone" name="phone" pattern="[0-9]{11}" required>
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{11}" class="phone" required>
                 <button type="button" id="sendCode" class="btn-code" disabled>发送验证码</button>
                 <span class="checkPhone"></span>
             </div>
@@ -218,6 +223,8 @@
                 // 发送成功后禁用按钮并开始倒计时
                 let countdown = 60;
                 button.disabled = true;
+                button.style.width = '120px'; // 固定按钮宽度
+                button.style.textAlign = 'center'; // 文本居中
 
                 const timer = setInterval(() => {
                     button.textContent = `${countdown}秒后重新发送`;

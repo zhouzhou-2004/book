@@ -20,25 +20,12 @@ public class ReaderServiceImpl implements ReaderService {
     public PageResult<UserVO> selectReaderList(QueryRequest queryRequest) {
         // 计算偏移量(起始索引) （查询页码-1）*每页显示记录数。
         int offset = (queryRequest.getPageNum() - 1) * queryRequest.getPageSize();
-//        //查询总记录数
-//        Long total = readerMapper.selectTotal(queryRequest.getClassNo(), queryRequest.getName());
-//
-//        List<Users> users = readerMapper.selectReaderList(
-//                offset, queryRequest.getPageSize()
-//        );
         // 查询总记录数，传递 classNo 和 name 参数
         Long total = readerMapper.selectTotal(
                 queryRequest.getClassNo(),
                 queryRequest.getName()
         );
-
-//         查询分页数据，只传递 offset 和 pageSize 参数
-//        List<Users> users = readerMapper.selectReaderList(
-//                offset,
-//                queryRequest.getPageSize(),
-//                queryRequest.getClassNo(),
-//                queryRequest.getName()
-//        );
+        // 查询分页数据，只传递 offset 和 pageSize 参数
         List<UserVO> users = readerMapper.selectReaderList(
                 offset,
                 queryRequest.getPageSize(),
@@ -50,20 +37,18 @@ public class ReaderServiceImpl implements ReaderService {
 
     }
 
-
-
-//    @Override
-//    public List<Users> selectByLike(String likeName) {
-//        try {
-//            List<Users> tAdmins = readerMapper.selectByLike(likeName);
-//            if (tAdmins != null){
-//                //查询到数据，返回
-//                return tAdmins;
-//            }else {
-//                return null;
-//            }
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @Override
+    public List<UserVO> selectByLike(String LikeName) {
+        try {
+            List<UserVO> userVO = readerMapper.selectByLike(LikeName);
+            if (userVO != null){
+                //查询到数据，返回
+                return userVO;
+            }else {
+                return null;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -19,7 +19,7 @@ public interface dxMapper {
     Users login(Users users);
 
     //dx  注册
-    @Insert("insert into users (nickname,username, password,tel) values ('游客',#{username},#{password},#{tel})")
+    @Insert("insert into users (nickname,username, password,tel,is_admin) values ('游客',#{username},#{password},#{tel},'0')")
     int register(Users users);
 
     //dx 手机验证码

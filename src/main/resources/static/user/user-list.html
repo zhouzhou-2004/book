@@ -172,6 +172,112 @@
 <script src="/js/axios.min.js"></script>
 <!--第二步:通过axios发送前端请求到服务器(后端)-->
 <script>
+	// 模糊查询
+	let selectButton = document.querySelector(".right-button02");
+	selectButton.onclick = function () {
+		axios({
+			url: "http://localhost:8080/user/list/selectLike",
+			method: "post",
+			data: {
+				userText: document.querySelector(".userNameText").value
+			}
+		}).then((response) => {
+			if (response.data.code == '400') {
+				alert("查询失败");
+			} else if (response.data.code == '200') {
+				// 获取数据并渲染表格
+				renderTable(response.data.data);
+			} else {
+				alert('没有用户数据或数据为空');
+			}
+		}).catch((error) => {
+			alert('请求失败：' + "请输入用户名或昵称");
+		});
+	}
+
+	// 修改渲染表格函数，添加编辑和删除按钮的事件绑定
+	function renderTable(data) {
+		const tableBody = document.querySelector('#adminTable');
+		tableBody.innerHTML = '';
+
+		data.forEach(user => {
+			const row = document.createElement('tr');
+			row.innerHTML = `
+            <td align="center">${user.id}</td>
+            <td align="center">${user.nickname || ''}</td>
+            <td align="center">${user.username || ''}</td>
+            <td align="center">${user.birthday || ''}</td>
+            <td align="center">${user.tel || ''}</td>
+            <td align="center">${user.email || ''}</td>
+            <td align="center">${user.address || ''}</td>
+            <td align="center">${user.size || ''}</td>
+            <td align="center">${getUserType(user.identity)}</td>
+            <td align="center">
+                <button class="edit-button button blue"
+                    data-id="${user.id}"
+                    data-nickname="${user.nickname || ''}"
+                    data-username="${user.username || ''}"
+                    data-birthday="${user.birthday || ''}"
+                    data-tel="${user.tel || ''}"
+                    data-email="${user.email || ''}"
+                    data-address="${user.address || ''}"
+                    data-size="${user.size || ''}"
+                    data-identity="${user.identity || ''}">
+                    编辑
+                </button>
+                <button class="delete-button button red" data-id="${user.id}">
+                    删除
+                </button>
+            </td>
+        `;
+			tableBody.appendChild(row);
+		});
+
+		// 为新渲染的编辑按钮添加事件监听
+		document.querySelectorAll('.edit-button').forEach(button => {
+			button.addEventListener('click', function(event) {
+				event.preventDefault();
+				const userData = this.dataset;
+
+				document.getElementById('editId').value = userData.id;
+				document.getElementById('editNickname').value = userData.nickname;
+				document.getElementById('editUsername').value = userData.username;
+				document.getElementById('editBirthday').value = userData.birthday;
+				document.getElementById('editTel').value = userData.tel;
+				document.getElementById('editEmail').value = userData.email;
+				document.getElementById('editAddress').value = userData.address;
+				document.getElementById('editSize').value = userData.size;
+				document.getElementById('editIdentity').value = userData.identity;
+
+				document.getElementById('editModal').style.display = 'block';
+			});
+		});
+
+		// 为新渲染的删除按钮添加事件监听
+		document.querySelectorAll('.delete-button').forEach(button => {
+			button.addEventListener('click', function(event) {
+				event.preventDefault();
+				const userId = this.dataset.id;
+
+				if (confirm("您确定要删除该用户吗?")) {
+					axios({
+						url: "http://localhost:8080/user/list/delete",
+						method: "post",
+						data: { id: userId }
+					}).then((response) => {
+						if (response.data.code == '200') {
+							alert("删除用户成功");
+							location.reload();
+						} else {
+							alert("删除用户失败：" + response.data.message);
+						}
+					}).catch((error) => {
+						alert('删除失败：' + error);
+					});
+				}
+			});
+		});
+	}
 	// 获取并显示用户列表
 	axios({
 		url: "http://localhost:8080/user/list/select",
@@ -382,183 +488,7 @@
 			modal.style.display = 'none';
 		}
 	};
-	// 模糊查询
-	let selectButton = document.querySelector(".right-button02");
-	selectButton.onclick = function () {
-		axios({
-			url: "http://localhost:8080/user/list/selectLike",
-			method: "post",
-			data: {
-				userText: document.querySelector(".userNameText").value
-			}
-		}).then((response) => {
-			if (response.data.code == '400') {
-				alert("查询失败");
-			} else if (response.data.code == '200') {
-				// 获取数据并渲染表格
-				renderTable(response.data.data);
-				// 渲染表格的函数
-				function renderTable(data) {
-					const tableBody = document.querySelector('#adminTable');
-					// 清空现有的表格内容
-					tableBody.innerHTML = '';
 
-					// 遍历数据并创建表格行
-					data.forEach(user => {
-						const row = document.createElement('tr');
 
-						// 添加所有列的单元格
-						row.innerHTML = `
-                <td align="center">${user.id}</td>
-                <td align="center">${user.nickname}</td>
-                <td align="center">${user.username}</td>
-                <td align="center">${user.birthday || ''}</td>
-                <td align="center">${user.tel || ''}</td>
-                <td align="center">${user.email || ''}</td>
-                <td align="center">${user.address || ''}</td>
-                <td align="center">${user.size || ''}</td>
-                <td align="center">${getUserType(user.identity)}</td>
-                <td align="center">
-                    <button class="button blue" onclick="editUser(${user.id})">编辑</button>
-                    <button class="button red" onclick="deleteUser(${user.id})">删除</button>
-                </td>
-            `;
 
-						tableBody.appendChild(row);
-					});
-				}
-			}else {
-				alert('没有用户数据或数据为空');
-			}
-		}).catch((error) => {
-			alert('请求失败：' +"请输入用户名或昵称");
-		});
-	}
-
-	// 定义分页相关变量，与 QueryRequest 默认值保持一致
-	let currentPage = 1;
-	let totalPages = 0;
-	let totalRecords = 0;
-	const pageSize = 10;
-
-	/**
-	 * 加载用户列表数据
-	 */
-	function loadUserList(page = 1) {
-		// 创建完全匹配 QueryRequest 的请求对象
-		const queryRequest = new QueryRequest(page);
-
-		axios({
-			url: "http://localhost:8080/user/list",
-			method: "post",
-			data: queryRequest
-		}).then((response) => {
-			if (response.data.code === 200) {
-				const data = response.data.data;
-				updatePagination(data);
-				updateTableContent(data.records);
-			} else {
-				alert('获取用户列表失败：' + response.data.message);
-			}
-		}).catch((error) => {
-			console.error('请求失败：', error);
-			alert('请求失败：' + error);
-		});
-	}
-
-	/**
-	 * QueryRequest 类，与后端 DTO 保持一致
-	 */
-	class QueryRequest {
-		constructor(page = 1) {
-			this.pageNum = page;
-			this.pageSize = 10; // 与后端默认值保持一致
-			this.username = document.querySelector('input[name="textfield"]').value || '';
-		}
-	}
-
-	/**
-	 * 更新分页信息
-	 */
-	function updatePagination(data) {
-		// 使用与后端一致的字段名
-		currentPage = data.pageNum;
-		totalPages = data.pages;
-		totalRecords = data.total;
-
-		document.getElementById('currentPage').textContent = currentPage;
-		document.getElementById('totalPages').textContent = totalPages;
-		document.getElementById('totalRecords').textContent = totalRecords;
-
-		// 更新按钮状态
-		document.getElementById('firstPage').disabled = currentPage === 1;
-		document.getElementById('prevPage').disabled = currentPage === 1;
-		document.getElementById('nextPage').disabled = currentPage === totalPages;
-		document.getElementById('lastPage').disabled = currentPage === totalPages;
-	}
-
-	/**
-	 * 更新表格内容
-	 */
-	function updateTableContent(users) {
-		const tbody = document.getElementById('userTableBody');
-		tbody.innerHTML = '';
-
-		users.forEach(user => {
-			const row = `
-            <tr>
-                <td bgcolor="#FFFFFF"><input type="checkbox" name="delid" /></td>
-                <td height="20" bgcolor="#FFFFFF">${user.id || ''}</td>
-                <td bgcolor="#FFFFFF">${user.username || ''}</td>
-                <td bgcolor="#FFFFFF">${user.nickname || ''}</td>
-                <td bgcolor="#FFFFFF">${user.email || ''}</td>
-                <td bgcolor="#FFFFFF">${user.phone || ''}</td>
-                <td bgcolor="#FFFFFF">${user.status || ''}</td>
-                <td bgcolor="#FFFFFF">
-                    <a href="javascript:void(0)" onclick="deleteUser('${user.id}')">删除</a>&nbsp;|&nbsp;
-                    <a href="javascript:void(0)" onclick="editUser('${user.id}')">修改</a>
-                </td>
-            </tr>
-        `;
-			tbody.innerHTML += row;
-		});
-	}
-
-	/**
-	 * 切换页码
-	 */
-	function changePage(page) {
-		if (page < 1 || page > totalPages) {
-			alert('页码超出范围！');
-			return;
-		}
-		loadUserList(page);
-	}
-
-	/**
-	 * 跳转到指定页
-	 */
-	function goToPage() {
-		const pageInput = document.getElementById('pageInput');
-		const page = parseInt(pageInput.value);
-		if (isNaN(page) || page < 1 || page > totalPages) {
-			alert('请输入有效的页码！');
-			return;
-		}
-		loadUserList(page);
-	}
-
-	/**
-	 * 搜索功能
-	 */
-	function handleSearch() {
-		currentPage = 1;
-		loadUserList(1);
-	}
-
-	// 初始化
-	document.addEventListener('DOMContentLoaded', () => {
-		initPagination();
-		loadUserList(1);
-	});
 </script>

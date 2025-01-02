@@ -2,6 +2,7 @@ package com.book.book.controller;
 
 
 import com.book.book.model.dto.QueryRequest;
+import com.book.book.model.dto.UsersDto;
 import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
 import com.book.book.service.ReaderService;
@@ -22,13 +23,6 @@ public class ReaderController {
     private ReaderService readerService;
 
     @RequestMapping("/list")
-//    public ResponseUtils list (@RequestBody QueryRequest queryRequest){
-//
-//        PageResult<Users> usersPageResult = readerService.selectReaderList(queryRequest);
-//        // 调试输出
-//        System.out.println("PageResult: " + usersPageResult);
-//        return new ResponseUtils(200,"success",usersPageResult);
-//    }
     private ResponseUtils selectReaderList(@RequestBody QueryRequest queryRequest) {
         try {
             PageResult<UserVO> userVO = readerService.selectReaderList(queryRequest);
@@ -44,22 +38,20 @@ public class ReaderController {
             return new ResponseUtils(400, "查询异常");
         }
     }
+    @RequestMapping("/selectLike")
+    public ResponseUtils selectByLike(@RequestBody UsersDto usersDto){
+        try {
+            //参数拿到之后，我们应该去干嘛
+            List<UserVO> userVO = readerService.selectByLike(usersDto.getUserText());
+            if (userVO != null){
+                return new ResponseUtils(200,"查询成功",userVO);
+            }else {
+                return new ResponseUtils(400,"查询失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
-
-
-//    @RequestMapping("/like")
-//    public ResponseUtils selectByLike(@RequestBody Users users){
-//        try {
-//            //参数拿到之后，我们应该去干嘛
-//            List<Users> tAdmins = readerService.selectByLike(users.getNickname());
-//            if (tAdmins != null){
-//                return new ResponseUtils(200,"查询成功",tAdmins);
-//            }else {
-//                return new ResponseUtils(400,"查询失败");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e);
-//        }
-//    }
 }
