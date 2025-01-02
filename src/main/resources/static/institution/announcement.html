@@ -224,7 +224,8 @@
                 params: {
                     page: page,
                     size: pageSize
-                }
+                },
+                withCredentials:true
             });
             if (result.data.code == 200) {
                 announcements = result.data.data;//保存到全局变量

@@ -1,8 +1,12 @@
 package com.book.book.controller;
 
 import com.book.book.model.pojo.Announcements;
+import com.book.book.model.pojo.Users;
 import com.book.book.service.AnnounCementsService;
+import com.book.book.service.LoginService;
+import com.book.book.service.UsersService;
 import com.book.book.utils.ResponseUtils;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +19,8 @@ import java.util.Map;
 public class AnnounCementsController {
     @Autowired
     private AnnounCementsService announCementsService;
-
+    @Autowired
+    private LoginService loginService;
     // 获取所有公告
     @RequestMapping("/all")
     public ResponseUtils selectAllNotices(){
@@ -35,11 +40,17 @@ public class AnnounCementsController {
 
     // 新增公告
     @RequestMapping("/add")
-    public Map<String, Object> addNotice(@RequestBody Announcements announcements) {
+    public Map<String, Object> addNotice(@RequestBody Announcements announcements, HttpSession session) {
         //System.out.println(announcements);
         try {
-            // 设置发布人为当前登录用户，这里假设你有一个方法可以获得当前用户
-            //announcements.setPublisher(getCurrentUser().getName());
+            // 获取当前登录用户
+            Users userLogin = (Users) session.getAttribute("userLogin");
+            if (userLogin == null) {
+                return Map.of("code", 401, "message", "用户未登录");
+            }
+
+            // 设置发布人为当前登录用户名
+            announcements.setPublisher(userLogin.getUsername());
             //插入新公告
             int insert = announCementsService.insertNotice(announcements);
 

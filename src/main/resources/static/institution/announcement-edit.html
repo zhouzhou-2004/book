@@ -106,7 +106,7 @@
                     title: titleInput.value,
                     preview: contentInput.value,
                     status: statusSelect.value,
-                    publisher: '管理员',
+                    // publisher: '管理员',
                     publishTime:new Date().toISOString()//添加发布时间
                 };
                 if (!formData.title || !formData.preview) {
@@ -125,7 +125,8 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    data: formData
+                    data: formData,
+                    withCredentials:true
                 });
                 //保存成功后跳转
                 if (response.data.code == 200) {

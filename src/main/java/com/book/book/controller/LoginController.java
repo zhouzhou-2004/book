@@ -84,6 +84,8 @@ public class LoginController {
                             cookie1.setPath("/");
                             cookie2.setPath("/");
                         }
+                        // 登录成功时，将用户名存入 session
+                        session.setAttribute("username", userLogin.getUsername());
                         //获取用户信息,拦截器
                         session.setAttribute("userLogin",userLogin);
                         return new ResponseUtils<>(200, "登录成功");
