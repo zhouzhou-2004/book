@@ -1,0 +1,224 @@
+body {
+    background-color: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 表格样式美化 */
+.table {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 15px;
+}
+
+.table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+    color: #555;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+/* 按钮样式美化 */
+.btn-primary {
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #357abd;
+    border-color: #357abd;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(74, 144, 226, 0.2);
+}
+
+.btn-danger {
+    background-color: #ff6b6b;
+    border-color: #ff6b6b;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #ff5252;
+    border-color: #ff5252;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.2);
+}
+
+/* Modal 弹窗样式美化 */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    border-radius: 12px 12px 0 0;
+    padding: 20px;
+}
+
+.modal-title {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    border-top: 1px solid #eee;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+}
+
+/* 表单样式美化 */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 10px 15px;
+    height: auto;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+}
+
+/* 搜索框样式 */
+.search-box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.search-input {
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 10px 15px;
+    width: 300px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+    outline: none;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal.show .modal-dialog {
+    animation: fadeIn 0.3s ease;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 状态标签样式 */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-in-stock {
+    background-color: #e3fcef;
+    color: #00875a;
+}
+
+.status-low-stock {
+    background-color: #fff7e6;
+    color: #d46b08;
+}
+
+.status-out-stock {
+    background-color: #ffe2e5;
+    color: #cd201f;
+}

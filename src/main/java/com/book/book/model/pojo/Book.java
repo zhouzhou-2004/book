@@ -19,7 +19,38 @@ public class Book {
   private String publish;
   private String publishTime;
   private int size;
-  private String type;
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public String getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
 
   public int getPages() {
     return pages;
@@ -69,35 +100,22 @@ public class Book {
     this.type = type;
   }
 
-  public String getIsbn() {
-    return isbn;
-  }
+  private String type;
 
-  public void setIsbn(String isbn) {
-    this.isbn = isbn;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(String author) {
-    this.author = author;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
+  @Override
+  public String toString() {
+    return "Book{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", author='" + author + '\'' +
+            ", isbn='" + isbn + '\'' +
+            ", pages=" + pages +
+            ", price=" + price +
+            ", publish='" + publish + '\'' +
+            ", publishTime='" + publishTime + '\'' +
+            ", size=" + size +
+            ", type='" + type + '\'' +
+            '}';
   }
 }
+
