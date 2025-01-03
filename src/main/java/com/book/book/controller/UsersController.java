@@ -86,7 +86,6 @@ public class UsersController {
     @RequestMapping("/list/delete")
     private ResponseUtils delete(@RequestBody UserVO userVO){
         try {
-            //拿到参数之后我们就可以去执行SQL删除用户了
             int deleted = usersService.deleteUser(userVO.getId());
             if (deleted == 1){
                 return new ResponseUtils(200,"删除成功");
