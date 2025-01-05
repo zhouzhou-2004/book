@@ -2,6 +2,7 @@ package com.book.book.mapper;
 
 import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -32,4 +33,12 @@ public interface ReaderMapper {
 
     @Select("select * from users where username like concat('%',#{username},'%') or nickname  like concat('%',#{username},'%') and is_admin=0")
     List<UserVO> selectByLike(String LikeName);
+
+    //新增功能
+    @Insert("insert into users(id, nickname, username, password, birthday, tel, identity, email, address, size, is_admin) values(null, #{nickname}, #{username}, #{password}, #{birthday}, #{tel}, #{identity}, #{email}, #{address}, #{size}, 0)")
+    int addReader(Users users);
+
+    //判断用户是否存在
+    @Select("select * from users where username=#{username} and is_admin=0")
+    Users checkReaderName(String username);
 }
