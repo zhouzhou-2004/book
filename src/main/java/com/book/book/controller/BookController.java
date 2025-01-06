@@ -84,6 +84,7 @@ public class BookController {
             return new ResponseUtils(400,"删除异常");
         }
     }
+//    图书新增
     @PostMapping("/addBook")
     private ResponseUtils add(@RequestBody Book book) {
         try {
