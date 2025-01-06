@@ -1,9 +1,11 @@
 package com.book.book.controller;
 
+import com.book.book.model.dto.QueryRequest;
 import com.book.book.model.dto.UsersDto;
 import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
 import com.book.book.service.UsersService;
+import com.book.book.utils.PageResult;
 import com.book.book.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,7 +86,6 @@ public class UsersController {
     @RequestMapping("/list/delete")
     private ResponseUtils delete(@RequestBody UserVO userVO){
         try {
-            //拿到参数之后我们就可以去执行SQL删除用户了
             int deleted = usersService.deleteUser(userVO.getId());
             if (deleted == 1){
                 return new ResponseUtils(200,"删除成功");
@@ -97,6 +98,14 @@ public class UsersController {
         }
     }
 
+    /**
+     * 分页查询
+     */
+    @RequestMapping("/list/page")
+    private ResponseUtils list(@RequestBody QueryRequest queryRequest){
+        PageResult<UserVO> tStudentPageResult = usersService.userSelectList(queryRequest);
+        return new ResponseUtils(200,"success",tStudentPageResult);
+    }
 
     /**
      * 根据用户名查询个人信息功能
@@ -105,7 +114,7 @@ public class UsersController {
     private ResponseUtils info(@RequestBody Users users){
         System.out.println(users);
         try {
-            Users userById = usersService.getUserById(users.getUsername());
+            Users userById = usersService.getUserByUsername(users.getUsername());
             if (userById != null){
                 return new ResponseUtils(200,"查询成功",userById);
             }else {
