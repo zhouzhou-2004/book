@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 借阅管理
@@ -21,10 +22,11 @@ public interface BorrowMapper {
  * 第一个页面：搜索图书
  */
 //功能1：获取所有图书信息
+@Select("select * from book where is_delete = 0")
     List<Book> selectBooKAll();
 
 //功能2：根据图书名称搜索图书
-//    @Select("select * from book where name like concat('%',#{name},'%') and is_delete = 0")
+    @Select("select * from book where name like concat('%',#{name},'%') and is_delete = 0")
     List<Book> searchBook(String name);
 
 //    功能3：分页查询
@@ -70,5 +72,22 @@ public interface BorrowMapper {
 /**
  *第三个页面：归还图书
  */
+// 获取用户借阅的图书信息
+@Select("SELECT b.*, bk.name as bookName, bk.author " +
+        "FROM borrow b " +
+        "JOIN book bk ON b.book_id = bk.id " +
+        "WHERE b.user_id = #{userId}")
+List<Map<String, Object>> getBorrowedBooks(Integer userId);
+
+    // 更新借阅记录为已归还
+    @Update("UPDATE borrow SET ret = 1, update_time = #{returnTime} " +
+            "WHERE id = #{borrowId}")
+    int updateBorrowStatus(@Param("borrowId") Integer borrowId,
+                           @Param("returnTime") String returnTime);
+
+    // 更新图书库存（增加）
+    @Update("UPDATE book SET size = size + 1 " +
+            "WHERE id = (SELECT book_id FROM borrow WHERE id = #{borrowId})")
+    int increaseBookStock(Integer borrowId);
 
 }

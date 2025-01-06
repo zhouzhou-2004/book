@@ -59,7 +59,7 @@
 						<th>作者</th>
 						<th>借阅时间</th>
 						<th>应还时间</th>
-						<th>是否逾期</th>
+						<th>实际归还时间</th>
 						<th>操作</th>
 					</tr>
 					</thead>
@@ -113,51 +113,61 @@
 		});
 	}
 
-	// 显示借阅图书列表
+	// 修改显示借阅图书列表函数
 	function displayBorrowedBooks(books) {
 		const tbody = document.getElementById('borrowTableBody');
 
 		if (!books || books.length === 0) {
-			tbody.innerHTML = '<tr><td colspan="7" align="center">暂无借阅记录</td></tr>';
+			tbody.innerHTML = '<tr><td colspan="8" align="center">暂无借阅记录</td></tr>';
 			return;
 		}
 
 		tbody.innerHTML = '';
 		books.forEach((book, index) => {
-			const isOverdue = checkIsOverdue(book.returnTime);
+			// 计算是否逾期
+			const endDate = new Date(book.end_time);
+			const today = new Date();
+			const isOverdue = !book.update_time && endDate < today;
+
 			const row = document.createElement('tr');
 			row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${book.bookName}</td>
-                <td>${book.author}</td>
-                <td>${book.borrowTime}</td>
-                <td>${book.returnTime}</td>
-                <td class="${isOverdue ? 'overdue' : 'normal'}">${isOverdue ? '已逾期' : '正常'}</td>
-                <td>
-                    <button class="button blue" onclick="returnBook('${book.id}')">归还</button>
-                </td>
-            `;
+            <td>${index + 1}</td>
+            <td>${book.bookName || '-'}</td>
+            <td>${book.author || '-'}</td>
+            <td>${book.create_time || '-'}</td>
+            <td>${book.end_time || '-'}</td>
+            <td>${book.update_time || '-'}</td>
+            <td>
+                ${book.ret === 1 ?
+					'<span class="normal">已归还</span>' :
+					(isOverdue ? '<span class="overdue">已逾期</span>' : '<span class="normal">借阅中</span>')}
+            </td>
+            <td>
+                ${book.ret === 0 ?
+					`<button class="button blue" onclick="returnBook(${book.id})">归还</button>` :
+					'-'}
+            </td>
+        `;
 			tbody.appendChild(row);
 		});
 	}
 
-	// 检查是否逾期
-	function checkIsOverdue(returnTime) {
-		const now = new Date();
-		const returnDate = new Date(returnTime);
-		return now > returnDate;
-	}
-
-	// 归还图书
+	// 修改归还图书函数
 	function returnBook(borrowId) {
 		if (!confirm('确定要归还这本图书吗？')) {
 			return;
 		}
 
+		// 使用当前日期作为归还时间
+		const today = formatDate(new Date());
+
 		axios({
 			url: "/borrow/returnBook",
 			method: "post",
-			data: { borrowId: borrowId }
+			data: {
+				borrowId: borrowId,
+				returnTime: today
+			}
 		}).then(response => {
 			if (response.data.code === 200) {
 				javaex.message({
@@ -179,6 +189,14 @@
 				type : "error"
 			});
 		});
+	}
+
+	// 添加日期格式化函数
+	function formatDate(date) {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
 	}
 
 	// 清空表格

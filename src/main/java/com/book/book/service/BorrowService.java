@@ -30,5 +30,10 @@ public interface BorrowService {
     int getUserBorrowCount(Integer userId);
     // 借阅图书
     Map<String, Object> borrowBook(Integer userId, String bookName, String author, String borrowTime, String returnTime);
+//    归还图书
+// 获取用户借阅的图书
+    List<Map<String, Object>> getBorrowedBooks(Integer userId);
 
+    // 归还图书
+    Map<String, Object> returnBook(Integer borrowId, String returnTime);
 }

@@ -203,4 +203,47 @@ public class BorrowController {
             return new ResponseUtils(500, "系统错误");
         }
     }
+    @PostMapping("/getBorrowedBooks")
+    public ResponseUtils getBorrowedBooks(@RequestBody Map<String, Integer> params) {
+        try {
+            Integer userId = params.get("userId");
+            if (userId == null) {
+                return new ResponseUtils(400, "用户ID不能为空");
+            }
+
+            List<Map<String, Object>> books = borrowService.getBorrowedBooks(userId);
+            if (books == null) {
+                return new ResponseUtils(500, "查询失败");
+            }
+            return new ResponseUtils(200, "查询成功", books);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(500, "系统错误：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 归还图书
+     */
+    @PostMapping("/returnBook")
+    public ResponseUtils returnBook(@RequestBody Map<String, Object> params) {
+        try {
+            Integer borrowId = (Integer) params.get("borrowId");
+            String returnTime = (String) params.get("returnTime");
+
+            if (borrowId == null || returnTime == null) {
+                return new ResponseUtils(400, "参数不完整");
+            }
+
+            Map<String, Object> result = borrowService.returnBook(borrowId, returnTime);
+            if ((Boolean) result.get("success")) {
+                return new ResponseUtils(200, "归还成功");
+            } else {
+                return new ResponseUtils(500, (String) result.get("message"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(500, "系统错误：" + e.getMessage());
+        }
+    }
 }

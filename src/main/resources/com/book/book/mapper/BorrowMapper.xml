@@ -16,13 +16,13 @@
 
     </resultMap>
     <!-- 获取所有图书信息 -->
-    <select id="selectBooKAll" resultMap="BorrowMap">
-        select * from book where is_delete = 0
-    </select>
-    <!-- 根据关键字搜索图书 -->
-    <select id="searchBook" parameterType="string" resultType="com.book.book.model.pojo.Book">
-        select * from book where name like concat('%',#{name},'%') and is_delete = 0
-    </select>
+<!--    <select id="selectBooKAll" resultMap="BorrowMap">-->
+<!--        select * from book where is_delete = 0-->
+<!--    </select>-->
+<!--    &lt;!&ndash; 根据关键字搜索图书 &ndash;&gt;-->
+<!--    <select id="searchBook" parameterType="string" resultType="com.book.book.model.pojo.Book">-->
+<!--        select * from book where name like concat('%',#{name},'%') and is_delete = 0-->
+<!--    </select>-->
     <!-- 统计总记录数 -->
     <select id="selectTotal" resultType="java.lang.Long">
         SELECT COUNT(*)

@@ -9,6 +9,7 @@ import com.book.book.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -164,6 +165,49 @@ public class BorrowServiceImpl implements BorrowService {
             result.put("message", "借阅成功");
             return result;
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("message", "系统错误：" + e.getMessage());
+            return result;
+        }
+    }
+    @Override
+    public List<Map<String, Object>> getBorrowedBooks(Integer userId) {
+        try {
+            return borrowMapper.getBorrowedBooks(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Map<String, Object> returnBook(Integer borrowId,String returnTime) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            // 获取当前时间作为归还时间
+            returnTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+            // 更新借阅状态
+            int updateResult = borrowMapper.updateBorrowStatus(borrowId, returnTime);
+            if (updateResult <= 0) {
+                result.put("success", false);
+                result.put("message", "更新借阅状态失败");
+                return result;
+            }
+
+            // 更新图书库存
+            int stockResult = borrowMapper.increaseBookStock(borrowId);
+            if (stockResult <= 0) {
+                result.put("success", false);
+                result.put("message", "更新图书库存失败");
+                return result;
+            }
+
+            result.put("success", true);
+            result.put("message", "归还成功");
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             result.put("success", false);
