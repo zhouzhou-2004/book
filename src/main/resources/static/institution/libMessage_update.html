@@ -87,7 +87,7 @@
             color: #444;
             font-size: 16px;
         }
-
+        
         input[type="text"] {
             width: 100%;
             padding: 12px;
@@ -106,47 +106,149 @@
             box-shadow: 0 0 6px rgba(30, 136, 229, 0.25);
         }
 
-        /* 按钮样式，采用纯色背景搭配阴影，简约现代 */
-        .unit.clear {
+        /* 修改按钮容器样式 */
+        .unit-clear {
             text-align: center;
             margin-top: 20px;
+            width: 100%;
         }
 
         .button {
+            display: inline-block;
+            min-width: 100px;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 20px;
+            background-color: #1e88e5;
+            color: white;
             border: none;
             border-radius: 4px;
-            padding: 12px 30px;
             cursor: pointer;
             font-size: 16px;
             margin: 0 10px;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            background-color: #1e88e5; /* 主题蓝色按钮背景 */
-            color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            vertical-align: middle;
+            transition: all 0.3s ease;
         }
 
         .button:hover {
+            background-color: #1976d2;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            background-color: #1976d2; /* 鼠标悬停时加深背景色 */
-        }
-
-        .button:active {
-            transform: translateY(1px); /* 点击时微微下沉，模拟物理反馈 */
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
         }
 
         .button.no {
-            background-color: #ccc; /* 灰色返回按钮背景 */
+            background-color: #ccc;
+            font-size: 16px;
+            color: white;
+            width: 120px;
         }
 
         .button.no:hover {
-            background-color: #b3b3b3; /* 悬停时加深灰色背景 */
+            background-color: #b3b3b3;
         }
 
-        .button.no:active {
-            transform: translateY(1px);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        /* 确保按钮在禁用状态下也有正确的样式 */
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 修改按钮相关的所有样式 */
+        .unit-clear {
+            text-align: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .button {
+            display: inline-block;
+            min-width: 100px;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 20px;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+            text-align: center;
+            vertical-align: middle;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .button.no {
+            background-color: #ccc;
+        }
+
+        .button.no:hover {
+            background-color: #b3b3b3;
+        }
+
+        /* 确保按钮在禁用状态下也有正确的样式 */
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .checkMessage {
+            position: absolute;
+            left: 0;
+            bottom: -20px;
+            font-size: 12px;
+            transition: color 0.3s ease;
+        }
+
+        input[type="text"] {
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"].valid {
+            border-color: #00b894;
+        }
+
+        input[type="text"].invalid {
+            border-color: #ff6b6b;
+        }
+
+        /* 输入框placeholder样式 */
+        input[type="text"]::placeholder {
+            color: #999;
+            font-size: 14px;
+        }
+        .form-group {
+            position: relative;
+        }
+
+        .char-count {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #999;
+            pointer-events: none; /* 防止干扰输入 */
+        }
+
+        /* 当输入框获得焦点时，调整字数显示的位置，避免与输入内容重叠 */
+        input:focus + .char-count {
+            right: 25px;
         }
     </style>
 </head>
@@ -163,21 +265,34 @@
         <!--正文内容-->
         <div class="main">
             <form id="libraryInfoForm">
-                <label for="libraryName">图书馆名称：</label>
-                <input type="text" id="libraryName" /> <br />
-                <label for="address">地址：</label>
-                <input type="text" id="address" /> <br />
-                <label for="openTime">开放时间：</label>
-                <input type="text" id="openTime" /> <br />
-                <label for="contactPhone">联系电话：</label>
-                <input type="text" id="contactPhone" /> <br />
-                <!--提交按钮-->
-                <div class="unit.clear">
-                    <div style="text-align: center;">
-                        <!--表单提交时，必须是input元素，并指定type类型为button，否则ajax提交时，会返回error回调函数-->
-                        <input type="button" id="return" class="button no" value="返回" />
-                        <input type="button" id="save" class="button true" value="保存" />
-                    </div>
+                <div class="form-group">
+                    <label for="libraryName">图书馆名称：</label>
+                    <input type="text" id="libraryName" placeholder="请输入2-50个字符的名称" />
+                    <span class="checkMessage checkLibraryName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">地址：</label>
+                    <input type="text" id="address" placeholder="请输入5-100个字符的地址" />
+                    <span class="checkMessage checkAddress"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="openTime">开放时间：</label>
+                    <input type="text" id="openTime" placeholder="格式：09:00-21:00" />
+                    <span class="checkMessage checkOpenTime"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactPhone">联系电话：</label>
+                    <input type="text" id="contactPhone" placeholder="请输入11位手机号码" maxlength="11"/>
+                    <span class="char-count">0/11</span>  <!-- 添加字数显示 -->
+                    <span class="checkMessage checkContactPhone"></span>
+                </div>
+
+                <div class="unit-clear">
+                    <input type="button" id="return" class="button no" value="返回" />
+                    <input type="button" id="save" class="button" value="保存" />
                 </div>
             </form>
         </div>
@@ -186,125 +301,240 @@
 <script src="/js/axios.min.js"></script>
 
 <script>
+    // 表单验证规则
+    const validationRules = {
+        libraryName: {
+            regex: /^[\u4e00-\u9fa5a-zA-Z0-9\s]{2,50}$/,
+            empty: '图书馆名称不能为空',
+            error: '名称长度2-50个字符，只允许中文、英文、数字和空格',
+            placeholder: '请输入2-50个字符的名称'
+        },
+        address: {
+            regex: /^[\u4e00-\u9fa5a-zA-Z0-9\s,-]{5,100}$/,
+            empty: '地址不能为空',
+            error: '地址长度5-100个字符',
+            placeholder: '请输入5-100个字符的地址'
+        },
+        openTime: {
+            regex: /^([01]?[0-9]|2[0-3]):[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+            empty: '开放时间不能为空',
+            error: '请使用格式：HH:MM-HH:MM，如 09:00-21:00(英文状态下的)',
+            placeholder: '格式：09:00-21:00'
+        },
+        contactPhone: {
+            regex: /^1[3-9]\d{9}$/,
+            empty: '联系电话不能为空',
+            error: '请输入正确的11位手机号码',
+            placeholder: '请输入11位手机号码'
+        }
+    };
+    // 添加一个变量来跟踪表单是否被修改
+    let formChanged = false;
 
-    // 页面加载时获取URL参数并填充表单
-    document.addEventListener('DOMContentLoaded', function() {
-        // 获取URL中的参数
+    // 初始化表单验证
+    function initFormValidation() {
+        Object.keys(validationRules).forEach(field => {
+            const input = document.getElementById(field);
+            const checkElement = document.querySelector(`.check${field.charAt(0).toUpperCase() + field.slice(1)}`);
+
+            // 为联系电话添加特殊处理
+            if (field === 'contactPhone') {
+                const charCount = input.parentElement.querySelector('.char-count');
+
+                // 更新字数显示
+                input.addEventListener('input', function() {
+                    const length = this.value.length;
+                    charCount.textContent = `${length}/11`;
+
+                    // 根据输入长度改变显示颜色
+                    if (length === 11) {
+                        charCount.style.color = '#52c41a'; // 达到11位显示绿色
+                    } else {
+                        charCount.style.color = length > 11 ? '#ff4d4f' : '#999'; // 超过11位显示红色
+                    }
+
+                    // 标记表单已被修改
+                    formChanged = true;
+
+                    // 执行验证
+                    if (this.value.trim()) {  // 只有当有输入内容时才验证
+                        if (validationRules[field].regex.test(this.value)) {
+                            setValidationMessage(checkElement, '格式正确', 'green');
+                            input.classList.remove('invalid');
+                            input.classList.add('valid');
+                        } else {
+                            setValidationMessage(checkElement, validationRules[field].error, 'red');
+                            input.classList.remove('valid');
+                            input.classList.add('invalid');
+                        }
+                    } else {
+                        setValidationMessage(checkElement, validationRules[field].empty, 'red');
+                        input.classList.remove('valid');
+                        input.classList.add('invalid');
+                    }
+                });
+            } else {
+                // 其他字段的常规处理
+                input.addEventListener('input', debounce(function() {
+                    formChanged = true;
+                    validateField(field, this.value, checkElement);
+                }, 300));
+            }
+
+            // 添加焦点事件监听
+            input.addEventListener('focus', function() {
+                const rule = validationRules[field];
+                setValidationMessage(checkElement, rule.error, '#666');
+            });
+        });
+    }
+    // 修改返回按钮点击事件
+    document.getElementById('return').addEventListener('click', function() {
+        if (formChanged) {
+            // 如果被修改过，显示确认对话框
+            if (confirm('确定要取消编辑吗？所有修改将不会保存。')) {
+                window.location.href = 'libMessage.html';
+            }
+        } else {
+            // 如果没有被修改，直接返回
+            window.location.href = 'libMessage.html';
+        }
+    });
+
+    // 字段验证函数
+    function validateField(field, value, checkElement) {
+        const rule = validationRules[field];
+        const input = document.getElementById(field);
+        // 如果 checkElement 为空，尝试重新获取
+        if (!checkElement) {
+            checkElement = document.querySelector(`.check${field.charAt(0).toUpperCase() + field.slice(1)}`);
+        }
+        if (!value.trim()) {
+            setValidationMessage(checkElement, rule.empty, 'red');
+            input.classList.remove('valid');
+            input.classList.add('invalid');
+            return false;
+        }
+
+        if (!rule.regex.test(value)) {
+            setValidationMessage(checkElement, rule.error, 'red');
+            input.classList.remove('valid');
+            input.classList.add('invalid');
+            return false;
+        }
+
+        setValidationMessage(checkElement, '格式正确', 'green');
+        input.classList.remove('invalid');
+        input.classList.add('valid');
+        return true;
+    }
+
+    // 设置验证消息
+    function setValidationMessage(element, message, color) {
+        if (element) {
+            element.textContent = message;
+            element.style.color = color;
+        }
+    }
+
+    // 防抖函数
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func.apply(this, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // 从URL获取参数并填充表单
+    function loadExistingData() {
         const urlParams = new URLSearchParams(window.location.search);
+        Object.keys(validationRules).forEach(field => {
+            const value = urlParams.get(field);
+            if (value) {
+                const input = document.getElementById(field);
+                input.value = decodeURIComponent(value);
+                // 触发验证
+                input.dispatchEvent(new Event('input'));
+            }
+        });
+    }
 
-        // 获取各个参数值
-        const libraryName = urlParams.get('libraryName');
-        const address = urlParams.get('address');
-        const openTime = urlParams.get('openTime');
-        const contactPhone = urlParams.get('contactPhone');
+    // 保存按钮点击事件
+    document.getElementById('save').addEventListener('click', function() {
+        // 验证所有字段
+        let isValid = true;
+        Object.keys(validationRules).forEach(field => {
+            const input = document.getElementById(field);
+            const checkElement = document.querySelector(`.check${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            if (!validateField(field, input.value, checkElement)) {
+                isValid = false;
+            }
+        });
 
-        // 将值填充到表单中
-        document.getElementById('libraryName').value = libraryName || '';
-        document.getElementById('address').value = address || '';
-        document.getElementById('openTime').value = openTime || '';
-        document.getElementById('contactPhone').value = contactPhone || '';
-    });
-
-    <!--编辑图书馆信息-->
-    // 获取返回按钮和保存按钮元素
-    const returnButton = document.getElementById('return');
-    const saveButton = document.getElementById('save');
-
-    //为返回添加点击事件监听器
-    returnButton.addEventListener('click', function () {
-        // 跳转到编辑页面
-        window.location.href = 'libMessage.html';
-    });
-
-    // 点击保存按钮的事件处理函数事件
-    saveButton.addEventListener('click',function () {
-        // 获取表单输入的值
-        const libraryName = document.getElementById('libraryName').value;
-        const address = document.getElementById('address').value;
-        const openTime = document.getElementById('openTime').value;
-        const contactPhone = document.getElementById('contactPhone').value;
-        // 校验文本
-        if (libraryName === "") {
+        if (!isValid) {
             javaex.optTip({
-                content: "图书馆名称不能为空!",
+                content: "请确保所有字段格式正确后再保存！",
                 type: "error"
             });
-            return false;
-        }
-        if (address === "") {
-            javaex.optTip({
-                content: "地址不能为空!",
-                type: "error"
-            });
-            return false;
-        }
-        if (openTime ==="") {
-            javaex.optTip({
-                content: "开放时间不能为空",
-                type: "error"
-            });
-            return false;
-        }
-        if (contactPhone === "") {
-            javaex.optTip({
-                content: "联系电话不能为空!",
-                type: "error"
-            });
-            return false;
+            return;
         }
 
         // 禁用保存按钮防止重复提交
-        saveButton.disabled = true;
+        this.disabled = true;
 
-        // 使用完整的axios函数调用形式发送POST请求
+        // 获取表单数据
+        const formData = {
+            libraryName: document.getElementById('libraryName').value.trim(),
+            address: document.getElementById('address').value.trim(),
+            openTime: document.getElementById('openTime').value.trim(),
+            contactPhone: document.getElementById('contactPhone').value.trim()
+        };
+
+        // 发送请求
         axios({
             url: 'http://localhost:8080/lib/update',
             method: 'post',
-            headers: {
-                // 表明发送的数据是 JSON 格式的，将构建好的 json 对象作为请求数据发送给后端。
-                'Content-Type': 'application/json'
-            },
-            data: {
-                libraryName: libraryName,
-                address: address,
-                openTime: openTime,
-                contactPhone: contactPhone
-            }
+            headers: {'Content-Type': 'application/json'},
+            data: formData
         })
-            .then(function (response) {
-                // 根据后端返回数据中的code属性判断操作是否成功
+            .then(response => {
                 if (response.data.code === 200) {
                     javaex.optTip({
-                        content: "图书馆信息更新成功",
+                        content: "图书馆信息更新成功！",
                         type: "success"
                     });
-                    // 延迟跳转至列表，在1500ms之后
-                    setTimeout(function () {
-                        window.location.href = "libMessage.html";
-                    }, 1500);
+                    setTimeout(() => window.location.href = "libMessage.html", 1500);
                 } else {
-                    // 如果失败，弹出后端返回的提示信息
-                    javaex.optTip({
-                        content: response.data.message || '更新失败，请检查数据',
-                        type: "error"
-                    });
-
-                    // 重新启用保存按钮
-                    saveButton.disabled = false;
+                    throw new Error(response.data.message || '图书馆信息更新失败');
                 }
             })
-            .catch(function (error) {
-                console.error('提交数据出错：', error);
-
-                // 提供错误的视觉反馈
+            .catch(error => {
                 javaex.optTip({
-                    content: "提交数据时发生错误，请稍后再试。",
+                    content: error.message || "操作失败，请稍后重试",
                     type: "error"
                 });
-
-                // 重新启用保存按钮
-                saveButton.disabled = false;
+                this.disabled = false;
             });
+    });
+
+    // 返回按钮点击事件
+    document.getElementById('return').addEventListener('click', function() {
+        if (confirm('确定要取消编辑吗？所有修改将不会保存。')) {
+            window.location.href = 'libMessage.html';
+        }
+    });
+
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        initFormValidation();
+
+        // 从URL获取参数并填充表单
+        loadExistingData();
     });
 
 </script>

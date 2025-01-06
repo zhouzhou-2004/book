@@ -128,6 +128,17 @@
                     data: formData,
                     withCredentials:true
                 });
+                if (response.data.code === 401) {
+                    javaex.message({
+                        content: "请先登录",
+                        type: "error"
+                    });
+                    setTimeout(() => {
+                        location.href = '/login.html';  // 跳转到登录页
+                    }, 1500);
+                    return;
+                }
+
                 //保存成功后跳转
                 if (response.data.code == 200) {
                     javaex.message({

@@ -15,4 +15,9 @@ public interface ReaderService {
 //     */
 
     List<UserVO> selectByLike(String LikeName);
+
+    //新增功能
+    int addReader(Users users);
+    //判断用户是否存在
+    int checkReaderName(String username);
 }
