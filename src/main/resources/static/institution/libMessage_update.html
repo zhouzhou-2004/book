@@ -279,7 +279,7 @@
 
                 <div class="form-group">
                     <label for="openTime">开放时间：</label>
-                    <input type="text" id="openTime" placeholder="格式：09:00-21:00" />
+                    <input type="text" id="openTime" placeholder="格式：09:00-21:00 or 9:00-21:00" />
                     <span class="checkMessage checkOpenTime"></span>
                 </div>
 
@@ -301,7 +301,7 @@
 <script src="/js/axios.min.js"></script>
 
 <script>
-    // 验证
+    // 修改时图书馆信息的格式验证
     const validationRules = {
         libraryName: {
             regex: /^[\u4e00-\u9fa5a-zA-Z0-9\s]{2,50}$/,
@@ -318,7 +318,7 @@
         openTime: {
             regex: /^([01]?[0-9]|2[0-3]):[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
             empty: '开放时间不能为空',
-            error: '请使用格式：HH:MM-HH:MM，如 09:00-21:00(英文状态下的)',
+            error: '请使用格式：HH:MM-HH:MM，如 09:00-21:00 or 9:00-21:00(英文状态下的)',
             placeholder: '格式：09:00-21:00'
         },
         contactPhone: {
@@ -328,7 +328,7 @@
             placeholder: '请输入11位手机号码'
         }
     };
-    // 添加一个变量来跟踪表单是否被修改
+    // 信息修改状态
     let formChanged = false;
 
     // 初始化表单验证
@@ -388,18 +388,6 @@
             });
         });
     }
-    // 修改返回按钮点击事件
-    document.getElementById('return').addEventListener('click', function() {
-        if (formChanged) {
-            // 如果被修改过，显示确认对话框
-            if (confirm('确定要取消编辑吗？所有修改将不会保存。')) {
-                window.location.href = 'libMessage.html';
-            }
-        } else {
-            // 如果没有被修改，直接返回
-            window.location.href = 'libMessage.html';
-        }
-    });
 
     // 字段验证函数
     function validateField(field, value, checkElement) {
@@ -532,7 +520,6 @@
     // 页面加载时初始化
     document.addEventListener('DOMContentLoaded', function() {
         initFormValidation();
-
         // 从URL获取参数并填充表单
         loadExistingData();
     });
