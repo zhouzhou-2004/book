@@ -1,7 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
+	<meta charset="utf-8">
 	<!-- 字体图标 -->
 	<link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
 	<!-- 动画 -->
@@ -18,114 +18,177 @@
 	<script src="/javaex/pc/js/javaex.min.js"></script>
 	<!-- 表单验证 -->
 	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
-<title>后台管理</title>
+	<!-- axios -->
+	<script src="/js/axios.min.js"></script>
+	<title>添加图书</title>
 </head>
-<style>
-    
-</style>
 
 <body>
-    <!--全部主体内容-->
 <div class="list-content">
-	<!--块元素-->
 	<div class="block">
-		<!--修饰块元素名称-->
 		<div class="banner">
 			<p class="tab fixed">添加图书</p>
 		</div>
-	
-		<!--正文内容-->
+
 		<div class="main">
-			<form>
-				<!--文本框-->
+			<form id="bookForm">
 				<div class="unit clear">
 					<div class="left"><span class="required">*</span><p class="subtitle">书名</p></div>
 					<div class="right">
-						<input type="text" id="bookName" class="text" placeholder="请输入图书名称" />
-					</div>
-				</div>
-
-				<div class="unit clear">
-					<div class="left"><span class="required">*</span><p class="subtitle">ISBN编号</p></div>
-					<div class="right">
-						<input type="text" id="isbn" class="text" placeholder="ISBN编号" />
+						<input type="text" id="name" class="text" placeholder="请输入书名" />
 					</div>
 				</div>
 
 				<div class="unit clear">
 					<div class="left"><span class="required">*</span><p class="subtitle">作者</p></div>
 					<div class="right">
-						<input type="text" id="author" class="text" placeholder="作者" />
-					</div>
-				</div>
-
-				<!--下拉选择框-->
-				<div class="unit clear">
-					<div class="left"><p class="subtitle">图书分类</p></div>
-					<div class="right">
-						<select id="select">
-							<option value="">请选择</option>
-							<option value="1">马克思主义、列宁主义、毛泽东思想、邓小平理论</option>
-							<option value="2">哲学、宗教</option>
-							<option value="3">文化、科学、教育、体育</option>
-							<option value="4">政治、法律</option>
-							<option value="5">历史、地理</option>
-						</select>
+						<input type="text" id="author" class="text" placeholder="请输入作者" />
 					</div>
 				</div>
 
 				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">页数</p></div>
+					<div class="left"><span class="required">*</span><p class="subtitle">ISBN</p></div>
 					<div class="right">
-						<input type="text" id="pages" class="text" placeholder="图书页数" />
+						<input type="text" id="isbn" class="text" placeholder="请输入ISBN" />
 					</div>
 				</div>
 
 				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">定价</p></div>
+					<div class="left"><p class="subtitle">页数</p></div>
 					<div class="right">
-						<input type="text" id="price" class="text" placeholder="定价" />
+						<input type="text" id="pages" class="text" placeholder="请输入页数"
+							   onkeyup="this.value=this.value.replace(/[^\d]/g,'')"
+							   onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" />
+					</div>
+				</div>
+
+				<div class="unit clear">
+					<div class="left"><p class="subtitle">定价</p></div>
+					<div class="right">
+						<input type="text" id="price" class="text" placeholder="请输入定价"
+							   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+							   onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
+					</div>
+				</div>
+
+				<div class="unit clear">
+					<div class="left"><p class="subtitle">出版社</p></div>
+					<div class="right">
+						<input type="text" id="publish" class="text" placeholder="请输入出版社" />
 					</div>
 				</div>
 
 				<div class="unit clear">
 					<div class="left"><p class="subtitle">出版时间</p></div>
 					<div class="right">
-						<input type="text" id="publishTime" class="ex-date" style="width: 180px;" value="" readonly/>
+						<input type="text" id="publishTime" class="ex-date" readonly/>
 					</div>
 				</div>
 
 				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">出版社</p></div>
+					<div class="left"><p class="subtitle">库存数量</p></div>
 					<div class="right">
-						<input type="text" id="publish" class="text" placeholder="出版社" />
+						<input type="text" id="size" class="text" placeholder="请输入库存数量"
+							   onkeyup="this.value=this.value.replace(/[^\d]/g,'')"
+							   onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" />
 					</div>
 				</div>
-
-
 
 				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">库存数量</p></div>
+					<div class="left"><p class="subtitle">图书分类</p></div>
 					<div class="right">
-						<input type="text" id="count" class="text" placeholder="库存数量" />
+						<select id="type">
+							<option value="">请选择</option>
+							<option value="马克思主义、列宁主义、毛泽东思想、邓小平理论">马克思主义、列宁主义、毛泽东思想、邓小平理论</option>
+							<option value="哲学、宗教">哲学、宗教</option>
+							<option value="文化、科学、教育、体育">文化、科学、教育、体育</option>
+							<option value="政治、法律">政治、法律</option>
+							<option value="历史、地理">历史、地理</option>
+						</select>
 					</div>
 				</div>
-				<!--提交按钮-->
+
 				<div class="unit clear" style="width: 800px;">
 					<div style="text-align: center;">
-						<!--表单提交时，必须是input元素，并指定type类型为button，否则ajax提交时，会返回error回调函数-->
 						<input type="button" id="return" class="button no" value="返回" />
 						<input type="button" id="save" class="button yes" value="保存" />
 					</div>
 				</div>
 			</form>
-
 		</div>
 	</div>
 </div>
-	<script src="/js/axios.min.js"></script>
-	<script>
 
-	</script>
+<script>
+	// 初始化日期选择器
+	javaex.date({
+		id: "publishTime",
+		format: "yyyy-MM-dd"
+	});
+
+	// 返回按钮事件
+	document.getElementById('return').onclick = function() {
+		window.location.href = 'book-list.html';
+	};
+
+	// 保存按钮事件
+	document.getElementById('save').onclick = function() {
+		// 获取select元素
+		const typeSelect = document.getElementById('type');
+		// 获取选中的选项
+		const selectedOption = typeSelect.options[typeSelect.selectedIndex];
+
+		// 获取表单数据
+		const formData = {
+			name: document.getElementById('name').value.trim(),
+			author: document.getElementById('author').value.trim(),
+			isbn: document.getElementById('isbn').value.trim(),
+			pages: document.getElementById('pages').value || null,
+			price: document.getElementById('price').value || null,
+			publish: document.getElementById('publish').value.trim() || null,
+			publishTime: document.getElementById('publishTime').value || null,
+			size: document.getElementById('size').value || null,
+			// 使用选项的文本内容而不是value值
+			type: selectedOption.text
+		};
+
+		// 验证必填字段
+		if (!formData.name || !formData.author || !formData.isbn) {
+			javaex.message({
+				content: "请填写必填项",
+				type: "error"
+			});
+			return;
+		}
+
+		// 发送请求
+		axios({
+			url: "http://localhost:8080/GetBook/addBook",
+			method: "post",
+			data: formData
+		}).then(response => {
+			if (response.data.code === 200) {
+				javaex.message({
+					content: "添加成功",
+					type: "success"
+				});
+				setTimeout(() => {
+					window.location.href = 'book-list.html';
+				}, 1500);
+			} else {
+				javaex.message({
+					content: response.data.msg || "添加失败",
+					type: "error"
+				});
+			}
+		}).catch(error => {
+			console.error('添加失败：', error);
+			javaex.message({
+				content: "添加失败",
+				type: "error"
+			});
+		});
+	};
+</script>
 </body>
 </html>

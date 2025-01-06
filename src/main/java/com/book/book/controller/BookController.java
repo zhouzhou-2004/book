@@ -45,20 +45,16 @@ public class BookController {
         try {
             // 打印接收到的数据，方便调试
             System.out.println("接收到的更新数据：" + book);
-
             // 参数校验
             if (book == null) {
                 return new ResponseUtils(400, "参数错误：请求体为空");
             }
-
             Integer bookId = book.getId();
             if (bookId == null) {
                 return new ResponseUtils(400, "参数错误：图书ID不能为空");
             }
-
             // 调用服务层更新数据
             int result = bookService.updateBook(book);
-
             // 根据更新结果返回不同的响应
             if (result > 0) {
                 return new ResponseUtils(200, "图书信息更新成功");
@@ -88,5 +84,18 @@ public class BookController {
             return new ResponseUtils(400,"删除异常");
         }
     }
-
+    @PostMapping("/addBook")
+    private ResponseUtils add(@RequestBody Book book) {
+        try {
+            int result = bookService.addBook(book);
+            if (result == 1) {
+                return new ResponseUtils(200, "添加成功");
+            } else {
+                return new ResponseUtils(500, "添加失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400, "添加异常");
+        }
+    }
 }
