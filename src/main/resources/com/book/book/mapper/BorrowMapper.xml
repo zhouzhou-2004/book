@@ -54,4 +54,40 @@
         ORDER BY id
         LIMIT #{offset}, #{pageSize}
     </select>
+    <!-- 检查用户是否存在 -->
+    <select id="checkUserExists" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM users
+        WHERE id = #{userId}
+    </select>
+
+    <!-- 获取用户当前借阅数量 -->
+    <select id="getUserBorrowCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM borrow
+        WHERE user_id = #{userId}
+          AND ret = 0
+    </select>
+    <!-- 根据书名和作者查询图书 -->
+    <select id="getBookByNameAndAuthor" resultMap="BorrowMap">
+        SELECT * FROM book
+        WHERE name = #{name}
+          AND author = #{author}
+          AND is_delete = 0
+          AND size > 0
+    </select>
+
+    <!-- 更新图书库存 -->
+    <update id="updateBookStock">
+        UPDATE book
+        SET size = size - 1
+        WHERE id = #{bookId}
+          AND size > 0
+    </update>
+
+    <!-- 添加借阅记录 -->
+    <insert id="insertBorrow" parameterType="com.book.book.model.pojo.Borrow">
+    INSERT INTO borrow (book_id, user_id, create_time, end_time, ret)
+    VALUES (#{bookId}, #{userId}, #{createTime}, #{endTime}, 0)
+  </insert>
 </mapper>

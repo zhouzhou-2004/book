@@ -20,6 +20,8 @@ public class Borrow {
   private long userId;
 //  归还时间
   private String endTime;
+//  是否归还
+  private long ret;
 
   public long getId() {
     return id;
@@ -61,14 +63,6 @@ public class Borrow {
     this.userId = userId;
   }
 
-  public String getEndTime() {
-    return endTime;
-  }
-
-  public void setEndTime(String endTime) {
-    this.endTime = endTime;
-  }
-
   public long getRet() {
     return ret;
   }
@@ -77,7 +71,11 @@ public class Borrow {
     this.ret = ret;
   }
 
-  //  是否归还
-  private long ret;
+  public String getEndTime() {
+    return endTime;
+  }
 
+  public void setEndTime(String endTime) {
+    this.endTime = endTime;
+  }
 }

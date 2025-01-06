@@ -1,14 +1,14 @@
 package com.book.book.mapper;
 
 import com.book.book.model.pojo.Book;
-import com.book.book.model.vo.UserVO;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * @Description 图书
@@ -27,4 +27,10 @@ public interface BookMapper {
     //    删除图书
     @Update("update book set is_delete = 1 where id=#{id}")
     int deleteBook(int id);
+    // 添加图书
+    @Insert("INSERT INTO book (name, author, isbn, pages, price, publish, " +
+            "publish_time, size, type, is_delete) " +
+            "VALUES (CONCAT('《', #{name}, '》'), #{author}, #{isbn}, " +
+            "#{pages}, #{price}, #{publish}, #{publishTime}, #{size}, #{type}, 0)")
+    int addBook(Book book);
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -12,111 +12,258 @@
 	<link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />
 	<!-- jQuery -->
 	<script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>
-	<!-- 全局动态修改 -->
-	<script src="/javaex/pc/js/common.js"></script>
 	<!-- 核心组件 -->
 	<script src="/javaex/pc/js/javaex.min.js"></script>
-	<!-- 表单验证 -->
-	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
 	<title>图书借阅</title>
+	<style>
+		.borrow-info {
+			margin: 10px 0;
+			padding: 10px;
+			background-color: #f5f5f5;
+			border-radius: 4px;
+		}
+		.borrow-count {
+			color: #ff4d4f;
+			font-weight: bold;
+		}
+	</style>
 </head>
-<style>
-
-</style>
 
 <body>
-<!--全部主体内容-->
 <div class="list-content">
-	<!--块元素-->
 	<div class="block">
-		<!--修饰块元素名称-->
 		<div class="banner">
 			<p class="tab fixed">图书借阅</p>
 		</div>
 
-		<!--正文内容-->
 		<div class="main">
-			<form id="form">
+			<!-- 借阅信息提示 -->
+			<div class="borrow-info">
+				<span>当前借阅数量：</span>
+				<span id="currentBorrowCount" class="borrow-count">0</span>
+				<span> / 最大可借数量：3</span>
+			</div>
+
+			<form id="borrowForm">
+				<!-- 用户信息部分 -->
 				<div class="unit clear">
-					<div class="left"><span class="required">*</span><p class="subtitle">ISBN编号</p></div>
+					<div class="left"><span class="required">*</span><p class="subtitle">用户ID</p></div>
 					<div class="right">
-						<input type="text" id="isbn" class="text" placeholder="输入ISBN编号可自动查询" readonly />
+						<input type="text" id="userId" class="text" placeholder="请输入用户ID" onblur="checkUserBorrowCount()"/>
 					</div>
 				</div>
 
+				<!-- 图书信息部分 -->
 				<div class="unit clear">
 					<div class="left"><span class="required">*</span><p class="subtitle">书名</p></div>
 					<div class="right">
-						<input type="text" id="bookName" class="text" placeholder="请输入图书名称" readonly />
+						<input type="text" id="bookName" class="text" placeholder="请输入书名" />
 					</div>
 				</div>
 
 				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">作者</p></div>
+					<div class="left"><span class="required">*</span><p class="subtitle">作者</p></div>
 					<div class="right">
-						<input type="text" id="author" class="text" placeholder="作者" readonly />
+						<input type="text" id="author" class="text" placeholder="请输入作者" />
 					</div>
 				</div>
 
 				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">出版社</p></div>
+					<div class="left"><span class="required">*</span><p class="subtitle">借阅时间</p></div>
 					<div class="right">
-						<input type="text" id="publish" class="text" placeholder="出版社" readonly />
+						<input type="text" id="borrowTime" class="text" placeholder="请选择借阅时间" readonly/>
 					</div>
 				</div>
 
 				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">借阅时间</p></div>
+					<div class="left"><span class="required">*</span><p class="subtitle">应还时间</p></div>
 					<div class="right">
-						<!--不一定是input，可以使用div或span等其他元素-->
-						<input type="text" id="date2" class="ex-date" style="width: 220px;" value="" readonly/>
-					</div>
-				</div>
-
-				<!--下拉选择框-->
-				<div class="unit clear">
-					<div class="left"><p class="subtitle">图书分类</p></div>
-					<div class="right">
-						<input type="text" id="type" class="text" placeholder="图书分类" readonly />
-					</div>
-				</div>
-
-				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">页数</p></div>
-					<div class="right">
-						<input type="text" id="pages" class="text" placeholder="图书页数" readonly />
-					</div>
-				</div>
-
-				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">定价</p></div>
-					<div class="right">
-						<input type="text" id="price" class="text" placeholder="定价" readonly />
-					</div>
-				</div>
-
-				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">库存数量</p></div>
-					<div class="right">
-						<input type="text" id="size" class="text" placeholder="库存数量" />
+						<input type="text" id="returnTime" class="text" placeholder="应还时间" readonly/>
 					</div>
 				</div>
 
 				<!--提交按钮-->
 				<div class="unit clear" style="width: 800px;">
 					<div style="text-align: center;">
-						<!--表单提交时，必须是input元素，并指定type类型为button，否则ajax提交时，会返回error回调函数-->
-						<input type="button" id="return" class="button no" value="返回" />
-						<input type="button" id="save" class="button yes" value="借阅" />
+						<input type="button" id="returnBtn" class="button no" value="返回" onclick="goBack()"/>
+						<input type="button" id="borrowBtn" class="button yes" value="借阅" onclick="borrowBook()"/>
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
-<script src="/js/axios.min.js"></script>
-<script>
 
-</script>
+
 </body>
 </html>
+<script src="/borrow/js/axios.min.js"></script>
+<script>
+	let currentBorrowCount = 0;
+	const MAX_BORROW_COUNT = 3;
+	const BORROW_PERIOD = 30; // 借阅期限为30天
+	// 添加更新借阅数量显示的函数
+	function updateBorrowCountDisplay() {
+		document.getElementById('currentBorrowCount').textContent = currentBorrowCount;
+		checkBorrowLimit();
+	}
+
+	// 添加检查借阅限制的函数
+	function checkBorrowLimit() {
+		const borrowBtn = document.getElementById('borrowBtn');
+		if (currentBorrowCount >= MAX_BORROW_COUNT) {
+			borrowBtn.disabled = true;
+			borrowBtn.className = 'button disabled';
+			javaex.message({
+				content : "已达到最大借阅数量限制",
+				type : "error"
+			});
+		} else {
+			borrowBtn.disabled = false;
+			borrowBtn.className = 'button yes';
+		}
+	}
+	// 更新检查用户借阅数量的函数
+	function checkUserBorrowCount() {
+		const userId = document.getElementById('userId').value.trim();
+
+		// 添加用户ID格式验证
+		if (!userId) {
+			javaex.message({
+				content : "请输入用户ID",
+				type : "error"
+			});
+			document.getElementById('userId').value = '';
+			return;
+		}
+
+		// 验证是否为数字
+		if (!/^\d+$/.test(userId)) {
+			javaex.message({
+				content : "用户ID必须为数字",
+				type : "error"
+			});
+			document.getElementById('userId').value = '';
+			return;
+		}
+
+		axios({
+			url: "http://localhost:8080/borrow/getUserBorrowCount",
+			method: "post",
+			data: { userId: parseInt(userId) }
+		}).then(response => {
+			if (response.data.code === 200) {
+				currentBorrowCount = response.data.data;
+				updateBorrowCountDisplay();
+				checkBorrowLimit();
+			} else {
+				// 处理业务错误
+				javaex.message({
+					content : response.data.msg || "查询失败，请输入正确的用户id",
+					type : "error"
+				});
+				document.getElementById('userId').value = '';
+			}
+		}).catch(error => {
+			console.error('获取借阅数量失败：', error);
+			javaex.message({
+				content : error.response?.data?.msg || "系统错误",
+				type : "error"
+			});
+			document.getElementById('userId').value = '';
+		});
+	}
+
+	// 更新借阅图书函数
+	function borrowBook() {
+		// 获取表单数据
+		const userId = document.getElementById('userId').value.trim();
+		const bookName = document.getElementById('bookName').value.trim();
+		const author = document.getElementById('author').value.trim();
+		const borrowTime = document.getElementById('borrowTime').value.trim();
+		const returnTime = document.getElementById('returnTime').value.trim();
+
+		// 表单验证
+		if (!userId || !bookName || !author || !borrowTime || !returnTime) {
+			javaex.message({
+				content: "请填写所有必填字段",
+				type: "error"
+			});
+			return;
+		}
+
+		// 发送借阅请求
+		axios({
+			url: "http://localhost:8080/borrow/borrowBook",
+			method: "post",
+			data: {
+				userId: parseInt(userId),
+				bookName: bookName,
+				author: author,
+				borrowTime: borrowTime,
+				returnTime: returnTime
+			}
+		}).then(response => {
+			if (response.data.code === 200) {
+				javaex.message({
+					content: "借阅成功",
+					type: "success"
+				});
+				// 更新借阅数量
+				currentBorrowCount++;
+				updateBorrowCountDisplay();
+				// 清空表单
+				clearForm();
+				setTimeout(() => {
+					goBack();
+				}, 1500);
+			} else {
+				javaex.message({
+					content: response.data.msg,
+					type: "error"
+				});
+			}
+		}).catch(error => {
+			console.error('借阅失败，图书名或作者信息错误：', error);
+			javaex.message({
+				content: "系统错误，请稍后重试",
+				type: "error"
+			});
+		});
+	}
+	javaex.date({
+		id : "borrowTime",    // 承载日期组件的input输入框的id
+		isTime : false,       // 是否显示时分秒
+		// 将 new Date() 改为格式化的日期字符串
+		date : formatDate(new Date()),    // 默认显示当前日期
+		callback : function(rtn) {
+			// 设置借阅时间
+			document.getElementById("borrowTime").value = rtn.date;
+			// 计算并设置应还时间（当前日期+30天）
+			let returnDate = new Date(rtn.date);
+			returnDate.setDate(returnDate.getDate() + BORROW_PERIOD);
+			document.getElementById("returnTime").value = formatDate(returnDate);
+		}
+	});
+
+	// 添加日期格式化函数
+	function formatDate(date) {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	}
+
+	// 添加清空表单函数
+	function clearForm() {
+		document.getElementById('userId').value = '';
+		document.getElementById('bookName').value = '';
+		document.getElementById('author').value = '';
+		document.getElementById('borrowTime').value = '';
+		document.getElementById('returnTime').value = '';
+	}
+	// 返回上一页
+	function goBack() {
+		window.history.back();
+	}
+</script>

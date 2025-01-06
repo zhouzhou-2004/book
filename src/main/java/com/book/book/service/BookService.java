@@ -1,7 +1,7 @@
 package com.book.book.service;
 
 import com.book.book.model.pojo.Book;
-import org.apache.ibatis.annotations.Select;
+
 
 import java.util.List;
 
@@ -12,4 +12,6 @@ public interface BookService {
     int updateBook(Book book);
 //    删除图书
     int deleteBook(int id);
+    // 添加图书
+    int addBook(Book book);
 }

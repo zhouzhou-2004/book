@@ -19,10 +19,6 @@ public class Users {
   private long size;
   private String tel;
   private String username;
-  private String code;
-  private boolean remember;
-  private  String verifyCode;
-
   public long getId() {
     return id;
   }
@@ -87,14 +83,6 @@ public class Users {
     this.nickname = nickname;
   }
 
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
   public long getSize() {
     return size;
   }
@@ -103,12 +91,25 @@ public class Users {
     this.size = size;
   }
 
-  public String getTel() {
-    return tel;
+  private String code;
+  private boolean remember;
+  private  String verifyCode;
+
+
+  public String getVerifyCode() {
+    return verifyCode;
   }
 
-  public void setTel(String tel) {
-    this.tel = tel;
+  public void setVerifyCode(String verifyCode) {
+    this.verifyCode = verifyCode;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public String getUsername() {
@@ -127,22 +128,6 @@ public class Users {
     this.code = code;
   }
 
-  public boolean isRemember() {
-    return remember;
-  }
-
-  public void setRemember(boolean remember) {
-    this.remember = remember;
-  }
-
-  public String getVerifyCode() {
-    return verifyCode;
-  }
-
-  public void setVerifyCode(String verifyCode) {
-    this.verifyCode = verifyCode;
-  }
-
   @Override
   public String toString() {
     return "Users{" +
@@ -152,4 +137,11 @@ public class Users {
             '}';
   }
 
+  public boolean isRemember() {
+    return remember;
+  }
+
+  public void setRemember(boolean remember) {
+    this.remember = remember;
+  }
 }

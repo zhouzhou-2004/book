@@ -4,28 +4,72 @@ package com.book.book.model.pojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.javassist.runtime.Inner;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Book {
-
-  private int id;
+//图书id
+  private Integer id;
+//图书名称
   private String name;
+//作者
   private String author;
+//图书编号
   private String isbn;
-  private int pages;
+//图书页数
+  private Integer pages;
+//图书价格
   private double price;
+//出版社
   private String publish;
+//出版时间
   private String publishTime;
-  private int size;
+//图书库存
+  private Integer size;
+//图书类型
   private String type;
+//图书是否删除
+  private Integer isDelete;
 
-  public int getPages() {
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public String getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
+
+  public Integer getPages() {
     return pages;
   }
 
-  public void setPages(int pages) {
+  public void setPages(Integer pages) {
     this.pages = pages;
   }
 
@@ -53,11 +97,11 @@ public class Book {
     this.publishTime = publishTime;
   }
 
-  public int getSize() {
+  public Integer getSize() {
     return size;
   }
 
-  public void setSize(int size) {
+  public void setSize(Integer size) {
     this.size = size;
   }
 
@@ -69,35 +113,11 @@ public class Book {
     this.type = type;
   }
 
-  public String getIsbn() {
-    return isbn;
+  public Integer getIsDelete() {
+    return isDelete;
   }
 
-  public void setIsbn(String isbn) {
-    this.isbn = isbn;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(String author) {
-    this.author = author;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
+  public void setIsDelete(Integer isDelete) {
+    this.isDelete = isDelete;
   }
 }
