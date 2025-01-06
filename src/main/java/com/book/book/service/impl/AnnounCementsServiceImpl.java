@@ -28,6 +28,13 @@ public class AnnounCementsServiceImpl implements AnnounCementsService {
         }
     }
 
+    //查看单个公告
+    @Override
+    public Announcements getAnnouncementById(Integer id) {
+        return announCementsMapper.selectNoticeById(id);
+    }
+
+
     //添加公告
     @Override
     public int insertNotice(Announcements announcements) {

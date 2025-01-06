@@ -8,14 +8,12 @@ public interface AnnounCementsService {
     //查询所有公告
     List<Announcements> selectAllNotices();
 
-    //根据id查询公告
-    //LibraryNotice getNoticeById(Integer id);
+    //查看单个公告详情的方法
+    Announcements getAnnouncementById(Integer id);
 
     //添加公告
     int insertNotice(Announcements announcements);
 
-    //更新公告
-    //void updateNotice(LibraryNotice notice);
 
     //删除公告
     int deleteNotice(int id);

@@ -13,18 +13,15 @@ public interface AnnounCementsMapper {
     @Select("SELECT * FROM announcements where is_delete = 0")
     List<Announcements> selectAllNotices();
 
-    // 根据ID查询公告
-//    @Select("SELECT * FROM  announcements WHERE id = #{id}")
-//    Announcements selectNoticeById(Integer id);
+    // 查询单个公告
+    @Select("SELECT * FROM  announcements WHERE id = #{id} and is_delete = 0")
+    Announcements selectNoticeById(Integer id);
 
     // 插入新公告
 //    @Insert("INSERT INTO announcements (null,title, status, publish_time, publisher, preview) VALUES (#{title}, #{status}, now(), #{publisher},#{preview},0)")
     @Insert("insert into announcements values (null,#{title}, #{status}, now(), #{publisher},#{preview},0)")
     int insertNotice(Announcements notice);
 
-    // 更新公告
-//    @Update("UPDATE announcements\n" + "SET title = #{title}, content = #{content}, update_time = #{updateTime}\n" + " WHERE id = #{id}")
-//    int updateNotice(Announcements notice);
 
     // 删除公告
     @Update("update announcements set is_delete = 1 WHERE id = #{id}")
