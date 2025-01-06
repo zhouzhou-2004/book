@@ -26,7 +26,6 @@ public class BorrowServiceImpl implements BorrowService {
             return null;
         }
     }
-
     @Override
     public List<Book> searchBook(String name) {
         try {
@@ -39,6 +38,37 @@ public class BorrowServiceImpl implements BorrowService {
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public int deleteBook(int id) {
+        try {
+            int deleteUser = borrowMapper.deleteBook(id);
+            if (deleteUser > 0){
+                //删除成功
+                return 1;
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public int addBook(Book book) {
+        try {
+            // 验证必填字段
+            if (book.getName() == null || book.getName().trim().isEmpty() ||
+                    book.getAuthor() == null || book.getAuthor().trim().isEmpty() ||
+                    book.getIsbn() == null || book.getIsbn().trim().isEmpty()) {
+                return 0;
+            }
+            // 去除用户可能输入的书名号
+            book.setName(book.getName().replace("《", "").replace("》", "").trim());
+            return borrowMapper.addBook(book);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 

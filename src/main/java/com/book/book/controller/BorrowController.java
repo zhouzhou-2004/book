@@ -5,6 +5,7 @@ import com.book.book.model.dto.BookLogin;
 import com.book.book.model.dto.QueryRequest;
 import com.book.book.model.pojo.Book;
 
+import com.book.book.service.BookService;
 import com.book.book.service.BorrowService;
 import com.book.book.utils.PageResult;
 import com.book.book.utils.ResponseUtils;
@@ -82,7 +83,36 @@ public class BorrowController {
     /**
      * 删除图书
      */
-
+    //删除图书信息
+    @PostMapping("/deleteBook")
+    private ResponseUtils delete(@RequestBody Book book){
+        try {
+            //拿到参数之后我们就可以去执行SQL删除用户了
+            int deleted = borrowService.deleteBook(book.getId());  // 使用注入的 bookService
+            if (deleted == 1){
+                return new ResponseUtils(200,"删除成功");
+            }else {
+                return new ResponseUtils(500,"删除失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400,"删除异常");
+        }
+    }
+    @PostMapping("/addBook")
+    private ResponseUtils add(@RequestBody Book book) {
+        try {
+            int result = borrowService.addBook(book);
+            if (result == 1) {
+                return new ResponseUtils(200, "添加成功");
+            } else {
+                return new ResponseUtils(500, "添加失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400, "添加异常");
+        }
+    }
     /**
      * 借阅图书
      */

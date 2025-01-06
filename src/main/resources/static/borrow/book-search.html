@@ -127,7 +127,7 @@
 	function loadBooks(page = 1) {
 		currentPage = page;
 		axios({
-			url: "/borrow/page",
+			url: "http://localhost:8080/borrow/page",
 			method: "post",
 			data: {
 				pageNum: currentPage,
@@ -155,7 +155,7 @@
 
 		// 发送搜索请求
 		axios({
-			url: "/borrow/search",
+			url: "http://localhost:8080/borrow/search",
 			method: "post",
 			data: { keyword: document.getElementById('searchInput').value.trim() }
 		}).then((response) => {
@@ -204,38 +204,45 @@
 		}
 	}
 
-	// 编辑图书
-	function editBook(book) {
-		console.log('编辑图书：', book);
-		// 发送编辑请求
-		axios({
-			url: "/borrow/update",
-			method: "post",
-			data: book
-		}).then((response) => {
-			console.log('编辑成功：', response);
-			loadBooks(); // 重新加载数据
-		}).catch((error) => {
-			console.error('编辑失败：', error);
+	// 编辑图书函数按钮
+	function editBook(id) {
+		window.location.href = `book-edit.html?id=${id}`;
+	}
+
+	// 删除图书函数
+	function deleteBook(id) {
+		javaex.confirm({
+			content: "确定要删除这本图书吗？",
+			callback: "deleteConfirm(" + id + ")"
 		});
 	}
 
-	// 删除图书
-	function deleteBook(bookId) {
-		console.log('删除图书：', bookId);
-		if (confirm('确定要删除这本图书吗？')) {
-			// 发送删除请求
-			axios({
-				url: "/borrow/delete",
-				method: "post",
-				data: { id: bookId }
-			}).then((response) => {
-				console.log('删除成功：', response);
-				loadBooks(); // 重新加载数据
-			}).catch((error) => {
-				console.error('删除失败：', error);
+	// 删除确认
+	function deleteConfirm(id) {
+		axios({
+			url: "http://localhost:8080/borrow/deleteBook",
+			method: "post",
+			data: { id: id }
+		}).then(response => {
+			if (response.data.code === 200) {
+				javaex.message({
+					content: "删除成功",
+					type: "success"
+				});
+				loadData();
+			} else {
+				javaex.message({
+					content: response.data.msg || "删除失败",
+					type: "error"
+				});
+			}
+		}).catch(error => {
+			console.error('删除失败：', error);
+			javaex.message({
+				content: "删除失败",
+				type: "error"
 			});
-		}
+		});
 	}
 
 	// 添加回车搜索功能

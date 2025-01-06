@@ -15,6 +15,10 @@ public interface BorrowService {
     List<Book> selectBooKAll();
 //    功能2；搜索图书
     List<Book> searchBook(String name);
+    //    删除图书
+    int deleteBook(int id);
+    // 添加图书
+    int addBook(Book book);
 //    分页查询
     PageResult<Book> selectBookPage(QueryRequest queryRequest);
     // 检查用户是否存在

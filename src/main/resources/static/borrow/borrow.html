@@ -148,7 +148,7 @@
 		}
 
 		axios({
-			url: "/borrow/getUserBorrowCount",
+			url: "http://localhost:8080/borrow/getUserBorrowCount",
 			method: "post",
 			data: { userId: parseInt(userId) }
 		}).then(response => {
@@ -194,7 +194,7 @@
 
 		// 发送借阅请求
 		axios({
-			url: "/borrow/borrowBook",
+			url: "http://localhost:8080/borrow/borrowBook",
 			method: "post",
 			data: {
 				userId: parseInt(userId),

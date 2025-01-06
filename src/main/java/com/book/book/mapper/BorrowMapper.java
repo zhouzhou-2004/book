@@ -3,7 +3,9 @@ package com.book.book.mapper;
 
 import com.book.book.model.pojo.Book;
 import com.book.book.model.pojo.Borrow;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -37,6 +39,15 @@ public interface BorrowMapper {
                              @Param("name") String name,
                              @Param("offset") Integer offset,
                              @Param("pageSize") Integer pageSize);
+    //    删除图书
+    @Update("update book set is_delete = 1 where id=#{id}")
+    int deleteBook(int id);
+    // 添加图书
+    @Insert("INSERT INTO book (name, author, isbn, pages, price, publish, " +
+            "publish_time, size, type, is_delete) " +
+            "VALUES (CONCAT('《', #{name}, '》'), #{author}, #{isbn}, " +
+            "#{pages}, #{price}, #{publish}, #{publishTime}, #{size}, #{type}, 0)")
+    int addBook(Book book);
 /**
  * 第二个页面：借阅图书
  */
