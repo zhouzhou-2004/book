@@ -18,6 +18,7 @@
 	<script src="/javaex/pc/js/javaex.min.js"></script>
 	<!-- 表单验证 -->
 	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
+	<link rel="stylesheet" href="/javaex/m/css/bookLast.css" />
 <title>后台管理</title>
 </head>
 
@@ -42,7 +43,7 @@
 					<button id="searchBtn" class="button blue" onclick="search();">搜索</button>
 				</div>
 			</div>
-			
+
 			<!--表格上方的操作元素，添加、删除等-->
 			<!--
 			<div class="operation-wrap">
@@ -64,17 +65,16 @@
 						<th>出版社</th>
 						<th>出版时间</th>
 						<th>库存数量</th>
-						<th>翻译</th>
 						<th>分类</th>
 						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody id="tbody">
-					<!--<tr>-->
-						<!--<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
-						<!--<td>1</td>-->
-						<!--<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
-					<!--</tr>-->
+<!--					<tr>-->
+<!--						<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
+<!--						<td>1</td>-->
+<!--						<td><button class="button blue">编辑</button><button class="button red">删除</button></td>-->
+<!--					</tr>-->
 				</tbody>
             </table>
             
@@ -84,6 +84,130 @@
 		</div>
     </div>
 </div>
-
 </body>
 </html>
+<!-- ... 前面的代码保持不变 ... -->
+<script src="/js/axios.min.js"></script>
+<script>
+	// 定义全局变量
+	let bookList = [];
+
+	// 加载数据的函数
+	function loadData() {
+		axios({
+			url: "http://localhost:8080/GetBook/selectBook",
+			method: "post"
+		}).then((response) => {
+			console.log('接收到的响应数据：', response);
+
+			if (response.data.code === 200 && response.data.data) {
+				bookList = response.data.data; // 保存数据到全局变量
+				renderTable(bookList);
+			} else {
+				javaex.message({
+					content: "暂无图书数据",
+					type: "info"
+				});
+			}
+		}).catch((error) => {
+			console.error('请求失败：', error);
+			javaex.message({
+				content: "获取数据失败",
+				type: "error"
+			});
+		});
+	}
+
+	// 渲染表格函数
+	function renderTable(data) {
+		const tableBody = document.getElementById('tbody');
+		tableBody.innerHTML = '';
+
+		data.forEach((book, index) => {
+			const row = document.createElement('tr');
+			row.align = 'center';
+
+			const cells = [
+				index + 1,
+				book.name || '',
+				book.author || '',
+				book.isbn || '',
+				book.pages || '',
+				book.price || '',
+				book.publish || '',
+				book.publishTime || '',
+				book.size || '',
+				book.type || ''
+			];
+
+			cells.forEach(cellData => {
+				const cell = document.createElement('td');
+				cell.textContent = cellData;
+				row.appendChild(cell);
+			});
+
+			const actionsCell = document.createElement('td');
+			actionsCell.innerHTML = `
+            <button class="button blue" onclick="editBook(${book.id})">编辑</button>
+            <button class="button red" onclick="deleteBook(${book.id})">删除</button>
+        `;
+			row.appendChild(actionsCell);
+
+			tableBody.appendChild(row);
+		});
+	}
+	// 编辑图书函数按钮
+	function editBook(id) {
+		window.location.href = `book-edit.html?id=${id}`;
+	}
+
+	// 删除图书函数
+	function deleteBook(id) {
+		javaex.confirm({
+			content: "确定要删除这本图书吗？",
+			callback: "deleteConfirm(" + id + ")"
+		});
+	}
+
+	// 删除确认
+	function deleteConfirm(id) {
+		axios({
+			url: "http://localhost:8080/GetBook/deleteBook",
+			method: "post",
+			data: { id: id }
+		}).then(response => {
+			if (response.data.code === 200) {
+				javaex.message({
+					content: "删除成功",
+					type: "success"
+				});
+				loadData();
+			} else {
+				javaex.message({
+					content: response.data.msg || "删除失败",
+					type: "error"
+				});
+			}
+		}).catch(error => {
+			console.error('删除失败：', error);
+			javaex.message({
+				content: "删除失败",
+				type: "error"
+			});
+		});
+	}
+
+	// 搜索函数
+	function search() {
+		const keyword = document.getElementById('keyword').value.toLowerCase();
+		const filteredData = bookList.filter(book =>
+				(book.name && book.name.toLowerCase().includes(keyword)) ||
+				(book.author && book.author.toLowerCase().includes(keyword)) ||
+				(book.isbn && book.isbn.toLowerCase().includes(keyword))
+		);
+		renderTable(filteredData);
+	}
+
+	// 页面加载时执行
+	loadData();
+</script>

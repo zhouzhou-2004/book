@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑图书</title>
+    <!-- 只引入 axios -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .edit-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+            margin-right: 15px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #409eff;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #409eff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #66b1ff;
+        }
+
+        .btn-default {
+            background-color: #909399;
+            color: white;
+        }
+
+        .btn-default:hover {
+            background-color: #a6a9ad;
+        }
+
+        /* 提示消息样式 */
+        .message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+
+        .message-success {
+            background-color: #67c23a;
+        }
+
+        .message-error {
+            background-color: #f56c6c;
+        }
+        .form-select {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            transition: border-color 0.3s;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #409eff;
+        }
+
+        .form-select:hover {
+            border-color: #c0c4cc;
+        }
+
+        .form-select option {
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="edit-container">
+    <h2 class="form-title">编辑图书</h2>
+    <form id="editForm">
+        <input type="hidden" id="editId" name="id">
+        <div class="form-group">
+            <label>书名：</label>
+            <input type="text" id="editName" name="name" />
+        </div>
+        <div class="form-group">
+            <label>作者：</label>
+            <input type="text" id="editAuthor" name="author" />
+        </div>
+        <div class="form-group">
+            <label>ISBN：</label>
+            <input type="text" id="editIsbn" name="isbn" />
+        </div>
+        <div class="form-group">
+            <label>页数：</label>
+            <input type="number" id="editPages" name="pages" />
+        </div>
+        <div class="form-group">
+            <label>定价：</label>
+            <input type="number" id="editPrice" name="price" step="0.01" />
+        </div>
+        <div class="form-group">
+            <label>出版社：</label>
+            <input type="text" id="editPublish" name="publish" />
+        </div>
+        <div class="form-group">
+            <label>出版时间：</label>
+            <input type="date" id="editPublishTime" name="publishTime" />
+        </div>
+        <div class="form-group">
+            <label>库存数量：</label>
+            <input type="number" id="editSize" name="size" />
+        </div>
+        <div class="form-group">
+            <label>分类：</label>
+            <select id="editType" name="type" class="form-select">
+                <option value="">请选择分类</option>
+                <option value="马克思主义、列宁主义、毛泽东思想、邓小平理论">马克思主义、列宁主义、毛泽东思想、邓小平理论</option>
+                <option value="哲学、宗教">哲学、宗教</option>
+                <option value="文化、科学、教育、体育">文化、科学、教育、体育</option>
+                <option value="政治、法律">政治、法律</option>
+                <option value="历史、地理">历史、地理</option>
+            </select>
+        </div>
+        <div class="button-group">
+            <button type="button" class="btn btn-primary" onclick="saveEdit()">保存</button>
+            <button type="button" class="btn btn-default" onclick="goBack()">返回</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 显示提示消息
+    function showMessage(content, type) {
+        const message = document.createElement('div');
+        message.className = `message message-${type}`;
+        message.textContent = content;
+        document.body.appendChild(message);
+
+        // 3秒后自动消失
+        setTimeout(() => {
+            message.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(message);
+            }, 300);
+        }, 3000);
+    }
+
+    // 保存编辑
+    function saveEdit() {
+        const formData = {
+            id: document.getElementById('editId').value,
+            name: document.getElementById('editName').value,
+            author: document.getElementById('editAuthor').value,
+            isbn: document.getElementById('editIsbn').value,
+            pages: document.getElementById('editPages').value,
+            price: document.getElementById('editPrice').value,
+            publish: document.getElementById('editPublish').value,
+            publishTime: document.getElementById('editPublishTime').value,
+            size: document.getElementById('editSize').value,
+            type: document.getElementById('editType').value
+        };
+
+        if (!formData.name) {
+            showMessage('请输入书名', 'error');
+            return;
+        }
+
+        axios({
+            url: "http://localhost:8080/GetBook/updateBook",
+            method: "post",
+            data: formData
+        }).then(response => {
+            if (response.data.code === 200) {
+                showMessage('保存成功！', 'success');
+                setTimeout(() => {
+                    if (confirm('是否返回图书列表？')) {
+                        window.location.href = 'book-list.html';
+                    }
+                }, 1500);
+            } else {
+                showMessage(response.data.msg || '保存失败', 'error');
+            }
+        }).catch(error => {
+            console.error('保存失败：', error);
+            showMessage('系统错误，请稍后重试', 'error');
+        });
+    }
+
+    // 返回列表页
+    function goBack() {
+        if (confirm('确定要返回吗？未保存的修改将丢失')) {
+            window.location.href = 'book-list.html';
+        }
+    }
+
+    // 加载图书数据
+    function loadBookData(id) {
+        axios({
+            url: "http://localhost:8080/GetBook/selectBook",
+            method: "post"
+        }).then((response) => {
+            if (response.data.code === 200 && response.data.data) {
+                const book = response.data.data.find(item => item.id == id);
+                if (book) {
+                    document.getElementById('editId').value = book.id;
+                    document.getElementById('editName').value = book.name || '';
+                    document.getElementById('editAuthor').value = book.author || '';
+                    document.getElementById('editIsbn').value = book.isbn || '';
+                    document.getElementById('editPages').value = book.pages || '';
+                    document.getElementById('editPrice').value = book.price || '';
+                    document.getElementById('editPublish').value = book.publish || '';
+                    document.getElementById('editPublishTime').value = book.publishTime || '';
+                    document.getElementById('editSize').value = book.size || '';
+                    document.getElementById('editType').value = book.type || '';
+
+                    showMessage('数据加载成功', 'success');
+                } else {
+                    showMessage('未找到图书数据', 'error');
+                    setTimeout(goBack, 1500);
+                }
+            }
+        }).catch((error) => {
+            console.error('获取数据失败：', error);
+            showMessage('加载数据失败', 'error');
+        });
+    }
+
+    // 页面加载时获取数据
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if (id) {
+            loadBookData(id);
+        }
+    };
+</script>
+</body>
+</html>
