@@ -54,4 +54,40 @@ public class ReaderController {
         }
     }
 
+    /**
+     * 添加功能
+     */
+    @RequestMapping("/add")
+    private ResponseUtils add(@RequestBody Users users){
+        try {
+            int addReader = readerService.addReader(users);
+            if (addReader == 1){
+                return new ResponseUtils(200,"添加成功");
+            }else {
+                return new ResponseUtils(500,"添加失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400,"添加异常");
+        }
+    }
+
+    /**
+     * 判断用户是否存在
+     */
+    @RequestMapping("/checkReaderName")
+    private ResponseUtils checkUsername(@RequestBody Users users){
+        try {
+            int checked = readerService.checkReaderName(users.getUsername());
+            if (checked == 1){
+                return new ResponseUtils(305,"该用户名存在");
+            }else {
+                return new ResponseUtils(200,"该用户名可用");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new RuntimeException();
+        }
+    }
+
 }

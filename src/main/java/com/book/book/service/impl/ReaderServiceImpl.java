@@ -51,4 +51,34 @@ public class ReaderServiceImpl implements ReaderService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public int addReader(Users users) {
+        try {
+            int addReader = readerMapper.addReader(users);
+            if (addReader > 0){
+                //添加成功
+                return 1;
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int checkReaderName(String username) {
+        try {
+            Users checkReaderName = readerMapper.checkReaderName(username);
+            if (checkReaderName != null){
+                //该用户存在
+                return 1;
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

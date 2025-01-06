@@ -282,7 +282,124 @@
 	}
 
 
-
+	// // 渲染表格的函数
+	// function renderTable(data) {
+	// 	const tableBody = document.querySelector('#adminTable');
+	// 	// 清空现有的表格内容
+	// 	tableBody.innerHTML = '';
+	//
+	// 	// 循环遍历数据并添加到表格
+	// 	data.forEach(user => {
+	// 		const row = document.createElement('tr');
+	//
+	// 		// 创建选择单元格
+	// 		const chooseCell = document.createElement('td');
+	// 		chooseCell.style.width = "6%";
+	// 		chooseCell.style.textAlign = "center";
+	// 		chooseCell.style.backgroundColor = "#EEEEEE";
+	// 		const checkbox = document.createElement('input');
+	// 		checkbox.type = "checkbox";
+	// 		checkbox.name = "delid";
+	// 		chooseCell.appendChild(checkbox);
+	// 		row.appendChild(chooseCell);
+	//
+	// 		// 创建ID单元格
+	// 		const idCell = document.createElement('td');
+	// 		idCell.style.textAlign = "center";
+	// 		idCell.bgColor = '#EEEEEE';
+	// 		idCell.textContent = user.id;
+	// 		row.appendChild(idCell);
+	//
+	// 		// 创建用户名单元格
+	// 		const usernameCell = document.createElement('td');
+	// 		usernameCell.style.textAlign = "center";
+	// 		usernameCell.bgColor = '#EEEEEE';
+	// 		usernameCell.textContent = user.username;
+	// 		row.appendChild(usernameCell);
+	//
+	// 		// 创建密码单元格
+	// 		const passwordCell = document.createElement('td');
+	// 		passwordCell.style.textAlign = "center";
+	// 		passwordCell.bgColor = '#EEEEEE';
+	// 		passwordCell.textContent = user.password;
+	// 		row.appendChild(passwordCell);
+	//
+	// 		// 创建昵称单元格
+	// 		const nicknameCell = document.createElement('td');
+	// 		nicknameCell.style.textAlign = "center";
+	// 		nicknameCell.bgColor = '#EEEEEE';
+	// 		nicknameCell.textContent = user.nickname;
+	// 		row.appendChild(nicknameCell);
+	//
+	// 		// 创建操作单元格
+	// 		const actionsCell = document.createElement('td');
+	// 		actionsCell.style.textAlign = 'center';
+	// 		actionsCell.bgColor = '#EEEEEE';
+	//
+	// 		// 创建编辑按钮
+	// 		const editButton = document.createElement('button');
+	// 		editButton.textContent = '编辑';
+	// 		editButton.setAttribute('data-id', user.id);
+	// 		editButton.setAttribute('data-username', user.username);
+	// 		editButton.setAttribute('data-password', user.password);
+	// 		editButton.setAttribute('data-nickname', user.nickname);
+	//
+	// 		// 编辑按钮事件监听
+	// 		editButton.addEventListener('click', function (event) {
+	// 			event.preventDefault();
+	// 			const id = this.getAttribute('data-id');
+	// 			const username = this.getAttribute('data-username');
+	// 			const password = this.getAttribute('data-password');
+	// 			const nickname = this.getAttribute('data-nickname');
+	//
+	// 			// 显示模态框并填充数据
+	// 			document.getElementById('editId').value = id;
+	// 			document.getElementById('editUsername').value = username;
+	// 			document.getElementById('editPassword').value = password;
+	// 			document.getElementById('editNickname').value = nickname;
+	// 			document.getElementById('editModal').style.display = 'block';
+	// 		});
+	//
+	// 		// 创建删除按钮
+	// 		const deleteButton = document.createElement('button');
+	// 		deleteButton.textContent = '删除';
+	// 		deleteButton.setAttribute('data-user-id', user.id);
+	//
+	// 		// 删除按钮事件监听
+	// 		deleteButton.addEventListener('click', (event) => {
+	// 			event.preventDefault();
+	// 			if (confirm("您确定要删除该管理员吗?")) {
+	// 				const userId = event.target.getAttribute('data-user-id');
+	// 				axios({
+	// 					url: "http://localhost:8080/tAdmin/delete",
+	// 					method: "post",
+	// 					data: {
+	// 						id: userId
+	// 					}
+	// 				}).then((response) => {
+	// 					if (response.data.code == '305') {
+	// 						alert("删除管理员失败");
+	// 					} else if (response.data.code == '306') {
+	// 						alert("删除管理员异常，请联系管理员");
+	// 					} else {
+	// 						alert("删除管理员成功");
+	// 						location.reload();
+	// 					}
+	// 				}).catch((error) => {
+	// 					alert('请求失败：' + error);
+	// 				});
+	// 			}
+	// 		});
+	//
+	// 		// 添加按钮到操作单元格
+	// 		actionsCell.appendChild(editButton);
+	// 		actionsCell.appendChild(deleteButton);
+	// 		row.appendChild(actionsCell);
+	//
+	// 		// 将新行添加到表格主体
+	// 		tableBody.appendChild(row);
+	// 	});
+	// }
 
 
 
