@@ -223,7 +223,7 @@
 		}
 
 		axios({
-			url: "/GetBook/deleteBook",
+			url: "http://localhost:8080/borrow/deleteBook",
 			method: "post",
 			data: { id: bookId }
 		}).then((response) => {
