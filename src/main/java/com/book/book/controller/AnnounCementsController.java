@@ -70,11 +70,6 @@ public class AnnounCementsController {
         }
     }
 
-    // 更新公告
-//    @PutMapping("/update")
-//    public void updateNotice(@RequestBody LibraryNotice notice) {
-//        libraryNoticeService.updateNotice(notice);
-//    }
 
     // 删除公告
     @RequestMapping("/delete")
@@ -90,6 +85,22 @@ public class AnnounCementsController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseUtils(400,"删除异常");
+        }
+    }
+
+    //查看单个公告
+    @RequestMapping("/detail")
+    public ResponseUtils getNoticeDetail(@RequestBody Integer id) {
+        try {
+            Announcements announcement = announCementsService.getAnnouncementById(id);
+            if (announcement != null) {
+                return new ResponseUtils(200, "获取成功", announcement);
+            } else {
+                return new ResponseUtils(400, "公告不存在");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(500, "获取失败");
         }
     }
 }

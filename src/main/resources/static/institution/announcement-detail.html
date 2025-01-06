@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
+    <link href="/javaex/pc/css/animate.css" rel="stylesheet" />
+    <link href="/javaex/pc/css/common.css" rel="stylesheet" />
+    <link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />
+    <script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>
+    <script src="/javaex/pc/js/common.js"></script>
+    <script src="/javaex/pc/js/javaex.min.js"></script>
+    <title>公告详情</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        .detail-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .announcement-header {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .announcement-title {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            line-height: 1.4;
+        }
+
+        .announcement-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .meta-item i {
+            margin-right: 6px;
+            color: #1976d2;
+        }
+
+        .announcement-content {
+            line-height: 1.8;
+            color: #444;
+            font-size: 16px;
+            padding: 20px 0;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+
+        .announcement-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 15px;
+        }
+
+        .status-new {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-important {
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 30px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 8px;
+        }
+
+        /* 添加响应式设计 */
+        @media (max-width: 768px) {
+            .detail-container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .announcement-title {
+                font-size: 24px;
+            }
+
+            .announcement-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .meta-item {
+                margin-bottom: 8px;
+            }
+        }
+
+        /* 添加动画效果 */
+        .detail-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="detail-container">
+    <div class="announcement-header">
+        <div class="announcement-title">
+            <span id="title"></span>
+            <span id="status"></span>
+        </div>
+        <div class="announcement-meta">
+            <div class="meta-left">
+                    <span class="meta-item">
+                        <i class="icon-calendar"></i>
+                        <span id="publishTime"></span>
+                    </span>
+                <span class="meta-item">
+                        <i class="icon-user"></i>
+                        <span id="publisher"></span>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="announcement-content" id="content"></div>
+    <button class="back-button" onclick="history.back()">
+        <i class="icon-arrow-left"></i>返回列表
+    </button>
+</div>
+
+<script src="/js/axios.min.js"></script>
+<script>
+    window.onload = async function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const announcementId = urlParams.get('id');
+
+        if (!announcementId) {
+            javaex.message({
+                content: "未找到公告信息",
+                type: "error"
+            });
+            return;
+        }
+
+        try {
+            const response = await axios({
+                url: "http://localhost:8080/library_notice/detail",
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(parseInt(announcementId)),
+                withCredentials: true
+            });
+
+            if (response.data.code === 200) {
+                const announcement = response.data.data;
+
+                // 填充公告信息
+                document.getElementById('title').textContent = announcement.title;
+                document.getElementById('publishTime').textContent =
+                    new Date(announcement.publishTime).toLocaleString('zh-CN');
+                document.getElementById('publisher').textContent =
+                    announcement.publisher || '管理员';
+                document.getElementById('status').innerHTML =
+                    `<span class="announcement-status ${announcement.status === '重要' ? 'status-important' : 'status-new'}">${announcement.status}</span>`;
+                document.getElementById('content').textContent = announcement.preview;
+
+                // 设置页面标题
+                document.title = `${announcement.title} - 公告详情`;
+            } else {
+                javaex.message({
+                    content: response.data.message || "获取公告详情失败",
+                    type: "error"
+                });
+            }
+        } catch (error) {
+            console.error('获取公告详情失败:', error);
+            javaex.message({
+                content: "获取公告详情失败，请稍后重试",
+                type: "error"
+            });
+        }
+    };
+</script>
+</body>
+</html>
