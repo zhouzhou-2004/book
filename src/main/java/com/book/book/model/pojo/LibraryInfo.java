@@ -13,5 +13,13 @@ public class LibraryInfo {
   private String address;
   private String openTime;
   private String contactPhone;
+  private String name;
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 }

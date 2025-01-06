@@ -120,6 +120,14 @@ public class Users {
     this.code = code;
   }
 
+  public String getTel() {
+    return tel;
+  }
+
+  public void setTel(String tel) {
+    this.tel = tel;
+  }
+
   @Override
   public String toString() {
     return "Users{" +
