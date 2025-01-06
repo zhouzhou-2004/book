@@ -15,6 +15,7 @@ import java.util.Random;
 @Controller
 
 public class CodeController {
+    //
     @RequestMapping("/codeImage")
     public void code(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //处理请求和响应编码

@@ -1,4 +1,4 @@
-//package com.book.book.interceptor;
+//package com.book.book.interceptor;//
 //
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

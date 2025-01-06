@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta charset="utf-8">
+	<meta charset="utf-8">
 	<!-- 字体图标 -->
 	<link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
 	<!-- 动画 -->
@@ -18,14 +18,14 @@
 	<script src="/javaex/pc/js/javaex.min.js"></script>
 	<!-- 表单验证 -->
 	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
-<title>后台管理</title>
+	<title>后台管理</title>
 </head>
 <style>
-    
+
 </style>
 
 <body>
-    <!--全部主体内容-->
+<!--全部主体内容-->
 <div class="list-content">
 	<!--块元素-->
 	<div class="block">
@@ -33,7 +33,7 @@
 		<div class="banner">
 			<p class="tab fixed">个人信息</p>
 		</div>
-	
+
 		<!--正文内容-->
 		<div class="main">
 			<form id="form">
@@ -107,7 +107,116 @@
 		</div>
 	</div>
 </div>
-	<script src="/js/axios.min.js"></script>
-	<script></script>
 </body>
 </html>
+<script src="/js/axios.min.js"></script>
+<script>
+	// 获取cookie中的值
+	function getCookieValue(name) {
+		let value = `; ${document.cookie}`;
+		let parts = value.split(`; ${name}=`);
+		if (parts.length === 2) return parts.pop().split(';').shift();
+	}
+
+	// 格式化日期（将时间戳转换为YYYY-MM-DD格式）
+	function formatDate(timestamp) {
+		if (!timestamp) return '';
+		const date = new Date(timestamp);
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	}
+
+	// 页面加载时获取用户信息
+	document.addEventListener('DOMContentLoaded', function() {
+		// 从cookie获取用户ID
+		let uname = getCookieValue('uname');
+		if (!uname) {
+			alert('未找到用户信息，请重新登录');
+			return;
+		}
+
+		// 发送请求获取用户信息
+		axios({
+			url: "http://localhost:8080/user/info",
+			method: "post",
+			data: {
+				username: uname
+			}
+		}).then(response => {
+			if (response.data.code === 200) {
+				const user = response.data.data;
+
+				// 渲染用户数据到页面
+				// 昵称
+				if (document.getElementById('nickname')) {
+					document.getElementById('nickname').value = user.nickname || '';
+				}
+
+				// 用户名
+				if (document.getElementById('username')) {
+					document.getElementById('username').value = user.username || '';
+				}
+
+				// 密码（显示为星号）
+				if (document.getElementById('password')) {
+					document.getElementById('password').value = '******';
+				}
+
+				// 生日
+				if (document.getElementById('birthday')) {
+					document.getElementById('birthday').value = formatDate(user.birthday);
+				}
+
+				// 地址
+				if (document.getElementById('address')) {
+					document.getElementById('address').value = user.address || '';
+				}
+
+				// 电话
+				if (document.getElementById('tel')) {
+					document.getElementById('tel').value = user.tel || '';
+				}
+
+				// 身份
+				if (document.getElementById('ident')) {
+					let identityText;
+					switch(user.identity) {
+						case 0:
+							identityText = '学生';
+							break;
+						case 1:
+							identityText = '教师';
+							break;
+						case 2:
+							identityText = '社会人士';
+							break;
+						case 3:
+							identityText = '管理员';
+							break;
+						default:
+							identityText = '未知身份';
+					}
+					document.getElementById('ident').value = identityText;
+				}
+
+				// 邮箱
+				if (document.getElementById('email')) {
+					document.getElementById('email').value = user.email || '';
+				}
+
+				// 可借数量
+				if (document.getElementById('size')) {
+					document.getElementById('size').value = user.size || '0';
+				}
+
+			} else {
+				alert('获取用户信息失败：' + response.data.message);
+			}
+		}).catch(error => {
+			console.error('请求失败：', error);
+			alert('获取用户信息失败，请稍后重试');
+		});
+	});
+</script>

@@ -77,80 +77,92 @@
             <div class="form-group">
                 <label for="status">状态</label>
                 <select id="status" class="form-control">
-                    <option value="normal">普通</option>
-                    <option value="important">重要</option>
-                    <option value="new">最新</option>
+                    <option value="重要">重要</option>
+                    <option value="最新">最新</option>
                 </select>
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-secondary" onclick="history.back()">取消</button>
-                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-primary" id="save">保存</button>
             </div>
         </form>
     </div>
 
     <script src="/js/axios.min.js"></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        
-        if (id) {
-            document.getElementById('pageTitle').textContent = '编辑公告';
-            // 加载公告数据
-            loadAnnouncementData(id);
-        }
+        // 获取保存按钮
+        const saveButton = document.getElementById('save');
 
-        function loadAnnouncementData(id) {
-            axios.get(`/api/announcements/${id}`)
-                .then(response => {
-                    if (response.data.code === 200) {
-                        const data = response.data.data;
-                        document.getElementById('title').value = data.title;
-                        document.getElementById('content').value = data.content;
-                        document.getElementById('status').value = data.status;
-                    }
-                })
-                .catch(error => {
-                    console.error('加载数据失败:', error);
-                });
-        }
+        // 点击保存按钮事件函数
+        saveButton.addEventListener('click', async function () {
+            try {
+                // 获取表单元素
+                const titleInput = document.getElementById('title');
+                const contentInput = document.getElementById('content');
+                const statusSelect = document.getElementById('status');
 
-        document.getElementById('announcementForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const data = {
-                title: document.getElementById('title').value,
-                content: document.getElementById('content').value,
-                status: document.getElementById('status').value
-            };
-
-            const url = id ? `/api/announcements/${id}` : '/api/announcements';
-            const method = id ? 'put' : 'post';
-
-            axios[method](url, data)
-                .then(response => {
-                    if (response.data.code === 200) {
-                        javaex.message({
-                            content : "保存成功",
-                            type : "success"
-                        });
-                        setTimeout(() => {
-                            location.href = 'announcement.html';
-                        }, 1500);
-                    } else {
-                        javaex.message({
-                            content : "保存失败",
-                            type : "error"
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('保存失败:', error);
+                // 收集表单数据
+                const formData = {
+                    title: titleInput.value,
+                    preview: contentInput.value,
+                    status: statusSelect.value,
+                    // publisher: '管理员',
+                    publishTime:new Date().toISOString()//添加发布时间
+                };
+                if (!formData.title || !formData.preview) {
                     javaex.message({
-                        content : "保存失败",
-                        type : "error"
+                        content: "标题和内容不能为空",
+                        type: "error"
                     });
+                    return;
+                }
+                //console.log(formData)
+
+                // 使用 Axios 发送 POST 请求新增公告
+                const response = await axios({
+                    url: "http://localhost:8080/library_notice/add",
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: formData,
+                    withCredentials:true
                 });
+                if (response.data.code === 401) {
+                    javaex.message({
+                        content: "请先登录",
+                        type: "error"
+                    });
+                    setTimeout(() => {
+                        location.href = '/login.html';  // 跳转到登录页
+                    }, 1500);
+                    return;
+                }
+
+                //保存成功后跳转
+                if (response.data.code == 200) {
+                    javaex.message({
+                        content: "公告新增成功",
+                        type: "success"
+                    });
+                    // 更新页面上的公告列表
+                    setTimeout(() => {
+                        location.href = 'announcement.html?refresh=true';
+                    }, 1500); // 延迟1.5秒以便用户看到成功消息
+
+                } else {
+                    javaex.message({
+                        content: "公告新增失败：" + response.data.message,
+                        type: "error"
+                    });
+                }
+            } catch (error) {
+                console.error('新增公告出错：', error);
+                javaex.message({
+                    content: "新增公告时出现错误，请稍后重试",
+                    type: "error"
+                });
+            }
         });
     </script>
 </body>

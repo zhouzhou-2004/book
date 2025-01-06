@@ -125,6 +125,27 @@
             background-color: #1565c0;
         }
 
+        .add-button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .add-button:hover {
+            background-color: #45a049;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
         .pagination {
             display: flex;
             justify-content: center;
@@ -146,236 +167,226 @@
             border-color: #1976d2;
         }
 
-        .add-button {
-            padding: 10px 20px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .add-button:hover {
-            background-color: #45a049;
-        }
-
-        .announcement-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .announcement-content {
-            flex: 1;
-            cursor: pointer;
-        }
-
-        .announcement-actions {
-            display: flex;
-            gap: 10px;
-            margin-left: 20px;
-        }
-
-        .edit-btn, .delete-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .edit-btn {
-            background-color: #2196f3;
-            color: white;
-        }
-
-        .edit-btn:hover {
-            background-color: #1976d2;
-        }
-
-        .delete-btn {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .delete-btn:hover {
-            background-color: #d32f2f;
-        }
     </style>
 </head>
 <body>
-    <div class="announcement-list">
-        <div class="page-header">
-            <h1 class="page-title">系统公告</h1>
-        </div>
-
-        <div class="search-bar">
-            <input type="text" class="search-input" placeholder="搜索公告...">
-            <button class="search-button">搜索</button>
-            <button class="add-button" onclick="location.href='announcement-edit.html'">新增公告</button>
-        </div>
-        <!-- 用于渲染公告的容器 -->
-        <div id="announcements"></div>
-
-        <!-- 用于显示错误信息 -->
-        <div id="errorMessage" class="error-message"></div>
+<div class="announcement-list">
+    <div class="page-header">
+        <h1 class="page-title">系统公告</h1>
     </div>
 
-    <script src="/js/axios.min.js"></script>
-    <script>
-        // 用于存储从后端获取到的公告数据
-        let announcements = null;
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="搜索公告...">
+        <button class="search-button">搜索</button>
+        <button class="add-button" onclick="location.href='announcement-edit.html'">新增公告</button>
+    </div>
+    <!-- 用于渲染公告的容器 -->
+    <div id="announcements"></div>
 
-        // 初始化时加载所有公告
-        window.onload = async function() {
-            await loadAnnouncements();
-        };
+    <!-- 用于显示错误信息 -->
+    <div id="errorMessage" class="error-message"></div>
 
-        // 从服务器加载公告数据
-        async function loadAnnouncements() {
+    <!--分页按钮-->
+    <div class="pagination">
+        <button>&lt;</button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>&gt;</button>
+    </div>
+
+</div>
+
+<script src="/js/axios.min.js"></script>
+<script>
+    // 用于存储从后端获取到的公告数据
+    let announcements = [];
+    let currentPage = 1;
+    const pageSize = 3; // 每页显示的公告数量
+
+    window.onload = async function() {
+        // 检查URL参数是否包含刷新指令
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('refresh') === 'true') {
+            await loadAnnouncements(1);//如果是从新增页面跳转回来，强制刷新数据
+        } else {
+            // 正常加载第一页数据
+            await loadAnnouncements(1);
+        }
+    };
+
+    // 发起axios请求获取图书馆公告数据
+    async function loadAnnouncements(page) {
+        try {
+            const result = await axios({
+                url: "http://localhost:8080/library_notice/all",
+                method: "post",
+                params: {
+                    page: page,
+                    size: pageSize
+                },
+                withCredentials:true
+            });
+            if (result.data.code == 200) {
+                announcements = result.data.data;//保存到全局变量
+                renderAnnouncements(announcements, page);
+                // 按发布时间倒序排序
+                announcements.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
+                renderAnnouncements(announcements, page);
+                // 更新分页按钮状态
+                updatePaginationButtons(page, Math.ceil(announcements.length / pageSize));
+            }
+        } catch (error) {
+            console.error("获取数据出现错误:", error);
+            document.getElementById('errorMessage').textContent = "获取图书馆公告失败，请稍后重试！";
+        }
+    }
+
+    // 分页功能
+    document.querySelectorAll('.pagination button').forEach(button => {
+        button.addEventListener('click', async function() {
+            if (!this.classList.contains('active')) {
+                document.querySelector('.pagination button.active').classList.remove('active');
+                this.classList.add('active');
+                // 实现分页逻辑
+                currentPage = parseInt(this.textContent, 10);
+                await loadAnnouncements(currentPage);
+            }
+        });
+    });
+    // 添加分页按钮更新函数
+    function updatePaginationButtons(currentPage, totalPages) {
+        const pagination = document.querySelector('.pagination');
+        pagination.innerHTML = '';
+
+        // 上一页按钮
+        const prevButton = document.createElement('button');
+        prevButton.innerHTML = '&lt;';
+        prevButton.disabled = currentPage === 1;
+        prevButton.onclick = () => loadAnnouncements(currentPage - 1);
+        pagination.appendChild(prevButton);
+
+        // 页码按钮
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            if (i === currentPage) {
+                pageButton.classList.add('active');
+            }
+            pageButton.onclick = () => loadAnnouncements(i);
+            pagination.appendChild(pageButton);
+        }
+
+        // 下一页按钮
+        const nextButton = document.createElement('button');
+        nextButton.innerHTML = '&gt;';
+        nextButton.disabled = currentPage === totalPages;
+        nextButton.onclick = () => loadAnnouncements(currentPage + 1);
+        pagination.appendChild(nextButton);
+    }
+
+    // 添加删除公告函数
+    async function deleteAnnouncement(id, event) {
+        // 阻止事件冒泡，防止触发父元素的点击事件
+        if (event) {
+            event.stopPropagation();
+        }
+
+        // 删除确认
+        if (confirm('确定要删除这条公告吗？')) {
             try {
-                const response = await axios.post("http://localhost:8080/library_notice/all");
+                const response = await axios({
+                    url: "http://localhost:8080/library_notice/delete",
+                    method: "post",
+                    data: { id: id }
+                });
+
                 if (response.data.code === 200) {
-                    announcements = response.data.data;
-                    renderAnnouncements(announcements);
+                    javaex.message({
+                        content: "删除成功",
+                        type: "success"
+                    });
+                    // 重新加载当前页数据
+                    await loadAnnouncements(currentPage);
                 } else {
-                    showErrorMessage("获取公告信息失败，请稍后重试！");
+                    javaex.message({
+                        content: "删除失败",
+                        type: "error"
+                    });
                 }
             } catch (error) {
-                console.error("获取数据出现错误:", error);
-                showErrorMessage("获取公告信息失败，请稍后重试！");
+                console.error('删除失败:', error);
+                javaex.message({
+                    content: "删除失败，请稍后重试",
+                    type: "error"
+                });
             }
         }
+    }
 
-        // 将公告数据渲染到页面
-        function renderAnnouncements(announcements) {
-            const announcementsContainer = document.getElementById('announcements');
-            announcementsContainer.innerHTML = ''; // 清空现有内容
+    // 搜索功能
+    document.querySelector('.search-button').addEventListener('click', async function() {
+        const searchTerm = document.querySelector('.search-input').value.trim();
+        if (searchTerm) {
+            // 根据搜索词筛选公告
+            const filteredAnnouncements = announcements.filter(announcement =>
+                announcement.title.includes(searchTerm) ||
+                (announcement.content && announcement.content.includes(searchTerm))
+            );
+            renderAnnouncements(filteredAnnouncements, 1); // 渲染搜索结果，不考虑分页
+        } else {
+            // 如果没有搜索词，则重新加载全部公告
+            await loadAnnouncements(1);
+        }
+    });
 
-            if (!announcements || announcements.length === 0) {
-                announcementsContainer.innerHTML = '<p>暂无公告。</p>';
-                return;
-            }
+    // 将公告数据渲染到页面
+    function renderAnnouncements(announcements, page) {
+        const announcementsContainer = document.getElementById('announcements');
+        announcementsContainer.innerHTML = ''; // 清空现有内容
 
-            announcements.forEach((announcement) => {
-                const announcementElement = document.createElement('div');
-                announcementElement.classList.add('announcement');
-
-                const titleElement = document.createElement('h2');
-                titleElement.classList.add('announcement-title');
-                titleElement.textContent = announcement.title;
-
-                const dateElement = document.createElement('p');
-                dateElement.classList.add('announcement-date');
-                dateElement.textContent = `日期: ${new Date(announcement.datePosted).toLocaleString()}`;
-
-                const contentElement = document.createElement('p');
-                contentElement.classList.add('announcement-content');
-                contentElement.innerHTML = announcement.content;
-
-                announcementElement.appendChild(titleElement);
-                announcementElement.appendChild(dateElement);
-                announcementElement.appendChild(contentElement);
-
-                announcementsContainer.appendChild(announcementElement);
-            });
+        if (!announcements || announcements.length === 0) {
+            announcementsContainer.innerHTML = '<p>暂无公告。</p>';
+            return;
         }
 
-        // 显示错误信息
-        function showErrorMessage(message) {
-            const errorMessageElement = document.getElementById('errorMessage');
-            errorMessageElement.textContent = message;
-        }
+        // 计算当前页的数据
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const pageAnnouncements = announcements.slice(start, end);
 
-        // 搜索公告
-        // function searchAnnouncements() {
-        //     const searchValue = document.getElementById('searchInput').value.trim().toLowerCase();
-        //     if (!searchValue) {
-        //         renderAnnouncements(announcements); // 如果搜索框为空，显示所有公告
-        //         return;
-        //     }
-        //
-        //     const filteredAnnouncements = announcements.filter(announcement =>
-        //         announcement.title.toLowerCase().includes(searchValue) ||
-        //         announcement.content.toLowerCase().includes(searchValue)
-        //     );
-        //
-        //     renderAnnouncements(filteredAnnouncements);
-        // }
+        pageAnnouncements.forEach(announcement => {
+            const announcementDiv = document.createElement('div');
+            announcementDiv.classList.add('announcement-item');
+            // 添加点击跳转到详情页
+            announcementDiv.onclick = () => {
+                location.href = `announcement-detail.html?id=${announcement.id}`;
+            };
 
-        function viewDetail(id) {
-            location.href = `announcement-detail.html?id=${id}`;
-        }
+            announcementDiv.innerHTML = `
+            <div class="announcement-content">
+                <div class="announcement-title">
+                    ${announcement.title}
+                    <span class="announcement-status ${announcement.status === '重要' ? 'status-important' : 'status-new'}">
+                        ${announcement.status}
+                    </span>
+                </div>
+                <div class="announcement-meta">
+                    <span>发布时间：${new Date(announcement.publishTime).toLocaleString('zh-CN')}</span>
+                    <span>发布人：${announcement.publisher || '管理员'}</span>
+                </div>
+                <div class="announcement-preview">
+                    ${announcement.preview}
+                </div>
+            </div>
+            <div class="announcement-actions">
+                <button class="delete-btn" onclick="event.stopPropagation(); deleteAnnouncement(${announcement.id}, event)">删除</button>
+            </div>
+        `;
 
-        function editAnnouncement(id) {
-            location.href = `announcement-edit.html?id=${id}`;
-        }
-
-        //删除功能
-        // function deleteAnnouncement(id) {
-        //     if (confirm('确定要删除这条公告吗？')) {
-        //         // 调用删除接口
-        //         axios.delete(`/api/announcements/${id}`)
-        //             .then(response => {
-        //                 if (response.data.code === 200) {
-        //                     javaex.message({
-        //                         content : "删除成功",
-        //                         type : "success"
-        //                     });
-        //                     // 刷新页面或重新加载列表
-        //                     location.reload();
-        //                 } else {
-        //                     javaex.message({
-        //                         content : "删除失败",
-        //                         type : "error"
-        //                     });
-        //                 }
-        //             })
-        //             .catch(error => {
-        //                 console.error('删除失败:', error);
-        //                 javaex.message({
-        //                     content : "删除失败",
-        //                     type : "error"
-        //                 });
-        //             });
-        //     }
-        // }
-
-        // 改进搜索功能
-        // document.querySelector('.search-button').addEventListener('click', function() {
-        //     const searchText = document.querySelector('.search-input').value;
-        //     // 调用搜索接口
-        //     axios.get(`/api/announcements/search?keyword=${searchText}`)
-        //         .then(response => {
-        //             if (response.data.code === 200) {
-        //                 // 更新公告列表
-        //                 updateAnnouncementList(response.data.data);
-        //             }
-        //         })
-        //         .catch(error => {
-        //             console.error('搜索失败:', error);
-        //         });
-        // });
-
-        //更新功能
-        // function updateAnnouncementList(announcements) {
-        //     // 更新列表显示逻辑
-        //     const container = document.querySelector('.announcement-list');
-        //     // ... 根据返回数据重新渲染列表
-        // }
-
-        // 分页功能
-        // document.querySelectorAll('.pagination button').forEach(button => {
-        //     button.addEventListener('click', function() {
-        //         if (!this.classList.contains('active')) {
-        //             document.querySelector('.pagination button.active').classList.remove('active');
-        //             this.classList.add('active');
-        //             // 实现分页逻辑
-        //             console.log('切换到页码:', this.textContent);
-        //         }
-        //     });
-        // });
-    </script>
+            announcementsContainer.appendChild(announcementDiv);
+        });
+    }
+</script>
 </body>
-</html> 
+</html>

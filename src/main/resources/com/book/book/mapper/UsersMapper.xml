@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.book.book.mapper.UsersMapper">
+    <resultMap id="UsersMap" type="com.book.book.model.pojo.Users" >
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+        <result column="tel" property="tel" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="VARCHAR"/>
+        <result column="identity" property="identity" jdbcType="VARCHAR"/>
+        <result column="is_admin" property="isAdmin" jdbcType="INTEGER"/>
+    </resultMap>
+    <!-- 统计总记录数 -->
+    <select id="userSelectTotal" resultType="java.lang.Long">
+        SELECT COALESCE(COUNT(*), 0) as total
+        FROM users
+        <where>
+            is_admin = 0
+        </where>
+    </select>
+
+    <!-- 分页查询相关数据 -->
+    <select id="userSelectList" resultType="com.book.book.model.vo.UserVO">
+        SELECT *
+        FROM users
+        <include refid="whereClause"/>
+        ORDER BY id
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 公共的WHERE条件 -->
+    <sql id="whereClause">
+        <where>
+            <if test="name != null and name != ''">
+                AND (username LIKE CONCAT('%', #{name}, '%')
+                OR nickname LIKE CONCAT('%', #{name}, '%'))
+            </if>
+            <if test="classNo != null and classNo != ''">
+                AND class_no = #{classNo}
+            </if>
+        </where>
+    </sql>
+</mapper>

@@ -1,11 +1,15 @@
 package com.book.book.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.book.book.model.pojo.Book;
 import com.book.book.service.BorrowService;
 import com.book.book.utils.ResponseUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,7 +29,6 @@ public class BorrowController {
     @RequestMapping("/select")
     public ResponseUtils selectBookAll(){
 //        System.out.print("111");
-//        return null;
         //前端没有携带参数，直接操作数据库
         try {
             List<Book> books = borrowService.selectBooKAll();

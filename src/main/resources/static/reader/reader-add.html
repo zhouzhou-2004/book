@@ -1,7 +1,140 @@
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">-->
+<!--<html>-->
+<!--<head>-->
+<!--<meta charset="utf-8">-->
+<!--	&lt;!&ndash; 字体图标 &ndash;&gt;-->
+<!--	<link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />-->
+<!--	&lt;!&ndash; 动画 &ndash;&gt;-->
+<!--	<link href="/javaex/pc/css/animate.css" rel="stylesheet" />-->
+<!--	&lt;!&ndash; 骨架样式 &ndash;&gt;-->
+<!--	<link href="/javaex/pc/css/common.css" rel="stylesheet" />-->
+<!--	&lt;!&ndash; 皮肤（缇娜） &ndash;&gt;-->
+<!--	<link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />-->
+<!--	&lt;!&ndash; jQuery &ndash;&gt;-->
+<!--	<script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>-->
+<!--	&lt;!&ndash; 全局动态修改 &ndash;&gt;-->
+<!--	<script src="/javaex/pc/js/common.js"></script>-->
+<!--	&lt;!&ndash; 核心组件 &ndash;&gt;-->
+<!--	<script src="/javaex/pc/js/javaex.min.js"></script>-->
+<!--	&lt;!&ndash; 表单验证 &ndash;&gt;-->
+<!--	<script src="/javaex/pc/js/javaex-formVerify.js"></script>-->
+<!--<title>后台管理</title>-->
+<!--</head>-->
+<!--<style>-->
+<!--    -->
+<!--</style>-->
+
+<!--<body>-->
+<!--    &lt;!&ndash;全部主体内容&ndash;&gt;-->
+<!--<div class="list-content">-->
+<!--	&lt;!&ndash;块元素&ndash;&gt;-->
+<!--	<div class="block">-->
+<!--		&lt;!&ndash;修饰块元素名称&ndash;&gt;-->
+<!--		<div class="banner">-->
+<!--			<p class="tab fixed">添加读者</p>-->
+<!--		</div>-->
+<!--	-->
+<!--		&lt;!&ndash;正文内容&ndash;&gt;-->
+<!--		<div class="main">-->
+<!--			<form id="form">-->
+<!--				&lt;!&ndash;文本框&ndash;&gt;-->
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><span class="required">*</span><p class="subtitle">昵称</p></div>-->
+<!--					<div class="right">-->
+<!--						<input type="text" class="text" id="nickname" name="nickname"/>-->
+<!--					</div>-->
+<!--				</div>-->
+
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><span class="required">*</span><p class="subtitle">用户名</p></div>-->
+<!--					<div class="right">-->
+<!--						<input type="text" class="text" id="username" name="username"/>-->
+<!--					</div>-->
+<!--				</div>-->
+
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><span class="required">*</span><p class="subtitle">密码</p></div>-->
+<!--					<div class="right">-->
+<!--						<input type="password" class="text" id="password" name="password"/>-->
+<!--					</div>-->
+<!--				</div>-->
+
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><span class="required"></span><p class="subtitle">生日</p></div>-->
+<!--					<div class="right">-->
+<!--						<input type="text" class="text" id="birthday" name="birthday"/>-->
+<!--					</div>-->
+<!--				</div>-->
+
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><span class="required"></span><p class="subtitle">电话</p></div>-->
+<!--					<div class="right">-->
+<!--						<input type="text" class="text" id="tel" name="tel"/>-->
+<!--					</div>-->
+<!--				</div>-->
+
+<!--				&lt;!&ndash;下拉选择框&ndash;&gt;-->
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><p class="subtitle">身份</p></div>-->
+<!--					<div class="right">-->
+<!--						<select id="select">-->
+<!--							<option value="">请选择</option>-->
+<!--							<option value="0">学生</option>-->
+<!--							<option value="1">教师</option>-->
+<!--							<option value="2">校外人士</option>-->
+<!--							<option value="3">管理员</option>-->
+<!--						</select>-->
+<!--					</div>-->
+<!--				</div>-->
+
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><span class="required"></span><p class="subtitle">邮箱</p></div>-->
+<!--					<div class="right">-->
+<!--						<input type="text" class="text" id="email" name="email"/>-->
+<!--					</div>-->
+<!--				</div>-->
+
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><span class="required"></span><p class="subtitle">地址</p></div>-->
+<!--					<div class="right">-->
+<!--						<input type="text" class="text" id="address" name="address"/>-->
+<!--					</div>-->
+<!--				</div>-->
+
+<!--				<div class="unit clear">-->
+<!--					<div class="left"><span class="required"></span><p class="subtitle">可借数量</p></div>-->
+<!--					<div class="right">-->
+<!--						<input type="text" class="text" id="size" name="size"/>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--				<br>-->
+<!--				<br>-->
+
+<!--				-->
+<!--				&lt;!&ndash;提交按钮&ndash;&gt;-->
+<!--				<div class="unit clear" style="width: 800px;">-->
+<!--					<div style="text-align: center;">-->
+<!--						&lt;!&ndash;表单提交时，必须是input元素，并指定type类型为button，否则ajax提交时，会返回error回调函数&ndash;&gt;-->
+<!--						<input type="button" id="return" class="button no" value="返回" />-->
+<!--						<input type="button" id="save" class="button yes" value="保存" />-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</form>-->
+<!--		</div>-->
+<!--	</div>-->
+<!--</div>-->
+
+<!--	<script src="/js/axios.min.js"></script>-->
+<!--	<script>-->
+<!--	</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta charset="utf-8">
+	<meta charset="utf-8">
 	<!-- 字体图标 -->
 	<link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
 	<!-- 动画 -->
@@ -18,22 +151,22 @@
 	<script src="/javaex/pc/js/javaex.min.js"></script>
 	<!-- 表单验证 -->
 	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
-<title>后台管理</title>
+	<title>后台管理</title>
 </head>
 <style>
-    
+
 </style>
 
 <body>
-    <!--全部主体内容-->
+<!--全部主体内容-->
 <div class="list-content">
 	<!--块元素-->
 	<div class="block">
 		<!--修饰块元素名称-->
 		<div class="banner">
-			<p class="tab fixed">添加读者</p>
+			<p class="tab fixed">添加管理员</p>
 		</div>
-	
+
 		<!--正文内容-->
 		<div class="main">
 			<form id="form">
@@ -42,6 +175,7 @@
 					<div class="left"><span class="required">*</span><p class="subtitle">昵称</p></div>
 					<div class="right">
 						<input type="text" class="text" id="nickname" name="nickname"/>
+						<span style="color:red;" class="checkNickName checkMessage"></span>
 					</div>
 				</div>
 
@@ -49,6 +183,7 @@
 					<div class="left"><span class="required">*</span><p class="subtitle">用户名</p></div>
 					<div class="right">
 						<input type="text" class="text" id="username" name="username"/>
+						<span style="color:red;" class="checkReaderName checkMessage"></span>
 					</div>
 				</div>
 
@@ -56,6 +191,7 @@
 					<div class="left"><span class="required">*</span><p class="subtitle">密码</p></div>
 					<div class="right">
 						<input type="password" class="text" id="password" name="password"/>
+						<span style="color:red;" class="checkPassWord checkMessage"></span>
 					</div>
 				</div>
 
@@ -63,6 +199,7 @@
 					<div class="left"><span class="required"></span><p class="subtitle">生日</p></div>
 					<div class="right">
 						<input type="text" class="text" id="birthday" name="birthday"/>
+						<span style="color:red;" class="checkBirthday checkMessage"></span>
 					</div>
 				</div>
 
@@ -70,6 +207,7 @@
 					<div class="left"><span class="required"></span><p class="subtitle">电话</p></div>
 					<div class="right">
 						<input type="text" class="text" id="tel" name="tel"/>
+						<span style="color:red;" class="checkTel checkMessage"></span>
 					</div>
 				</div>
 
@@ -77,20 +215,25 @@
 				<div class="unit clear">
 					<div class="left"><p class="subtitle">身份</p></div>
 					<div class="right">
-						<select id="select">
+						<select id="identity" name="identity">
 							<option value="">请选择</option>
 							<option value="0">学生</option>
 							<option value="1">教师</option>
-							<option value="2">校外人士</option>
+							<option value="2">社会人士</option>
 							<option value="3">管理员</option>
+							<span style="color:red;" class="checkIdentity checkMessage"></span>
 						</select>
 					</div>
 				</div>
 
 				<div class="unit clear">
-					<div class="left"><span class="required"></span><p class="subtitle">邮箱</p></div>
+					<div class="left">
+						<span class="required"></span>
+						<p class="subtitle">邮箱</p>
+					</div>
 					<div class="right">
 						<input type="text" class="text" id="email" name="email"/>
+						<span style="color:red;" class="checkEmail checkMessage"></span>
 					</div>
 				</div>
 
@@ -98,6 +241,7 @@
 					<div class="left"><span class="required"></span><p class="subtitle">地址</p></div>
 					<div class="right">
 						<input type="text" class="text" id="address" name="address"/>
+						<span style="color:red;" class="checkAddress checkMessage"></span>
 					</div>
 				</div>
 
@@ -105,27 +249,264 @@
 					<div class="left"><span class="required"></span><p class="subtitle">可借数量</p></div>
 					<div class="right">
 						<input type="text" class="text" id="size" name="size"/>
+						<span style="color:red;" class="checkSize checkMessage"></span>
 					</div>
 				</div>
 				<br>
 				<br>
 
-				
+
 				<!--提交按钮-->
 				<div class="unit clear" style="width: 800px;">
 					<div style="text-align: center;">
 						<!--表单提交时，必须是input元素，并指定type类型为button，否则ajax提交时，会返回error回调函数-->
 						<input type="button" id="return" class="button no" value="返回" />
-						<input type="button" id="save" class="button yes" value="保存" />
+						<input type="button" id="save" class="button yes" onclick="ReaderButton()" value="保存" />
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
-
-	<script src="/js/axios.min.js"></script>
-	<script>
-	</script>
 </body>
 </html>
+<script src="/js/axios.min.js"></script>
+<script>
+	function ReaderButton(){
+		//先获取input框span标签的元素
+		let allCheckMessages = document.querySelectorAll('.checkMessage');
+		let checkTrue = true;
+		// 检查是否有任何一个span的颜色不是绿色
+		for (let i = 0; i < allCheckMessages.length; i++) {
+			if (allCheckMessages[i].style.color !== 'green') {
+				checkTrue = false;
+				alert('请确保所有字段都符合要求！');
+				event.preventDefault(); // 阻止表单提交
+				return;
+			}
+		}
+		if(checkTrue == true){
+			//保存按钮
+			let nickname = document.querySelector("#nickname").value;//昵称
+			let username = document.querySelector("#username").value;//用户名
+			let password = document.querySelector("#password").value;//密码
+			let birthday = document.querySelector("#birthday").value;//生日
+			let tel = document.querySelector("#tel").value;//电话
+			let identity = document.querySelector("#identity").value;//身份
+			let email = document.querySelector("#email").value;//邮箱
+			let address = document.querySelector("#address").value;//地址
+			let size = document.querySelector("#size").value;//可接数量
+			//console.log(nickname,username,birthday,tel,email,address,size)//验证是否能够拿到参数
+			//拿到参数之后就需要将他们发送给后端
+			axios({
+				url: "http://localhost:8080/reader/add",
+				method: "post",
+				data: {
+					nickname: nickname,
+					username: username,
+					password: password,
+					birthday: birthday,
+					tel: tel,
+					identity: parseInt(identity),
+					email: email,
+					address: address,
+					size: size
+				}
+			}).then((response) => {
+				if (response.data.code == '305'){
+					alert("添加失败")
+				}else if (response.data.code == '306'){
+					alert("添加异常，请联系管理员")
+				} else if (response.data.code == '200') {
+					alert("添加成功")
+				}
+			}).catch((error) => {
+				alert('请求失败：'+ error);
+			});
+		}
+	}
+	// 昵称验证
+	nickname.onkeyup = function() {
+		let checkNickname = document.querySelector(".checkNickName");
+		// 只允许中文、英文、数字
+		const nicknameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
+
+		if (nicknameRegex.test(this.value)) {
+			checkNickname.innerText = '昵称格式正确';
+			checkNickname.style.color = 'green';
+		} else {
+			checkNickname.innerText = '昵称不能包含特殊字符';
+			checkNickname.style.color = 'red';
+		}
+	}
+
+	// 用户名验证
+	username.onkeyup = function() {
+		let checkReaderName = document.querySelector(".checkReaderName");
+		// 6位字母和数字组合
+		const usernameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6}$/;
+
+		// 先清空之前的提示
+		checkReaderName.innerText = '';
+
+		// 如果输入为空
+		if (this.value.trim() === '') {
+			checkReaderName.innerText = '用户名不能为空';
+			checkReaderName.style.color = 'red';
+			return;
+		}
+
+		// 首先验证格式
+		if (!usernameRegex.test(this.value)) {
+			checkReaderName.innerText = '用户名必须是6位字母和数字的组合';
+			checkReaderName.style.color = 'red';
+			return;
+		}
+
+		// 格式正确后，验证是否存在
+		axios({
+			url: "http://localhost:8080/reader/checkReaderName",
+			method: "post",
+			data: {
+				username: this.value
+			}
+		}).then(response => {
+			if (response.data.code === 305) {  // 注意这里是数字，不是字符串
+				checkReaderName.innerText = '该用户名已被注册';
+				checkReaderName.style.color = 'red';
+			} else if (response.data.code === 200) {
+				checkReaderName.innerText = '该用户名可以使用';
+				checkReaderName.style.color = 'green';
+			}
+		}).catch(error => {
+			console.error('验证用户名请求失败：', error);
+			checkReaderName.innerText = '验证失败，请稍后重试';
+			checkReaderName.style.color = 'red';
+		});
+	}
+
+	// 密码验证
+	password.onkeyup = function() {
+		let checkPassword = document.querySelector(".checkPassWord");
+		// 6位，包含字母和数字
+		const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6}$/;
+
+		if (passwordRegex.test(this.value)) {
+			checkPassword.innerText = '密码格式正确';
+			checkPassword.style.color = 'green';
+		} else {
+			checkPassword.innerText = '密码必须是6位，且包含字母和数字';
+			checkPassword.style.color = 'red';
+		}
+	}
+
+	// 生日验证
+	birthday.onchange = function() {
+		let checkBirthday = document.querySelector(".checkBirthday");
+		// 检查日期格式和是否大于当前日期
+		const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+		const currentDate = new Date();
+		const inputDate = new Date(this.value);
+
+		if (dateRegex.test(this.value) && inputDate <= currentDate) {
+			checkBirthday.innerText = '日期格式正确';
+			checkBirthday.style.color = 'green';
+		} else {
+			checkBirthday.innerText = '日期格式为:XXXX-XX-XX且小于当前日期';
+			checkBirthday.style.color = 'red';
+		}
+	}
+
+	// 电话验证
+	tel.onkeyup = function() {
+		let checkTel = document.querySelector(".checkTel");
+		// 严格11位数字
+		const telRegex = /^\d{11}$/;
+
+		if (telRegex.test(this.value)) {
+			checkTel.innerText = '电话格式正确';
+			checkTel.style.color = 'green';
+		} else {
+			checkTel.innerText = '电话必须是11位数字';
+			checkTel.style.color = 'red';
+		}
+	}
+
+	// 身份选择验证
+	identity.onchange = function() {
+		let checkIdentity = document.querySelector(".checkIdentity");
+		const selectedValue = this.value;
+
+		if (selectedValue !== "") {
+			checkIdentity.innerText = '身份选择有效';
+			checkIdentity.style.color = 'green';
+		} else {
+			checkIdentity.innerText = '请选择用户身份';
+			checkIdentity.style.color = 'red';
+		}
+	}
+
+	// 邮箱验证
+	email.onkeyup = function() {
+		let checkEmail = document.querySelector(".checkEmail");
+		// 标准邮箱格式
+		const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+
+		if (emailRegex.test(this.value)) {
+			checkEmail.innerText = '邮箱格式正确';
+			checkEmail.style.color = 'green';
+		} else {
+			checkEmail.innerText = '邮箱格式错误，必须包含@和.com';
+			checkEmail.style.color = 'red';
+		}
+	}
+
+	// 地址验证
+	address.onkeyup = function() {
+		let checkAddress = document.querySelector(".checkAddress");
+		// 只允许中文字符
+		const addressRegex = /^[\u4e00-\u9fa5]+$/;
+
+		if (addressRegex.test(this.value)) {
+			checkAddress.innerText = '地址格式正确';
+			checkAddress.style.color = 'green';
+		} else {
+			checkAddress.innerText = '地址只能包含中文字符';
+			checkAddress.style.color = 'red';
+		}
+	}
+
+	// 可借数量验证
+	size.onkeyup = function() {
+		let checkSize = document.querySelector(".checkSize");
+		const sizeValue = parseInt(this.value);
+
+		if (!isNaN(sizeValue) && sizeValue > 0 && sizeValue <= 20) {
+			checkSize.innerText = '可借数量正确';
+			checkSize.style.color = 'green';
+		} else {
+			checkSize.innerText = '可借数量必须是1-20之间的数字';
+			checkSize.style.color = 'red';
+		}
+	}
+	// 返回按钮点击事件
+	document.getElementById('return').addEventListener('click', function() {
+		// 确认是否要取消添加
+		if(confirm('确定要取消添加用户吗？所有已填写的信息将被清空')) {
+			// 重置表单
+			const form = document.querySelector('form');
+			if(form) {
+				form.reset();
+			}
+
+			// 清除所有验证提示
+			const validationTips = document.querySelectorAll('.checkReaderName, .checkPassWord, .checkNickName, .checkTel, .checkEmail, .checkAddress');
+			validationTips.forEach(tip => {
+				tip.innerText = '';
+			});
+
+			// 返回上一页
+			window.history.back();
+		}
+	});
+</script>

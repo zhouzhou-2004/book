@@ -1,8 +1,11 @@
 package com.book.book.controller;
 
+import com.book.book.model.dto.QueryRequest;
 import com.book.book.model.dto.UsersDto;
+import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
 import com.book.book.service.UsersService;
+import com.book.book.utils.PageResult;
 import com.book.book.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -83,7 +86,6 @@ public class UsersController {
     @RequestMapping("/list/delete")
     private ResponseUtils delete(@RequestBody UserVO userVO){
         try {
-            //拿到参数之后我们就可以去执行SQL删除用户了
             int deleted = usersService.deleteUser(userVO.getId());
             if (deleted == 1){
                 return new ResponseUtils(200,"删除成功");
@@ -97,7 +99,67 @@ public class UsersController {
     }
 
     /**
-     * 分页查询功能
+     * 分页查询
      */
+    @RequestMapping("/list/page")
+    private ResponseUtils list(@RequestBody QueryRequest queryRequest){
+        PageResult<UserVO> tStudentPageResult = usersService.userSelectList(queryRequest);
+        return new ResponseUtils(200,"success",tStudentPageResult);
+    }
+
+    /**
+     * 根据用户名查询个人信息功能
+     */
+    @RequestMapping("/info")
+    private ResponseUtils info(@RequestBody Users users){
+        System.out.println(users);
+        try {
+            Users userById = usersService.getUserByUsername(users.getUsername());
+            if (userById != null){
+                return new ResponseUtils(200,"查询成功",userById);
+            }else {
+                return new ResponseUtils(400,"查询失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new RuntimeException();
+        }
+    }
+
+    /**
+     * 添加功能
+     */
+    @RequestMapping("/add")
+    private ResponseUtils add(@RequestBody Users users){
+        try {
+            int addUser = usersService.addUser(users);
+            if (addUser == 1){
+                return new ResponseUtils(200,"添加成功");
+            }else {
+                return new ResponseUtils(500,"添加失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400,"添加异常");
+        }
+    }
+
+    /**
+     * 判断用户是否存在
+     */
+    @RequestMapping("/checkUsername")
+    private ResponseUtils checkUsername(@RequestBody Users users){
+        try {
+            int checked = usersService.checkUsername(users.getUsername());
+            if (checked == 1){
+                return new ResponseUtils(305,"该用户名存在");
+            }else {
+                return new ResponseUtils(200,"该用户名可用");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new RuntimeException();
+        }
+    }
 }
 

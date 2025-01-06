@@ -1,7 +1,10 @@
 package com.book.book.service;
 
 
+import com.book.book.model.dto.QueryRequest;
+import com.book.book.model.pojo.Users;
 import com.book.book.model.vo.UserVO;
+import com.book.book.utils.PageResult;
 
 import java.util.List;
 
@@ -14,4 +17,12 @@ public interface UsersService {
     int updateUser(UserVO userVO);
     //删除功能
     int deleteUser(int id);
+    //分页查询相关数据
+    PageResult<UserVO> userSelectList(QueryRequest queryRequest);
+    //根据ID查询个人信息功能
+    Users getUserByUsername(String username);
+    //新增功能
+    int addUser(Users users);
+    //判断用户是否存在
+    int checkUsername(String username);
 }

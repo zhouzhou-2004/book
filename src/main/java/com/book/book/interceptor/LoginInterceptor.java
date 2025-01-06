@@ -9,6 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class LoginInterceptor implements HandlerInterceptor {
 
     //dx 拦截器逻辑
+    //
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //1.先session中拿到刚才登录成功时储存的Session的值
