@@ -178,11 +178,29 @@ public class BorrowController {
             if ((Boolean) result.get("success")) {
                 return new ResponseUtils(200, "借阅成功");
             } else {
-                return new ResponseUtils(400,"借阅失败，图书名或作者信息错误");
+                return new ResponseUtils(400, (String) result.get("message"));
             }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseUtils(500, "系统错误：" + e.getMessage());
+        }
+    }
+    @PostMapping("/getBook")
+    public ResponseUtils getBook(@RequestBody Map<String, Integer> params) {
+        try {
+            Integer id = params.get("id");
+            if (id == null) {
+                return new ResponseUtils(400, "图书ID不能为空");
+            }
+            Book book = borrowService.getBookById(id);
+            if (book != null) {
+                return new ResponseUtils(200, "查询成功", book);
+            } else {
+                return new ResponseUtils(404, "图书不存在");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(500, "系统错误");
         }
     }
 }

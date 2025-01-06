@@ -19,6 +19,8 @@ public interface BorrowService {
     int deleteBook(int id);
     // 添加图书
     int addBook(Book book);
+    //    修改图书
+    Book getBookById(Integer id);
 //    分页查询
     PageResult<Book> selectBookPage(QueryRequest queryRequest);
     // 检查用户是否存在

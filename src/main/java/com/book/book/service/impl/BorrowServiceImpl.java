@@ -71,6 +71,10 @@ public class BorrowServiceImpl implements BorrowService {
             return 0;
         }
     }
+    @Override
+    public Book getBookById(Integer id) {
+        return borrowMapper.getBookById(id);
+    }
 
     @Override
     public PageResult<Book> selectBookPage(QueryRequest queryRequest) {
@@ -123,7 +127,7 @@ public class BorrowServiceImpl implements BorrowService {
             Book book = borrowMapper.getBookByNameAndAuthor(bookName, author);
             if (book == null) {
                 result.put("success", false);
-                result.put("message", "图书不存在");
+                result.put("message", "图书名或作者信息有误，请检查后重试");
                 return result;
             }
 
@@ -163,7 +167,7 @@ public class BorrowServiceImpl implements BorrowService {
         } catch (Exception e) {
             e.printStackTrace();
             result.put("success", false);
-            result.put("message", "借阅失败借阅失败，图书名或作者信息错误：" + e.getMessage());
+            result.put("message", "系统错误：" + e.getMessage());
             return result;
         }
     }

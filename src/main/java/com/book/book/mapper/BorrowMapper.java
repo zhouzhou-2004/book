@@ -5,6 +5,7 @@ import com.book.book.model.pojo.Book;
 import com.book.book.model.pojo.Borrow;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -48,6 +49,9 @@ public interface BorrowMapper {
             "VALUES (CONCAT('《', #{name}, '》'), #{author}, #{isbn}, " +
             "#{pages}, #{price}, #{publish}, #{publishTime}, #{size}, #{type}, 0)")
     int addBook(Book book);
+    // 修改图书
+    @Select("SELECT * FROM book WHERE id = #{id} AND is_delete = 0")
+    Book getBookById(Integer id);
 /**
  * 第二个页面：借阅图书
  */
