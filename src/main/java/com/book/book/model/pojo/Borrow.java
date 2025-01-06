@@ -20,64 +20,7 @@ public class Borrow {
   private long userId;
 //  归还时间
   private String endTime;
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public long getBookId() {
-    return bookId;
-  }
-
-  public void setBookId(long bookId) {
-    this.bookId = bookId;
-  }
-
-  public String getCreateTime() {
-    return createTime;
-  }
-
-  public void setCreateTime(String createTime) {
-    this.createTime = createTime;
-  }
-
-  public String getUpdateTime() {
-    return updateTime;
-  }
-
-  public void setUpdateTime(String updateTime) {
-    this.updateTime = updateTime;
-  }
-
-  public long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(long userId) {
-    this.userId = userId;
-  }
-
-  public String getEndTime() {
-    return endTime;
-  }
-
-  public void setEndTime(String endTime) {
-    this.endTime = endTime;
-  }
-
-  public long getRet() {
-    return ret;
-  }
-
-  public void setRet(long ret) {
-    this.ret = ret;
-  }
-
-  //  是否归还
+//  是否归还
   private long ret;
 
 }

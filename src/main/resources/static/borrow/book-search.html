@@ -3,17 +3,17 @@
 <head>
 	<meta charset="utf-8">
 	<!-- 字体图标 -->
-	<link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
+	<link href="../javaex/pc/css/icomoon.css" rel="stylesheet" />
 	<!-- 动画 -->
-	<link href="/javaex/pc/css/animate.css" rel="stylesheet" />
+	<link href="../javaex/pc/css/animate.css" rel="stylesheet" />
 	<!-- 骨架样式 -->
-	<link href="/javaex/pc/css/common.css" rel="stylesheet" />
+	<link href="../javaex/pc/css/common.css" rel="stylesheet" />
 	<!-- 皮肤（缇娜） -->
-	<link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />
+	<link href="../javaex/pc/css/skin/tina.css" rel="stylesheet" />
 	<!-- jQuery -->
-	<script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>
+	<script src="../javaex/pc/lib/jquery-1.7.2.min.js"></script>
 	<!-- 核心组件 -->
-	<script src="/javaex/pc/js/javaex.min.js"></script>
+	<script src="../javaex/pc/js/javaex.min.js"></script>
 	<title>图书信息</title>
 </head>
 
@@ -67,7 +67,7 @@
 </html>
 
 <!--注入axios-->
-<script src="/borrow/js/axios.min.js"></script>
+<script src="../borrow/js/axios.min.js"></script>
 <script>
 	// 定义分页相关的全局变量
 	let currentPage = 1;
@@ -124,66 +124,40 @@
 	}
 
 	// 加载所有图书
-	// 修改 loadBooks 函数
 	function loadBooks(page = 1) {
 		currentPage = page;
-		const searchValue = document.getElementById('searchInput').value.trim();
-
 		axios({
 			url: "/borrow/page",
 			method: "post",
 			data: {
 				pageNum: currentPage,
 				pageSize: pageSize,
-				name: searchValue,
-				classNo: ''
+				name: document.getElementById('searchInput').value.trim(),
+				classNo: '' // 如果需要按分类筛选，可以添加相应的输入框
 			}
 		}).then((response) => {
-			if (response.data && response.data.code === 200) {
-				const pageResult = response.data.data;
-				// 检查是否超出总页数
-				const totalPages = Math.ceil(pageResult.total / pageResult.pageSize);
-				if (currentPage > totalPages && totalPages > 0) {
-					// 如果当前页超出总页数，自动跳转到最后一页
-					loadBooks(totalPages);
-					return;
-				}
-
-				displayBooks(pageResult);
-				updatePagination(pageResult);
-			} else {
-				javaex.message({
-					content : response.data.msg || "加载数据失败",
-					type : "error"
-				});
+			console.log('接收到的分页数据：', response);
+			if (response.data.code === 200) {
+				displayBooks(response.data.data);
+				// 更新分页组件
+				updatePagination(response.data.data);
 			}
 		}).catch((error) => {
 			console.error('请求失败：', error);
-			displayBooks({
-				list: [],
-				pageNum: 1,
-				pageSize: pageSize,
-				total: 0
-			});
-			javaex.message({
-				content : "系统错误",
-				type : "error"
-			});
 		});
 	}
 
 
 	// 搜索图书
 	function searchBooks() {
-		currentPage = 1;  // 重置为第一页
-		loadBooks(1);     // 从第一页开始搜索
+		loadBooks(1); // 搜索时从第一页开始
 	}
 
 		// 发送搜索请求
 		axios({
 			url: "/borrow/search",
 			method: "post",
-			data: { keyword: keyword }
+			data: { keyword: document.getElementById('searchInput').value.trim() }
 		}).then((response) => {
 			console.log('搜索结果：', response);
 			displayBooks(response);

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Users {
+//  用户id
   private long id;
   private String address;
   private String birthday;
@@ -128,13 +129,6 @@ public class Users {
     this.code = code;
   }
 
-  public String getTel() {
-    return tel;
-  }
-
-  public void setTel(String tel) {
-    this.tel = tel;
-  }
 
   @Override
   public String toString() {

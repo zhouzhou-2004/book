@@ -2,13 +2,8 @@ package com.book.book.mapper;
 
 
 import com.book.book.model.pojo.Book;
-import org.apache.ibatis.annotations.Mapper;
+import com.book.book.model.pojo.Borrow;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -45,7 +40,18 @@ public interface BorrowMapper {
 /**
  * 第二个页面：借阅图书
  */
+// 检查用户是否存在
+    int checkUserExists(Integer userId);
+    // 获取用户当前借阅数量
+    int getUserBorrowCount(Integer userId);
+    // 根据书名和作者查询图书
+    Book getBookByNameAndAuthor(@Param("name") String name, @Param("author") String author);
 
+    // 更新图书库存
+    int updateBookStock(@Param("bookId") Integer bookId);
+
+    // 添加借阅记录
+    int insertBorrow(Borrow borrow);
 /**
  *第三个页面：归还图书
  */
