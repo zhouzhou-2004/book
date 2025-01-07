@@ -76,8 +76,8 @@ public interface BorrowMapper {
 @Select("SELECT b.*, bk.name as bookName, bk.author " +
         "FROM borrow b " +
         "JOIN book bk ON b.book_id = bk.id " +
-        "WHERE b.user_id = #{userId}")
-List<Map<String, Object>> getBorrowedBooks(Integer userId);
+        "WHERE b.user_id = #{userId} and ret = 0")
+    List<Map<String, Object>> getBorrowedBooks(Integer userId);
 
     // 更新借阅记录为已归还
     @Update("UPDATE borrow SET ret = 1, update_time = #{returnTime} " +

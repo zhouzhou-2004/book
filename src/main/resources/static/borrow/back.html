@@ -90,7 +90,7 @@
 		}
 
 		axios({
-			url: "/borrow/getBorrowedBooks",
+			url: "http://localhost:8080/borrow/getBorrowedBooks",
 			method: "post",
 			data: { userId: userId }
 		}).then(response => {
@@ -162,7 +162,7 @@
 		const today = formatDate(new Date());
 
 		axios({
-			url: "/borrow/returnBook",
+			url: "http://localhost:8080/borrow/returnBook",
 			method: "post",
 			data: {
 				borrowId: borrowId,

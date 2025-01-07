@@ -273,7 +273,7 @@
     // 加载图书数据
     function loadBookData(id) {
         axios({
-            url: "/borrow/getBook",
+            url: "http://localhost:8080/borrow/getBook",
             method: "post",
             data: { id: parseInt(id) }
         }).then((response) => {
