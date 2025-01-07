@@ -40,17 +40,16 @@
 			<!--表格上方的搜索操作-->
 			<div class="admin-search">
 				<div class="input-group">
-					<input type="text" class="userNameText" name="userNameText" placeholder="搜索用户名或者昵称" style="width:154px" />
-<!--					<button id="searchBtn" class="button blue" onclick="search();">搜索</button>-->
-					<input name="Submit" type="button" class="right-button" value="搜 索" />
+					<input id="keyword" type="text" class="text userNameText" placeholder="搜索用户名或者昵称" style="width:154px" />
+					<button id="searchBtn" class="button blue right-button02" onclick="search();">搜索</button>
 				</div>
 			</div>
 			<!--表格上方的操作元素，添加、删除等-->
-			<div class="operation-wrap">
-				<div class="buttons-wrap">
-					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>
-				</div>
-			</div>
+<!--			<div class="operation-wrap">-->
+<!--				<div class="buttons-wrap">-->
+<!--					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>-->
+<!--				</div>-->
+<!--			</div>-->
 			<table id="table" class="table color2">
 				<thead>
 				<tr align="center">
@@ -66,7 +65,7 @@
 					<th>操作</th>
 				</tr>
 				</thead>
-				<tbody id="tbody">
+				<tbody id="adminTable">
 <!--								<tr>-->
 <!--								<td class="checkbox"><input type="checkbox" class="fill listen-1-2" /> </td>-->
 <!--								<td>1</td>-->
@@ -111,6 +110,74 @@
 		</div>
 	</div>
 </div>
+<!-- 模态框 -->
+<div id="editModal" class="modal">
+	<div class="modal-content">
+		<!-- 添加拖动句柄 -->
+		<div class="modal-header">
+			<span class="close">&times;</span>
+			<h2>编辑用户信息</h2>
+			<form id="editForm">
+				<div class="form-group">
+					<label for="editId">序号:</label>
+					<input type="text" id="editId" name="editId" readonly>
+				</div>
+
+				<div class="form-group">
+					<label for="editNickname">昵称:</label>
+					<input type="text" id="editNickname" name="editNickname">
+				</div>
+
+				<div class="form-group">
+					<label for="editUsername">用户名:</label>
+					<input type="text" id="editUsername" name="editUsername">
+				</div>
+
+				<div class="form-group">
+					<label for="editBirthday">生日:</label>
+					<input type="date" id="editBirthday" name="editBirthday">
+				</div>
+
+				<div class="form-group">
+					<label for="editTel">电话:</label>
+					<input type="tel" id="editTel" name="editTel">
+				</div>
+
+				<div class="form-group">
+					<label for="editEmail">邮箱:</label>
+					<input type="email" id="editEmail" name="editEmail">
+				</div>
+
+				<div class="form-group">
+					<label for="editAddress">地址:</label>
+					<input type="text" id="editAddress" name="editAddress">
+				</div>
+
+				<div class="form-group">
+					<label for="editSize">可借数量:</label>
+					<input type="number" id="editSize" name="editSize">
+				</div>
+
+				<div class="form-group">
+					<label for="editIdentity">身份:</label>
+					<select id="editIdentity" name="editIdentity">
+						<option value="0">学生</option>
+						<option value="1">教师</option>
+						<option value="2">社会人士</option>
+						<option value="3">管理员</option>
+					</select>
+				</div>
+
+				<div class="button-group">
+					<button type="button" class="cancel">取消</button>
+					<button type="button" class="updateButton">保存</button>
+				</div>
+			</form>
+		</div>
+		<!-- 添加调整大小的句柄 -->
+		<div class="resize-handle"></div>
+	</div>
+</div>
 </body>
 </html>
 <!--第一步：前端发送请求应该使用什么技术 axios(AJAX)-->
@@ -123,6 +190,8 @@
 	let currentPage = 1;//当前页
 	let totalPages = 0; //总页数
 	const pageSize = 10; // 每页显示的记录数
+
+
 
 	// 全局定义 escapeHtml 函数
 	function escapeHtml(unsafe) {
@@ -143,31 +212,56 @@
 	/**
 	 * 加载学生列表数据
 	 */
-	function loadReaderList(page = 1) {
-		axios({
-			url: "http://localhost:8080/reader/list",
-			method: "post",
-			data: {
+	function loadReaderList(page = 1, keyword = '') {
+		let url = keyword ? "http://localhost:8080/reader/selectLike" :
+				 			"http://localhost:8080/reader/list";
+		
+		// 根据不同的请求类型构造不同的请求数据
+		let requestData = keyword ? 
+			{ userText: keyword } : // 模糊查询接口期望的格式
+			{
 				pageNum: page,
-				pageSize: pageSize
-				// classNo: classNo,
-				// name: name
+				pageSize: pageSize,
+				keyword: keyword
+			};
+
+		axios({
+			url: url,
+			method: "post",
+			data: requestData,
+			headers: {
+				'Content-Type': 'application/json'
 			}
 		}).then((response) => {
 			if (response.data.code === 200) {
 				const data = response.data.data;
-
+				
+				// 处理返回的数据
+				// 如果是模糊查询的结果，需要特殊处理
+				const users = Array.isArray(data) ? data : (data.list || []);
+				
 				// 更新分页信息
-				currentPage = data.pageNum;
-				totalPages = data.pages;
-				totalPages = Math.ceil(data.total / pageSize);
+				if (Array.isArray(data)) {
+					// 模糊查询的情况
+					currentPage = 1;
+					totalPages = 1;	
+				} else {
+					// 普通分页查询的情况
+					currentPage = data.pageNum || 1;
+					totalPages = data.pages || Math.ceil(data.total / pageSize) || 0;
+				}
+				
 				document.getElementById('currentPage').textContent = currentPage;
 				document.getElementById('totalPages').textContent = totalPages;
 
 				// 更新表格内容
-				const tbody = document.getElementById('tbody'); // 使用正确的ID
-				tbody.innerHTML = ''; // 清空现有内容
+				const tbody = document.getElementById('adminTable');
+				tbody.innerHTML = '';
 
+				if (users.length === 0) {
+					tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">没有找到匹配的数据</td></tr>';
+					return;
+				}
 
 				// 身份映射表
 				const identityMap = {
@@ -177,46 +271,41 @@
 					'3': '管理员'
 				};
 
+				// 遍历用户数据
+				users.forEach(user => {
+					if (!user) return;
 
-				data.list.forEach(user => {
-					console.log('Processing user:', user); // 打印当前处理的用户对象
 					// 格式化日期
 					const birthdayFormatted = user.birthday ? new Date(user.birthday).toLocaleDateString() : '';
-
-					// 映射身份值
 					const identityText = identityMap[user.identity] || '未知';
 
-					// 确保所有字段都是字符串，并使用默认值
-					const nickname = escapeHtml(user.nickname || '');
-					const username = escapeHtml(user.username || '');
-					const tel = escapeHtml(user.tel || '');
-					const email = escapeHtml(user.email || '');
-					const address = escapeHtml(user.address || '');
-
 					const row = `
-                    <tr>
-                        <td bgcolor="#FFFFFF">${user.id}</td> <!-- 序号 -->
-                        <td bgcolor="#FFFFFF">${nickname}</td> <!-- 昵称 -->
-                        <td bgcolor="#FFFFFF">${username}</td> <!-- 用户名 -->
-                        <td bgcolor="#FFFFFF">${birthdayFormatted}</td> <!-- 生日 -->
-                        <td bgcolor="#FFFFFF">${tel}</td> <!-- 电话 -->
-                        <td bgcolor="#FFFFFF">${email}</td> <!-- 邮箱 -->
-                        <td bgcolor="#FFFFFF">${address}</td> <!-- 地址 -->
-                        <td bgcolor="#FFFFFF">${user.size}</td> <!-- 可借数量 -->
-                        <td bgcolor="#FFFFFF">${identityText}</td> <!-- 身份 -->
-                        <td bgcolor="#FFFFFF">
-                            <a href="javascript:void(0)" onclick="deleteBook('${escapeHtml(String(user.id))}')">删除</a>&nbsp;|&nbsp;
-                            <a href="javascript:void(0)" onclick="editBook('${escapeHtml(String(user.id))}')">修改</a>
-                        </td>
-                    </tr>
-                `;
+						<tr>
+							<td bgcolor="#FFFFFF">${escapeHtml(user.id)}</td>
+							<td bgcolor="#FFFFFF">${escapeHtml(user.nickname || '')}</td>
+							<td bgcolor="#FFFFFF">${escapeHtml(user.username || '')}</td>
+							<td bgcolor="#FFFFFF">${birthdayFormatted}</td>
+							<td bgcolor="#FFFFFF">${escapeHtml(user.tel || '')}</td>
+							<td bgcolor="#FFFFFF">${escapeHtml(user.email || '')}</td>
+							<td bgcolor="#FFFFFF">${escapeHtml(user.address || '')}</td>
+							<td bgcolor="#FFFFFF">${user.size || ''}</td>
+							<td bgcolor="#FFFFFF">${identityText}</td>
+							<td bgcolor="#FFFFFF">
+								<button class="edit-button button blue" data-id="${user.id}">编辑</button>
+								<button class="delete-button button red" data-id="${user.id}">删除</button>
+							</td>
+						</tr>
+					`;
 					tbody.insertAdjacentHTML('beforeend', row);
 				});
 			} else {
-				alert('获取读者列表失败：' + response.data.message);
+				console.error('请求返回错误:', response.data);
+				alert('获取读者列表失败：' + (response.data.message || '未知错误'));
 			}
 		}).catch((error) => {
-			alert('请求失败：' + error);
+			console.error('请求失败：', error);
+			const tbody = document.getElementById('adminTable');
+			tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">加载数据失败，请稍后重试</td></tr>';
 		});
 	}
 
@@ -224,11 +313,12 @@
 	 * 切换页码
 	 */
 	function changePage(page) {
+		const keyword = document.getElementById('keyword').value.trim();
 		if (page < 1 || page > totalPages) {
 			alert('页码超出范围！');
 			return;
 		}
-		loadReaderList(page);
+		loadReaderList(page, keyword);
 	}
 
 	/**
@@ -249,164 +339,170 @@
 		loadReaderList();
 
 		// 查询按钮点击事件，假设使用的是带有id "searchBtn" 的button元素
-		const searchButton = document.getElementById('searchBtn');
-		if (searchButton) {
-			searchButton.addEventListener('click', function () {
-				loadReaderList(1); // 查询时重置到第一页
+		// const searchButton = document.getElementById('searchBtn');
+		// if (searchButton) {
+		// 	searchButton.addEventListener('click', function () {
+		// 		const keyword = document.querySelector('.userNameText').value.trim();
+		// 		loadReaderList(1, keyword); // 查询时重置到第一页，并传递关键字
+		// 	});
+		// } else {
+		// 	console.warn('Search button not found.');
+		// }
+		const searchBtn = document.getElementById('searchBtn');
+		if (searchBtn) {
+			searchBtn.addEventListener('click', function() {
+				const keyword = document.getElementById('keyword').value.trim();
+				if (!keyword) {
+					alert('请输入搜索关键词');
+					return;
+				}
+				loadReaderList(1, keyword);
 			});
-		} else {
-			console.warn('Search button not found.');
 		}
 	});
 
+	/**
+	 * 搜索函数
+	 */
+	function search() {
+		const keyword = document.getElementById('keyword').value.trim();
+		loadReaderList(1, keyword); // 搜索时从第一页开始
+	}
 
-	// 修改模糊查询的代码
-	let selectButton = document.querySelector(".right-button");
-	selectButton.onclick = function () {
+	// 为编辑和删除按钮添加事件监听
+	document.addEventListener('click', function(e) {
+		// 编辑按钮点击事件
+		if (e.target.classList.contains('edit-button')) {
+			const row = e.target.closest('tr');
+			const id = e.target.getAttribute('data-id');
+			
+			// 获取当前行的数据
+			const nickname = row.cells[1].textContent;
+			const username = row.cells[2].textContent;
+			const birthday = row.cells[3].textContent;
+			const tel = row.cells[4].textContent;
+			const email = row.cells[5].textContent;
+			const address = row.cells[6].textContent;
+			const size = row.cells[7].textContent;
+			const identity = getIdentityValue(row.cells[8].textContent);
+
+			// 填充表单
+			document.getElementById('editId').value = id;
+			document.getElementById('editNickname').value = nickname;
+			document.getElementById('editUsername').value = username;
+			document.getElementById('editBirthday').value = formatDateForInput(birthday);
+			document.getElementById('editTel').value = tel;
+			document.getElementById('editEmail').value = email;
+			document.getElementById('editAddress').value = address;
+			document.getElementById('editSize').value = size;
+			document.getElementById('editIdentity').value = identity;
+
+			// 显示模态框
+			document.getElementById('editModal').style.display = 'block';
+		}
+		
+		// 删除按钮点击事件
+		if (e.target.classList.contains('delete-button')) {
+			if (confirm('确定要删除这条记录吗？')) {
+				const id = e.target.getAttribute('data-id');
+				deleteReader(id);
+			}
+		}
+	});
+
+	// 关闭模态框的事件
+	document.querySelector('.close').addEventListener('click', function() {
+		document.getElementById('editModal').style.display = 'none';
+	});
+
+	document.querySelector('.cancel').addEventListener('click', function() {
+		document.getElementById('editModal').style.display = 'none';
+	});
+
+	// 更新按钮点击事件
+	document.querySelector('.updateButton').addEventListener('click', function() {
+		const formData = {
+			id: document.getElementById('editId').value,
+			nickname: document.getElementById('editNickname').value,
+			username: document.getElementById('editUsername').value,
+			birthday: document.getElementById('editBirthday').value,
+			tel: document.getElementById('editTel').value,
+			email: document.getElementById('editEmail').value,
+			address: document.getElementById('editAddress').value,
+			size: document.getElementById('editSize').value,
+			identity: document.getElementById('editIdentity').value
+		};
+
+		updateReader(formData);
+	});
+
+	// 更新读者信息的函数
+	function updateReader(formData) {
 		axios({
-			url: "http://localhost:8080/reader/selectLike",
-			method: "post",
-			data: {
-				userText: document.querySelector(".userNameText").value
+			url: 'http://localhost:8080/reader/update',
+			method: 'post',
+			data: formData,
+			headers: {
+				'Content-Type': 'application/json'
 			}
-		}).then((response) => {
-			if (response.data.code == '400') {
-				alert("查询管理员失败");
-			} else if (response.data.code == '200') {
-				// 获取数据并渲染表格
-				renderTable(response.data.data);
+		}).then(response => {
+			if (response.data.code === 200) {
+				alert('修改成功');
+				document.getElementById('editModal').style.display = 'none';
+				loadReaderList(currentPage); // 重新加载当前页数据
+			} else {
+				alert('修改失败：' + (response.data.message || '未知错误'));
 			}
-		}).catch((error) => {
-			alert('请求失败：' + error);
+		}).catch(error => {
+			console.error('修改请求失败：', error);
+			alert('修改失败，请稍后重试');
 		});
 	}
 
+	// 删除读者的函数
+	function deleteReader(id) {
+		axios({
+			url: 'http://localhost:8080/reader/delete',
+			method: 'post',
+			data: { id: id },
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(response => {
+			if (response.data.code === 200) {
+				alert('删除成功');
+				loadReaderList(currentPage); // 重新加载当前页数据
+			} else {
+				alert('删除失败：' + (response.data.message || '未知错误'));
+			}
+		}).catch(error => {
+			console.error('删除请求失败：', error);
+			alert('删除失败，请稍后重试');
+		});
+	}
 
-	// // 渲染表格的函数
-	// function renderTable(data) {
-	// 	const tableBody = document.querySelector('#adminTable');
-	// 	// 清空现有的表格内容
-	// 	tableBody.innerHTML = '';
-	//
-	// 	// 循环遍历数据并添加到表格
-	// 	data.forEach(user => {
-	// 		const row = document.createElement('tr');
-	//
-	// 		// 创建选择单元格
-	// 		const chooseCell = document.createElement('td');
-	// 		chooseCell.style.width = "6%";
-	// 		chooseCell.style.textAlign = "center";
-	// 		chooseCell.style.backgroundColor = "#EEEEEE";
-	// 		const checkbox = document.createElement('input');
-	// 		checkbox.type = "checkbox";
-	// 		checkbox.name = "delid";
-	// 		chooseCell.appendChild(checkbox);
-	// 		row.appendChild(chooseCell);
-	//
-	// 		// 创建ID单元格
-	// 		const idCell = document.createElement('td');
-	// 		idCell.style.textAlign = "center";
-	// 		idCell.bgColor = '#EEEEEE';
-	// 		idCell.textContent = user.id;
-	// 		row.appendChild(idCell);
-	//
-	// 		// 创建用户名单元格
-	// 		const usernameCell = document.createElement('td');
-	// 		usernameCell.style.textAlign = "center";
-	// 		usernameCell.bgColor = '#EEEEEE';
-	// 		usernameCell.textContent = user.username;
-	// 		row.appendChild(usernameCell);
-	//
-	// 		// 创建密码单元格
-	// 		const passwordCell = document.createElement('td');
-	// 		passwordCell.style.textAlign = "center";
-	// 		passwordCell.bgColor = '#EEEEEE';
-	// 		passwordCell.textContent = user.password;
-	// 		row.appendChild(passwordCell);
-	//
-	// 		// 创建昵称单元格
-	// 		const nicknameCell = document.createElement('td');
-	// 		nicknameCell.style.textAlign = "center";
-	// 		nicknameCell.bgColor = '#EEEEEE';
-	// 		nicknameCell.textContent = user.nickname;
-	// 		row.appendChild(nicknameCell);
-	//
-	// 		// 创建操作单元格
-	// 		const actionsCell = document.createElement('td');
-	// 		actionsCell.style.textAlign = 'center';
-	// 		actionsCell.bgColor = '#EEEEEE';
-	//
-	// 		// 创建编辑按钮
-	// 		const editButton = document.createElement('button');
-	// 		editButton.textContent = '编辑';
-	// 		editButton.setAttribute('data-id', user.id);
-	// 		editButton.setAttribute('data-username', user.username);
-	// 		editButton.setAttribute('data-password', user.password);
-	// 		editButton.setAttribute('data-nickname', user.nickname);
-	//
-	// 		// 编辑按钮事件监听
-	// 		editButton.addEventListener('click', function (event) {
-	// 			event.preventDefault();
-	// 			const id = this.getAttribute('data-id');
-	// 			const username = this.getAttribute('data-username');
-	// 			const password = this.getAttribute('data-password');
-	// 			const nickname = this.getAttribute('data-nickname');
-	//
-	// 			// 显示模态框并填充数据
-	// 			document.getElementById('editId').value = id;
-	// 			document.getElementById('editUsername').value = username;
-	// 			document.getElementById('editPassword').value = password;
-	// 			document.getElementById('editNickname').value = nickname;
-	// 			document.getElementById('editModal').style.display = 'block';
-	// 		});
-	//
-	// 		// 创建删除按钮
-	// 		const deleteButton = document.createElement('button');
-	// 		deleteButton.textContent = '删除';
-	// 		deleteButton.setAttribute('data-user-id', user.id);
-	//
-	// 		// 删除按钮事件监听
-	// 		deleteButton.addEventListener('click', (event) => {
-	// 			event.preventDefault();
-	// 			if (confirm("您确定要删除该管理员吗?")) {
-	// 				const userId = event.target.getAttribute('data-user-id');
-	// 				axios({
-	// 					url: "http://localhost:8080/tAdmin/delete",
-	// 					method: "post",
-	// 					data: {
-	// 						id: userId
-	// 					}
-	// 				}).then((response) => {
-	// 					if (response.data.code == '305') {
-	// 						alert("删除管理员失败");
-	// 					} else if (response.data.code == '306') {
-	// 						alert("删除管理员异常，请联系管理员");
-	// 					} else {
-	// 						alert("删除管理员成功");
-	// 						location.reload();
-	// 					}
-	// 				}).catch((error) => {
-	// 					alert('请求失败：' + error);
-	// 				});
-	// 			}
-	// 		});
-	//
-	// 		// 添加按钮到操作单元格
-	// 		actionsCell.appendChild(editButton);
-	// 		actionsCell.appendChild(deleteButton);
-	// 		row.appendChild(actionsCell);
-	//
-	// 		// 将新行添加到表格主体
-	// 		tableBody.appendChild(row);
-	// 	});
-	// }
+	// 辅助函数：将身份文本转换为对应的值
+	function getIdentityValue(identityText) {
+		const identityMap = {
+			'学生': '0',
+			'教师': '1',
+			'社会人士': '2',
+			'管理员': '3'
+		};
+		return identityMap[identityText] || '0';
+	}
 
-
-
-
-
-
-
+	// 辅助函数：格式化日期为input可用的格式
+	function formatDateForInput(dateString) {
+		if (!dateString) return '';
+		const date = new Date(dateString);
+		if (isNaN(date.getTime())) return '';
+		
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	}
 
 </script>
 

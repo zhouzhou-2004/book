@@ -11,6 +11,7 @@
         <result column="address" property="address" jdbcType="VARCHAR" />
         <result column="size" property="size" jdbcType="INTEGER" />
         <result column="identity" property="identity" jdbcType="INTEGER" />
+        <result column="is_admin" property="isAdmin" jdbcType="INTEGER"/>
         <result column="type" property="type" jdbcType="VARCHAR" />
 
     </resultMap>
@@ -43,5 +44,18 @@
         </where>
         LIMIT #{offset}, #{pageSize}
     </select>
+
+    <!-- 公共的WHERE条件 -->
+    <sql id="whereClause">
+        <where>
+            <if test="name != null and name != ''">
+                AND (username LIKE CONCAT('%', #{name}, '%')
+                OR nickname LIKE CONCAT('%', #{name}, '%'))
+            </if>
+            <if test="classNo != null and classNo != ''">
+                AND class_no = #{classNo}
+            </if>
+        </where>
+    </sql>
 
 </mapper>

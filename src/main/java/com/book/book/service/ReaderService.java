@@ -20,4 +20,9 @@ public interface ReaderService {
     int addReader(Users users);
     //判断用户是否存在
     int checkReaderName(String username);
+
+    //根据id修改管理员功能
+    int updateReader(UserVO userVO);
+    //删除功能
+    int deleteReader(int id);
 }
