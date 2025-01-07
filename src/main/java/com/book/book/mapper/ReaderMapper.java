@@ -5,6 +5,7 @@ import com.book.book.model.vo.UserVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface ReaderMapper {
      * 模糊查询
      */
 
-    @Select("select * from users where username like concat('%',#{username},'%') or nickname  like concat('%',#{username},'%') and is_admin=0")
+    @Select("select * from users where username like concat('%',#{username},'%') or nickname  like concat('%',#{nickname},'%') and is_admin=0")
     List<UserVO> selectByLike(String LikeName);
 
     //新增功能
@@ -41,4 +42,12 @@ public interface ReaderMapper {
     //判断用户是否存在
     @Select("select * from users where username=#{username} and is_admin=0")
     Users checkReaderName(String username);
+
+    //根据id修改管理员功能
+    @Update("update users set nickname=#{nickname},username=#{username},birthday=#{birthday},tel=#{tel},email=#{email},address=#{address},size=#{size},identity=#{identity} where id=#{id}")
+    int updateReader(UserVO userVO);
+
+    //删除功能
+    @Update("update users set is_admin = 1 where id=#{id}")
+    int deleteReader(int id);
 }

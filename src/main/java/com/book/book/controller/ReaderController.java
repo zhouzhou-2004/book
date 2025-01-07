@@ -50,7 +50,7 @@ public class ReaderController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            return new ResponseUtils(500,"查询失败");
         }
     }
 
@@ -89,5 +89,42 @@ public class ReaderController {
             throw  new RuntimeException();
         }
     }
+
+    /**
+     *  编辑
+     */
+    @RequestMapping("/update")
+    private ResponseUtils updateReader(@RequestBody UserVO userVO){
+        try {
+            int updateReader = readerService.updateReader(userVO);
+            if (updateReader == 1){
+                return new ResponseUtils(200,"修改成功");
+            }else {
+                return new ResponseUtils(500,"修改失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400,"修改异常");
+        }
+    }
+
+    /**
+     * 删除功能
+     */
+    @RequestMapping("/delete")
+    private ResponseUtils deleteReader(@RequestBody UserVO userVO){
+        try {
+            int deleted = readerService.deleteReader(userVO.getId());
+            if (deleted == 1){
+                return new ResponseUtils(200,"删除成功");
+            }else {
+                return new ResponseUtils(500,"删除失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400,"删除异常");
+        }
+    }
+
 
 }

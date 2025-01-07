@@ -81,4 +81,34 @@ public class ReaderServiceImpl implements ReaderService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public int updateReader(UserVO userVO) {
+        try {
+            int result = readerMapper.updateReader(userVO);
+            if (result > 0){
+                //添加成功
+                return 1;
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int deleteReader(int id) {
+        try {
+            int deleteReader = readerMapper.deleteReader(id);
+            if (deleteReader > 0){
+                //删除成功
+                return 1;
+            }else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
