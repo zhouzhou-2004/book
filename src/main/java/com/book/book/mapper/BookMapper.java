@@ -33,4 +33,15 @@ public interface BookMapper {
             "VALUES (CONCAT('《', #{name}, '》'), #{author}, #{isbn}, " +
             "#{pages}, #{price}, #{publish}, #{publishTime}, #{size}, #{type}, 0)")
     int addBook(Book book);
+    // 按书名搜索
+    @Select("SELECT * FROM book WHERE name LIKE CONCAT('%',#{keyword},'%') AND is_delete = 0")
+    List<Book> searchByName(String keyword);
+
+    // 按作者搜索
+    @Select("SELECT * FROM book WHERE author LIKE CONCAT('%',#{keyword},'%') AND is_delete = 0")
+    List<Book> searchByAuthor(String keyword);
+
+    // 按ISBN搜索
+    @Select("SELECT * FROM book WHERE isbn LIKE CONCAT('%',#{keyword},'%') AND is_delete = 0")
+    List<Book> searchByIsbn(String keyword);
 }
