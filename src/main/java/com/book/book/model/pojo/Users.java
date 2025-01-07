@@ -25,6 +25,13 @@ public class Users {
   }
 
 
+  public String getTel() {
+    return tel;
+  }
+
+  public void setTel(String tel) {
+    this.tel = tel;
+  }
 
   public void setId(long id) {
     this.id = id;
