@@ -116,7 +116,7 @@
 		<!-- 添加拖动句柄 -->
 		<div class="modal-header">
 			<span class="close">&times;</span>
-			<h2>编辑用户信息</h2>
+			<h2 style="color: #1E9FFF">编辑用户信息</h2>
 			<form id="editForm">
 				<div class="form-group">
 					<label for="editId">序号:</label>
@@ -419,8 +419,82 @@
 		document.getElementById('editModal').style.display = 'none';
 	});
 
-	// 更新按钮点击事件
+	// 昵称验证
+	document.getElementById('editNickname').onkeyup = function() {
+		const nicknameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
+		const valid = nicknameRegex.test(this.value);
+		this.style.borderColor = valid ? 'green' : 'red';
+		return valid;
+	}
+
+	// 用户名验证
+	document.getElementById('editUsername').onkeyup = function() {
+		const usernameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6}$/;
+		const valid = usernameRegex.test(this.value);
+		this.style.borderColor = valid ? 'green' : 'red';
+		return valid;
+	}
+
+	// 生日验证
+	document.getElementById('editBirthday').onchange = function() {
+		const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+		const currentDate = new Date();
+		const inputDate = new Date(this.value);
+		const valid = dateRegex.test(this.value) && inputDate <= currentDate;
+		this.style.borderColor = valid ? 'green' : 'red';
+		return valid;
+	}
+
+	// 电话验证
+	document.getElementById('editTel').onkeyup = function() {
+		const telRegex = /^\d{11}$/;
+		const valid = telRegex.test(this.value);
+		this.style.borderColor = valid ? 'green' : 'red';
+		return valid;
+	}
+
+	// 邮箱验证
+	document.getElementById('editEmail').onkeyup = function() {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+		const valid = emailRegex.test(this.value);
+		this.style.borderColor = valid ? 'green' : 'red';
+		return valid;
+	}
+
+	// 地址验证
+	document.getElementById('editAddress').onkeyup = function() {
+		const addressRegex = /^[\u4e00-\u9fa5]+$/;
+		const valid = addressRegex.test(this.value);
+		this.style.borderColor = valid ? 'green' : 'red';
+		return valid;
+	}
+
+	// 可借数量验证
+	document.getElementById('editSize').onkeyup = function() {
+		const sizeValue = parseInt(this.value);
+		const valid = !isNaN(sizeValue) && sizeValue > 0 && sizeValue <= 20;
+		this.style.borderColor = valid ? 'green' : 'red';
+		return valid;
+	}
+
+	// 修改更新按钮的事件处理程序
 	document.querySelector('.updateButton').addEventListener('click', function() {
+		// 验证所有字段
+		const isNicknameValid = document.getElementById('editNickname').onkeyup();
+		const isUsernameValid = document.getElementById('editUsername').onkeyup();
+		const isBirthdayValid = document.getElementById('editBirthday').onchange();
+		const isTelValid = document.getElementById('editTel').onkeyup();
+		const isEmailValid = document.getElementById('editEmail').onkeyup();
+		const isAddressValid = document.getElementById('editAddress').onkeyup();
+		const isSizeValid = document.getElementById('editSize').onkeyup();
+
+		// 检查所有验证结果
+		if (!isNicknameValid || !isUsernameValid || !isBirthdayValid || 
+			!isTelValid || !isEmailValid || !isAddressValid || !isSizeValid) {
+			alert('请确保所有字段都符合要求！');
+			return;
+		}
+
 		const formData = {
 			id: document.getElementById('editId').value,
 			nickname: document.getElementById('editNickname').value,
