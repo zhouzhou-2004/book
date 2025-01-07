@@ -126,5 +126,23 @@ public class ReaderController {
         }
     }
 
+    /**
+     * 批量删除功能
+     */
+    @RequestMapping("/deleteDig")
+    public ResponseUtils deleteReadersById(@RequestBody List<Long> id) {
+        try {
+            int deletedCount = readerService.deleteReadersById(id); // 调用批量删除方法
+            if (deletedCount > 0) {
+                return new ResponseUtils(200, "删除成功，共删除了 " + deletedCount + " 条记录");
+            } else {
+                return new ResponseUtils(404, "没有找到匹配的记录或删除失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(500, "删除异常: " + e.getMessage());
+        }
+    }
+
 
 }

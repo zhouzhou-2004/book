@@ -111,4 +111,18 @@ public class ReaderServiceImpl implements ReaderService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public int deleteReadersById(List<Long> id) {
+        if (id == null || id.isEmpty()) {
+            return 0;
+        }
+
+        try {
+            int deleteCount = readerMapper.deleteReadersById(id);
+            return deleteCount;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
