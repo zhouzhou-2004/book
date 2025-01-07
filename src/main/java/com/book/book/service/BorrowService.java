@@ -19,6 +19,8 @@ public interface BorrowService {
     int deleteBook(int id);
     // 添加图书
     int addBook(Book book);
+    //    修改图书
+    Book getBookById(Integer id);
 //    分页查询
     PageResult<Book> selectBookPage(QueryRequest queryRequest);
     // 检查用户是否存在
@@ -28,5 +30,10 @@ public interface BorrowService {
     int getUserBorrowCount(Integer userId);
     // 借阅图书
     Map<String, Object> borrowBook(Integer userId, String bookName, String author, String borrowTime, String returnTime);
+//    归还图书
+// 获取用户借阅的图书
+    List<Map<String, Object>> getBorrowedBooks(Integer userId);
 
+    // 归还图书
+    Map<String, Object> returnBook(Integer borrowId, String returnTime);
 }

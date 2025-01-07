@@ -218,15 +218,32 @@
 					goBack();
 				}, 1500);
 			} else {
+				// 修改这里：显示具体的错误信息
+				let errorMessage = "借阅失败";
+				if (response.data.msg) {
+					errorMessage = response.data.msg;
+				} else if (response.data.code === 400) {
+					errorMessage = "借阅失败，图书名或作者信息有误";
+				}
+
 				javaex.message({
-					content: response.data.msg,
+					content: errorMessage,
 					type: "error"
 				});
+
+				// 清空图书名和作者字段
+				document.getElementById('bookName').value = '';
+				document.getElementById('author').value = '';
 			}
 		}).catch(error => {
-			console.error('借阅失败，图书名或作者信息错误：', error);
+			console.error('借阅失败：', error);
+			let errorMessage = "系统错误，请稍后重试";
+			if (error.response && error.response.data && error.response.data.msg) {
+				errorMessage = error.response.data.msg;
+			}
+
 			javaex.message({
-				content: "系统错误，请稍后重试",
+				content: errorMessage,
 				type: "error"
 			});
 		});

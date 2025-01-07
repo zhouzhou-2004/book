@@ -29,7 +29,7 @@
 				<button class="button blue" onclick="searchBooks()">搜索</button>
 			</div>
 
-			<!--表格-->
+			<!-- 表格部分的修改 -->
 			<table id="booksTable" class="table color2">
 				<thead>
 				<tr>
@@ -43,10 +43,10 @@
 					<th>出版时间</th>
 					<th>库存数量</th>
 					<th>分类</th>
-					<th>操作</th>  <!-- 新增操作列 -->
+					<th>操作</th>
 				</tr>
 				</thead>
-				<tbody>
+				<tbody id="tableBody">
 				<!-- 图书数据将在这里动态加载 -->
 				</tbody>
 			</table>
@@ -165,81 +165,84 @@
 			console.error('搜索失败：', error);
 		});
 
-	// 显示图书数据
+	// 修改后的displayBooks函数
 	function displayBooks(pageResult) {
-		const tableBody = document.querySelector('#booksTable tbody');
+		const tableBody = document.getElementById('tableBody');
+		tableBody.innerHTML = ''; // 清空现有内容
 
-		// 确保 pageResult 存在且有 list 属性
-		if (pageResult && Array.isArray(pageResult.list)) {
-			if (pageResult.list.length > 0) {
-				tableBody.innerHTML = '';
-				pageResult.list.forEach((book, index) => {
-					const realIndex = (currentPage - 1) * pageSize + index + 1;
-
-					const row = document.createElement('tr');
-					row.align = 'center';
-					row.innerHTML = `
-                        <td>${realIndex}</td>
-                        <td>${book.name || ''}</td>
-                        <td>${book.author || ''}</td>
-                        <td>${book.isbn || ''}</td>
-                        <td>${book.pages || ''}</td>
-                        <td>${book.price || ''}</td>
-                        <td>${book.publish || ''}</td>
-                        <td>${book.publishTime || ''}</td>
-                        <td>${book.size || ''}</td>
-                        <td>${book.type || ''}</td>
-                        <td>
-                            <button class="button blue" style="margin-right: 5px" onclick="editBook(${JSON.stringify(book).replace(/"/g, '&quot;')})">编辑</button>
-                            <button class="button red" onclick="deleteBook(${book.id})">删除</button>
-                        </td>
-                    `;
-					tableBody.appendChild(row);
-				});
-			} else {
-				tableBody.innerHTML = '<tr><td colspan="11" align="center">暂无数据</td></tr>';
-			}
-		} else {
-			tableBody.innerHTML = '<tr><td colspan="11" align="center">暂无数据</td></tr>';
+		if (!pageResult || !pageResult.list || pageResult.list.length === 0) {
+			const emptyRow = document.createElement('tr');
+			emptyRow.innerHTML = '<td colspan="11" style="text-align: center;">暂无数据</td>';
+			tableBody.appendChild(emptyRow);
+			return;
 		}
-	}
 
-	// 编辑图书函数按钮
-	function editBook(id) {
-		window.location.href = `book-edit.html?id=${id}`;
-	}
+		pageResult.list.forEach((book, index) => {
+			const realIndex = (currentPage - 1) * pageSize + index + 1;
 
-	// 删除图书函数
-	function deleteBook(id) {
-		javaex.confirm({
-			content: "确定要删除这本图书吗？",
-			callback: "deleteConfirm(" + id + ")"
+			const row = `
+            <tr align="center">
+                <td>${realIndex}</td>
+                <td>${book.name || ''}</td>
+                <td>${book.author || ''}</td>
+                <td>${book.isbn || ''}</td>
+                <td>${book.pages || ''}</td>
+                <td>${book.price || ''}</td>
+                <td>${book.publish || ''}</td>
+                <td>${book.publishTime || ''}</td>
+                <td>${book.size || ''}</td>
+                <td>${book.type || ''}</td>
+                <td>
+                    <button class="button blue" style="margin-right: 5px;"
+                            onclick="editBook(${JSON.stringify(book).replace(/"/g, '&quot;')})">
+                        编辑
+                    </button>
+                    <button class="button red"
+                            onclick="deleteBook(${book.id})">
+                        删除
+                    </button>
+                </td>
+            </tr>
+        `;
+			tableBody.insertAdjacentHTML('beforeend', row);
 		});
 	}
 
-	// 删除确认
-	function deleteConfirm(id) {
+
+	// 编辑图书
+	function editBook(book) {
+		// 跳转到编辑页面，并传递图书ID
+		window.location.href = `borrow-book-edit.html?id=${book.id}`;
+	}
+
+
+	// 删除图书函数
+	function deleteBook(bookId) {
+		if (!confirm('确定要删除这本图书吗？')) {
+			return;
+		}
+
 		axios({
 			url: "http://localhost:8080/borrow/deleteBook",
 			method: "post",
-			data: { id: id }
-		}).then(response => {
+			data: { id: bookId }
+		}).then((response) => {
 			if (response.data.code === 200) {
 				javaex.message({
 					content: "删除成功",
 					type: "success"
 				});
-				loadData();
+				loadBooks(currentPage); // 重新加载当前页数据
 			} else {
 				javaex.message({
 					content: response.data.msg || "删除失败",
 					type: "error"
 				});
 			}
-		}).catch(error => {
+		}).catch((error) => {
 			console.error('删除失败：', error);
 			javaex.message({
-				content: "删除失败",
+				content: "系统错误，请稍后重试",
 				type: "error"
 			});
 		});
