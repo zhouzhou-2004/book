@@ -8,6 +8,15 @@ public class QueryRequest {
     private Integer pageSize = 5; // 一页显示10条
     private String classNo;
     private String name;
+    private String userText;
+
+    public String getUserText() {
+        return userText;
+    }
+
+    public void setUserText(String userText) {
+        this.userText = userText;
+    }
 
     // 如果需要，可以手动添加 getter 和 setter 方法
     public Integer getPageNum() {

@@ -27,19 +27,17 @@ public class UsersServiceImpl implements UsersService {
         }
     }
 
-    @Override
-    public List<UserVO> selectLike(String LikeName) {
-        try {
-            List<UserVO> userVOS = usersMapper.selectLike(LikeName);
-            if (userVOS != null){
-                //查询到数据，返回
-                return userVOS;
-            }else {
-                return null;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public PageResult<UserVO> selectLikeWithPage(QueryRequest queryRequest) {
+        // 计算偏移量
+        int offset = (queryRequest.getPageNum() - 1) * queryRequest.getPageSize();
+
+        // 获取模糊查询结果
+        List<UserVO> userVOList = usersMapper.selectLike(queryRequest.getUserText(), offset, queryRequest.getPageSize());
+
+        // 获取总记录数
+        Long total = usersMapper.selectLikeTotal(queryRequest.getUserText());
+
+        return new PageResult<>(userVOList, queryRequest.getPageNum(), queryRequest.getPageSize(), total);
     }
 
     @Override

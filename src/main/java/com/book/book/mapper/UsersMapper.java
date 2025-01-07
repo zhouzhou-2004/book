@@ -14,9 +14,13 @@ public interface UsersMapper {
     @Select("select * from users where is_admin=0")
     List<UserVO> getAllUser();
 
-    //模糊查询(用户名或昵称)
-    @Select("select * from users where username like concat('%',#{username},'%') or nickname  like concat('%',#{username},'%') and is_admin=0")
-    List<UserVO> selectLike(String LikeName);
+    // 修改模糊查询方法
+    List<UserVO> selectLike(@Param("username") String username,
+                            @Param("offset") Integer offset,
+                            @Param("pageSize") Integer pageSize);
+
+    // 添加模糊查询总数方法
+    Long selectLikeTotal(@Param("username") String username);
 
     //根据id修改管理员功能
     @Update("update users set nickname=#{nickname},username=#{username},birthday=#{birthday},tel=#{tel},email=#{email},address=#{address},size=#{size},identity=#{identity} where id=#{id}")

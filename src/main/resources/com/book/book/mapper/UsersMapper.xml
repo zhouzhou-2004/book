@@ -33,7 +33,22 @@
         ORDER BY id
         LIMIT #{offset}, #{pageSize}
     </select>
+    <!-- 修改模糊查询 -->
+    <select id="selectLike" resultType="com.book.book.model.vo.UserVO">
+        select * from users
+        where (username like concat('%',#{username},'%')
+            or nickname like concat('%',#{username},'%'))
+          and is_admin=0
+        LIMIT #{offset}, #{pageSize}
+    </select>
 
+    <!-- 添加模糊查询总数 -->
+    <select id="selectLikeTotal" resultType="java.lang.Long">
+        select count(*) from users
+        where (username like concat('%',#{username},'%')
+            or nickname like concat('%',#{username},'%'))
+          and is_admin=0
+    </select>
     <!-- 公共的WHERE条件 -->
     <sql id="whereClause">
         <where>

@@ -46,20 +46,9 @@ public class UsersController {
      * 模糊查询(用户名或昵称)
      */
     @RequestMapping("/list/selectLike")
-    private ResponseUtils selectLike(@RequestBody UsersDto usersDto){
-        try {
-            List<UserVO> userVOS = usersService.selectLike(usersDto.getUserText());
-//        System.out.println("模糊查询"+userVOS);
-//        return null;
-            if (userVOS != null){
-                return new ResponseUtils(200,"查询成功",userVOS);
-            }else {
-                return new ResponseUtils(400,"查询失败");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseUtils(500,"查询失败");
-        }
+    public ResponseUtils selectLike(@RequestBody QueryRequest queryRequest) {
+        PageResult<UserVO> result = usersService.selectLikeWithPage(queryRequest);
+        return new ResponseUtils(200, "success", result);
     }
 
     /**

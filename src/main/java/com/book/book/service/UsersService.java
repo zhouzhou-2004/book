@@ -12,7 +12,7 @@ public interface UsersService {
     //用户管理
     List<UserVO> getAllUser();
     //模糊查询(用户名或昵称)
-    List<UserVO> selectLike(String LikeName);
+    PageResult<UserVO> selectLikeWithPage(QueryRequest queryRequest);
     //根据id修改管理员功能
     int updateUser(UserVO userVO);
     //删除功能
