@@ -25,4 +25,7 @@ public interface ReaderService {
     int updateReader(UserVO userVO);
     //删除功能
     int deleteReader(int id);
+
+    //批量删除
+    int deleteReadersById(List<Long> id);
 }

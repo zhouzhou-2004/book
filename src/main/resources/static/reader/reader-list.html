@@ -44,12 +44,12 @@
 					<button id="searchBtn" class="button blue right-button02" onclick="search();">搜索</button>
 				</div>
 			</div>
-			<!--表格上方的操作元素，添加、删除等-->
-<!--			<div class="operation-wrap">-->
-<!--				<div class="buttons-wrap">-->
-<!--					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>-->
-<!--				</div>-->
-<!--			</div>-->
+<!--			表格上方的删除-->
+			<div class="operation-wrap">
+				<div class="buttons-wrap">
+					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>
+				</div>
+			</div>
 			<table id="table" class="table color2">
 				<thead>
 				<tr align="center">
@@ -281,6 +281,7 @@
 
 					const row = `
 						<tr>
+							<td bgcolor="#FFFFFF"><input type="checkbox" class="reader-checkbox" value="${user.id}"/></td>
 							<td bgcolor="#FFFFFF">${escapeHtml(user.id)}</td>
 							<td bgcolor="#FFFFFF">${escapeHtml(user.nickname || '')}</td>
 							<td bgcolor="#FFFFFF">${escapeHtml(user.username || '')}</td>
@@ -555,6 +556,8 @@
 		});
 	}
 
+
+
 	// 辅助函数：将身份文本转换为对应的值
 	function getIdentityValue(identityText) {
 		const identityMap = {
@@ -576,6 +579,50 @@
 		const month = String(date.getMonth() + 1).padStart(2, '0');
 		const day = String(date.getDate()).padStart(2, '0');
 		return `${year}-${month}-${day}`;
+	}
+
+	// 修改批量删除按钮的点击事件
+	document.querySelector('.button.red.radius-3').addEventListener('click', function() {
+		const selectedCheckboxes = document.getElementsByClassName('reader-checkbox');
+		const selectedIds = [];
+		
+		for (let checkbox of selectedCheckboxes) {
+			if (checkbox.checked) {
+				selectedIds.push(parseInt(checkbox.value));
+			}
+		}
+		
+		if (selectedIds.length === 0) {
+			alert('请至少选择一条记录进行删除！');
+			return;
+		}
+		
+		if (confirm(`确定要删除选中的 ${selectedIds.length} 条记录吗？`)) {
+			deleteReaders(selectedIds);
+		}
+	});
+
+	// 修改批量删除函数
+	function deleteReaders(ids) {
+		axios({
+			url: 'http://localhost:8080/reader/deleteDig',
+			method: 'post',
+			data: ids,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(response => {
+			if (response.data.code === 200) {
+				alert(response.data.message || '删除成功');
+				// 直接重新加载当前页数据
+				loadReaderList(currentPage);
+			} else {
+				alert('删除失败：' + (response.data.message || '未知错误'));
+			}
+		}).catch(error => {
+			console.error('批量删除请求失败：', error);
+			alert('删除失败，请稍后重试');
+		});
 	}
 
 </script>

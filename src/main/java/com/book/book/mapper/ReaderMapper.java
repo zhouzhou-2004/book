@@ -16,6 +16,7 @@ public interface ReaderMapper {
      */
     Long selectTotal(@Param("classNo") String classNo,
                      @Param("name") String name);
+
     /**
      * 分页查询相关数据
      */
@@ -50,4 +51,13 @@ public interface ReaderMapper {
     //删除功能
     @Update("update users set is_admin = 1 where id=#{id}")
     int deleteReader(int id);
+
+    //批量删除
+    @Update("<script>" +
+            "UPDATE users SET is_admin = 1 WHERE id IN " +
+            "<foreach item='id' index='index' collection='id' open='(' separator=',' close=')'>" +
+            "#{id}" +
+            "</foreach>" +
+            "</script>")
+    int deleteReadersById(@Param("id") List<Long> id);
 }
