@@ -165,7 +165,7 @@
 			console.error('搜索失败：', error);
 		});
 
-	// 修改后的displayBooks函数
+	//
 	function displayBooks(pageResult) {
 		const tableBody = document.getElementById('tableBody');
 		tableBody.innerHTML = ''; // 清空现有内容
@@ -223,7 +223,7 @@
 		}
 
 		axios({
-			url: "http://localhost:8080/borrow/deleteBook",
+			url: "/GetBook/deleteBook",
 			method: "post",
 			data: { id: bookId }
 		}).then((response) => {

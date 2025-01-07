@@ -64,4 +64,21 @@ public class BookServiceImpl implements BookService {
             return 0;
         }
     }
+//    搜索功能的实现
+    @Override
+    public List<Book> searchBooks(String keyword, String type) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return null;
+        }
+        switch (type) {
+            case "name":
+                return bookMapper.searchByName(keyword);
+            case "author":
+                return bookMapper.searchByAuthor(keyword);
+            case "isbn":
+                return bookMapper.searchByIsbn(keyword);
+            default:
+                return null;
+        }
+    }
 }

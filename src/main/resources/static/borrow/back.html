@@ -60,6 +60,7 @@
 						<th>借阅时间</th>
 						<th>应还时间</th>
 						<th>实际归还时间</th>
+						<th>状态</th>
 						<th>操作</th>
 					</tr>
 					</thead>
@@ -90,7 +91,7 @@
 		}
 
 		axios({
-			url: "/borrow/getBorrowedBooks",
+			url: "http://localhost:8080/borrow/getBorrowedBooks",
 			method: "post",
 			data: { userId: userId }
 		}).then(response => {
@@ -162,7 +163,7 @@
 		const today = formatDate(new Date());
 
 		axios({
-			url: "/borrow/returnBook",
+			url: "http://localhost:8080/borrow/returnBook",
 			method: "post",
 			data: {
 				borrowId: borrowId,

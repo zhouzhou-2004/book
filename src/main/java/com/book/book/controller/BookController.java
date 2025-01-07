@@ -99,4 +99,18 @@ public class BookController {
             return new ResponseUtils(400, "添加异常");
         }
     }
+//    搜索功能
+    @PostMapping("/search")
+    public ResponseUtils search(@RequestParam String keyword, @RequestParam String type) {
+        try {
+            List<Book> books = bookService.searchBooks(keyword, type);
+            if (books == null || books.isEmpty()) {
+                return new ResponseUtils(500, "未找到相关信息，请输入正确的搜索内容");
+            }
+            return new ResponseUtils(200, "查询成功", books);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUtils(400, "查询异常");
+        }
+    }
 }

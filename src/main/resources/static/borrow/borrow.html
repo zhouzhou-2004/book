@@ -68,6 +68,7 @@
 					</div>
 				</div>
 
+				<!-- 修改借阅时间和应还时间的输入框部分 -->
 				<div class="unit clear">
 					<div class="left"><span class="required">*</span><p class="subtitle">借阅时间</p></div>
 					<div class="right">
@@ -78,7 +79,7 @@
 				<div class="unit clear">
 					<div class="left"><span class="required">*</span><p class="subtitle">应还时间</p></div>
 					<div class="right">
-						<input type="text" id="returnTime" class="text" placeholder="应还时间" readonly/>
+						<input type="text" id="returnTime" class="text" placeholder="应还时间将自动计算" readonly/>
 					</div>
 				</div>
 
@@ -108,7 +109,7 @@
 		checkBorrowLimit();
 	}
 
-	// 添加检查借阅限制的函数
+	// 添加检查借阅数量限制的函数
 	function checkBorrowLimit() {
 		const borrowBtn = document.getElementById('borrowBtn');
 		if (currentBorrowCount >= MAX_BORROW_COUNT) {
@@ -174,11 +175,11 @@
 		});
 	}
 
-	// 更新借阅图书函数
+	// 借阅图书函数
 	function borrowBook() {
 		// 获取表单数据
 		const userId = document.getElementById('userId').value.trim();
-		const bookName = document.getElementById('bookName').value.trim();
+		let bookName = document.getElementById('bookName').value.trim();
 		const author = document.getElementById('author').value.trim();
 		const borrowTime = document.getElementById('borrowTime').value.trim();
 		const returnTime = document.getElementById('returnTime').value.trim();
@@ -191,6 +192,9 @@
 			});
 			return;
 		}
+
+		// 添加书名号（如果没有的话）
+		bookName = `《${bookName.replace(/[《》]/g, '')}》`;
 
 		// 发送借阅请求
 		axios({
@@ -214,26 +218,17 @@
 				updateBorrowCountDisplay();
 				// 清空表单
 				clearForm();
+				// 成功后延迟刷新页面  ，使用reload()刷新页面
 				setTimeout(() => {
-					goBack();
+					window.location.reload();
 				}, 1500);
 			} else {
-				// 修改这里：显示具体的错误信息
-				let errorMessage = "借阅失败";
-				if (response.data.msg) {
-					errorMessage = response.data.msg;
-				} else if (response.data.code === 400) {
-					errorMessage = "借阅失败，图书名或作者信息有误";
-				}
-
+				// 显示具体的错误信息
+				let errorMessage = response.data.msg || "借阅失败";
 				javaex.message({
 					content: errorMessage,
 					type: "error"
 				});
-
-				// 清空图书名和作者字段
-				document.getElementById('bookName').value = '';
-				document.getElementById('author').value = '';
 			}
 		}).catch(error => {
 			console.error('借阅失败：', error);
@@ -241,22 +236,22 @@
 			if (error.response && error.response.data && error.response.data.msg) {
 				errorMessage = error.response.data.msg;
 			}
-
 			javaex.message({
 				content: errorMessage,
 				type: "error"
 			});
 		});
 	}
+	// 日期选择器初始化代码
 	javaex.date({
 		id : "borrowTime",    // 承载日期组件的input输入框的id
 		isTime : false,       // 是否显示时分秒
-		// 将 new Date() 改为格式化的日期字符串
-		date : formatDate(new Date()),    // 默认显示当前日期
+		// 不设置默认日期，等待用户选择
 		callback : function(rtn) {
 			// 设置借阅时间
 			document.getElementById("borrowTime").value = rtn.date;
-			// 计算并设置应还时间（当前日期+30天）
+
+			// 计算并设置应还时间（当前选择日期+30天）
 			let returnDate = new Date(rtn.date);
 			returnDate.setDate(returnDate.getDate() + BORROW_PERIOD);
 			document.getElementById("returnTime").value = formatDate(returnDate);

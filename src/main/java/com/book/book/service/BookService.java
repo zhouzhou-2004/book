@@ -14,4 +14,6 @@ public interface BookService {
     int deleteBook(int id);
     // 添加图书
     int addBook(Book book);
+    // 搜索图书
+    List<Book> searchBooks(String keyword, String type);
 }

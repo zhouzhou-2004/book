@@ -1,28 +1,17 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<!-- 字体图标 -->
-	<link href="/javaex/pc/css/icomoon.css" rel="stylesheet" />
-	<!-- 动画 -->
-	<link href="/javaex/pc/css/animate.css" rel="stylesheet" />
-	<!-- 骨架样式 -->
-	<link href="/javaex/pc/css/common.css" rel="stylesheet" />
-	<!-- 皮肤（缇娜） -->
-	<link href="/javaex/pc/css/skin/tina.css" rel="stylesheet" />
-	<!-- jQuery -->
+	<link href="/javaex/pc/css/animate.css" rel="stylesheet">
+	<link href="/javaex/pc/css/common.css" rel="stylesheet">
+	<link href="/javaex/pc/css/skin/tina.css" rel="stylesheet">
 	<script src="/javaex/pc/lib/jquery-1.7.2.min.js"></script>
-	<!-- 全局动态修改 -->
 	<script src="/javaex/pc/js/common.js"></script>
-	<!-- 核心组件 -->
 	<script src="/javaex/pc/js/javaex.min.js"></script>
-	<!-- 表单验证 -->
 	<script src="/javaex/pc/js/javaex-formVerify.js"></script>
-	<!-- axios -->
 	<script src="/js/axios.min.js"></script>
 	<title>图书管理系统</title>
 	<style>
-		/* 按钮样式 */
 		.action-button {
 			padding: 6px 12px;
 			margin: 0 4px;
@@ -30,57 +19,92 @@
 			border-radius: 4px;
 			cursor: pointer;
 			font-size: 13px;
-			transition: all 0.3s ease;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			min-width: 70px;
 		}
-
-		.action-button i {
-			margin-right: 4px;
-			font-size: 14px;
-		}
-
 		.action-button.edit {
 			background-color: #2d8cf0;
 			color: white;
 		}
-
 		.action-button.delete {
 			background-color: #ed4014;
 			color: white;
 		}
 
-		.action-button:hover {
-			opacity: 0.85;
-			transform: translateY(-1px);
-			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+		/* 删除确认框样式 */
+		.delete-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 1000;
 		}
 
-		.action-button:active {
-			transform: translateY(0);
-			box-shadow: none;
+		.delete-modal-content {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: white;
+			padding: 20px;
+			border-radius: 5px;
+			text-align: center;
+			min-width: 300px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+		}
+
+		.delete-modal-title {
+			font-size: 18px;
+			margin-bottom: 15px;
+			color: #333;
+			font-weight: bold;
+		}
+
+		.delete-modal-buttons {
+			margin-top: 20px;
+		}
+
+		.delete-modal-buttons button {
+			margin: 0 10px;
+			padding: 8px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.btn-confirm {
+			background-color: #ed4014;
+			color: white;
+		}
+
+		.btn-confirm:hover {
+			background-color: #f16643;
+		}
+
+		.btn-cancel {
+			background-color: #dcdee2;
+			color: #515a6e;
+		}
+
+		.btn-cancel:hover {
+			background-color: #c5c8ce;
 		}
 	</style>
 </head>
 
 <body>
-<!--主体内容-->
 <div class="list-content">
-	<!--块元素-->
 	<div class="block">
 		<h2>图书列表</h2>
-		<!--右上角的返回按钮-->
 		<a href="javascript:history.back();">
 			<button class="button indigo radius-3" style="position: absolute;right: 20px;top: 16px;">
-				<span class="icon-arrow_back"></span> 返回
+				返回
 			</button>
 		</a>
 
-		<!--正文内容-->
 		<div class="main">
-			<!--搜索栏-->
 			<div class="admin-search">
 				<div class="input-group">
 					<select id="searchType" class="select">
@@ -88,12 +112,11 @@
 						<option value="author">作者</option>
 						<option value="isbn">ISBN</option>
 					</select>
-					<input id="keyword" type="text" class="text" placeholder="请输入搜索关键词" />
-					<button id="searchBtn" class="button blue" onclick="search();">搜索</button>
+					<input id="keyword" type="text" class="text" placeholder="请输入搜索关键词">
+					<button id="searchBtn" class="button blue" onclick="search()">搜索</button>
 				</div>
 			</div>
 
-			<!--表格-->
 			<table id="table" class="table color2">
 				<thead>
 				<tr>
@@ -116,27 +139,36 @@
 	</div>
 </div>
 
+<!-- 删除确认框 -->
+<div id="deleteModal" class="delete-modal">
+	<div class="delete-modal-content">
+		<div class="delete-modal-title">删除确认</div>
+		<div>确定要删除这本图书吗？</div>
+		<div class="delete-modal-buttons">
+			<button class="btn-cancel" onclick="closeDeleteModal()">取消</button>
+			<button class="btn-confirm" onclick="confirmDelete()">确定删除</button>
+		</div>
+	</div>
+</div>
+
 <script>
+	// 当前要删除的图书ID
+	let currentBookId = null;
+
 	// 加载数据
 	function loadData() {
 		axios({
 			url: "http://localhost:8080/GetBook/selectBook",
 			method: "post"
-		}).then((response) => {
+		}).then(response => {
 			if (response.data.code === 200) {
 				renderTable(response.data.data);
 			} else {
-				javaex.message({
-					content: "获取数据失败",
-					type: "error"
-				});
+				alert("获取数据失败");
 			}
-		}).catch((error) => {
+		}).catch(error => {
 			console.error('获取数据失败：', error);
-			javaex.message({
-				content: "获取数据失败",
-				type: "error"
-			});
+			alert("获取数据失败");
 		});
 	}
 
@@ -144,72 +176,70 @@
 	function renderTable(data) {
 		const tbody = document.getElementById('tbody');
 		tbody.innerHTML = '';
-
 		data.forEach((book, index) => {
 			const row = `
-                <tr align="center">
-                    <td>${index + 1}</td>
-                    <td>${book.name || ''}</td>
-                    <td>${book.author || ''}</td>
-                    <td>${book.isbn || ''}</td>
-                    <td>${book.pages || ''}</td>
-                    <td>${book.price || ''}</td>
-                    <td>${book.publish || ''}</td>
-                    <td>${book.publishTime || ''}</td>
-                    <td>${book.size || ''}</td>
-                    <td>${book.type || ''}</td>
-                    <td>
-                        <button class="action-button edit" onclick="editBook(${book.id})">
-                            <i class="icon-pencil"></i>编辑
-                        </button>
-                        <button class="action-button delete" onclick="deleteBook(${book.id})">
-                            <i class="icon-bin"></i>删除
-                        </button>
-                    </td>
-                </tr>
-            `;
+                    <tr align="center">
+                        <td>${index + 1}</td>
+                        <td>${book.name || ''}</td>
+                        <td>${book.author || ''}</td>
+                        <td>${book.isbn || ''}</td>
+                        <td>${book.pages || ''}</td>
+                        <td>${book.price || ''}</td>
+                        <td>${book.publish || ''}</td>
+                        <td>${book.publishTime || ''}</td>
+                        <td>${book.size || ''}</td>
+                        <td>${book.type || ''}</td>
+                        <td>
+                            <button class="action-button edit" onclick="editBook(${book.id})">编辑</button>
+                            <button class="action-button delete" onclick="deleteBook(${book.id})">删除</button>
+                        </td>
+                    </tr>
+                `;
 			tbody.insertAdjacentHTML('beforeend', row);
 		});
+	}
+
+	// 显示删除确认框
+	function deleteBook(id) {
+		currentBookId = id;
+		document.getElementById('deleteModal').style.display = 'block';
+	}
+
+	// 关闭删除确认框
+	function closeDeleteModal() {
+		document.getElementById('deleteModal').style.display = 'none';
+		currentBookId = null;
+	}
+
+	// 确认删除
+	function confirmDelete() {
+		if (currentBookId) {
+			axios({
+				url: "http://localhost:8080/GetBook/deleteBook",
+				method: "post",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				data: JSON.stringify({ id: currentBookId })
+			}).then(response => {
+				closeDeleteModal();
+				if (response.data.code === 200) {
+					alert("删除成功");
+					loadData();  // 重新加载数据
+				} else {
+					alert("删除失败：" + (response.data.msg || "未知错误"));
+				}
+			}).catch(error => {
+				closeDeleteModal();
+				console.error('删除失败:', error);
+				alert("删除失败，请稍后重试");
+			});
+		}
 	}
 
 	// 编辑图书
 	function editBook(id) {
 		window.location.href = `book-edit.html?id=${id}`;
-	}
-
-	// 删除图书
-	function deleteBook(id) {
-		javaex.confirm({
-			content: "确定要删除这本图书吗？",
-			callback: function(status) {
-				if (status) {
-					axios({
-						url: "http://localhost:8080/GetBook/deleteBook",
-						method: "post",
-						data: { id: id }
-					}).then(response => {
-						if (response.data.code === 200) {
-							javaex.message({
-								content: "删除成功",
-								type: "success"
-							});
-							loadData(); // 重新加载数据
-						} else {
-							javaex.message({
-								content: response.data.msg || "删除失败",
-								type: "error"
-							});
-						}
-					}).catch(error => {
-						console.error('删除失败：', error);
-						javaex.message({
-							content: "删除失败",
-							type: "error"
-						});
-					});
-				}
-			}
-		});
 	}
 
 	// 搜索功能
@@ -218,10 +248,7 @@
 		const searchType = document.getElementById('searchType').value;
 
 		if (!keyword) {
-			javaex.message({
-				content: "请输入搜索关键词",
-				type: "error"
-			});
+			alert("请输入搜索关键词");
 			return;
 		}
 
@@ -229,31 +256,35 @@
 			url: "http://localhost:8080/GetBook/search",
 			method: "post",
 			params: {
-				keyword: keyword,
+				keyword,
 				type: searchType
 			}
 		}).then(response => {
 			if (response.data.code === 200) {
 				renderTable(response.data.data);
 			} else {
-				javaex.message({
-					content: response.data.msg || "查询失败",
-					type: "error"
-				});
+				alert(response.data.msg || "查询失败");
 				loadData();
 			}
 		}).catch(error => {
 			console.error('查询失败：', error);
-			javaex.message({
-				content: "查询失败，请稍后重试",
-				type: "error"
-			});
+			alert("查询失败，请稍后重试");
 			loadData();
 		});
 	}
 
+	// 点击遮罩层关闭弹框
+	document.getElementById('deleteModal').addEventListener('click', function(e) {
+		if (e.target === this) {
+			closeDeleteModal();
+		}
+	});
+
 	// 页面加载完成后初始化
-	document.addEventListener('DOMContentLoaded', function() {
+	document.addEventListener('DOMContentLoaded', () => {
+		document.getElementById('keyword').addEventListener('keypress', e => {
+			if (e.key === 'Enter') search();
+		});
 		loadData();
 	});
 </script>

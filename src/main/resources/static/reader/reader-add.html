@@ -314,11 +314,12 @@
 				}
 			}).then((response) => {
 				if (response.data.code == '305'){
-					alert("添加失败")
+					alert("保存失败")
 				}else if (response.data.code == '306'){
-					alert("添加异常，请联系管理员")
+					alert("保存异常，请联系管理员")
 				} else if (response.data.code == '200') {
-					alert("添加成功")
+					alert("保存成功")
+					location.reload();//手动刷新一下
 				}
 			}).catch((error) => {
 				alert('请求失败：'+ error);
