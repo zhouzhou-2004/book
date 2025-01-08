@@ -47,23 +47,23 @@
 <!--			表格上方的删除-->
 			<div class="operation-wrap">
 				<div class="buttons-wrap">
-					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>
+					<button class="button red radius-3"><span class="icon-close2"></span> 批量删除</button>
 				</div>
 			</div>
 			<table id="table" class="table color2">
 				<thead>
 				<tr align="center">
-					<th>   </th>
-					<th>序号</th>
-					<th>昵称</th>
-					<th>用户名</th>
-					<th>生日</th>
-					<th>电话</th>
-					<th>邮箱</th>
-					<th>地址</th>
-					<th>可借数量</th>
-					<th>身份</th>
-					<th>操作</th>
+					<th style="width: 68px; text-align: center;">选择</th>
+					<th style="width: 64px; text-align: center;">序号</th>
+					<th style="width: 80px; text-align: center;">昵称</th>
+					<th style="width: 100px; text-align: center;">用户名</th>
+					<th style="width: 100px; text-align: center;">生日</th>
+					<th style="width: 140px; text-align: center;">电话</th>
+					<th style="width: 160px; text-align: center;">邮箱</th>
+					<th style="width: 150px; text-align: center;">地址</th>
+					<th style="width: 101px; text-align: center;">可借数量</th>
+					<th style="width: 100px; text-align: center;">身份</th>
+					<th style="width: 120px; text-align: center;">操作</th>
 				</tr>
 				</thead>
 				<tbody id="adminTable">
@@ -282,17 +282,17 @@
 
 					const row = `
 						<tr>
-							<td bgcolor="#FFFFFF"><input type="checkbox" class="reader-checkbox" value="${user.id}"/></td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.id)}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.nickname || '')}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.username || '')}</td>
-							<td bgcolor="#FFFFFF">${birthdayFormatted}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.tel || '')}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.email || '')}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.address || '')}</td>
-							<td bgcolor="#FFFFFF">${user.size || ''}</td>
-							<td bgcolor="#FFFFFF">${identityText}</td>
-							<td bgcolor="#FFFFFF">
+							<td bgcolor="#FFFFFF" style="text-align: center;"><input type="checkbox" class="reader-checkbox" value="${user.id}"/></td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.id)}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.nickname || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.username || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${birthdayFormatted}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.tel || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.email || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.address || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${user.size || ''}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${identityText}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">
 								<button class="edit-button button blue" data-id="${user.id}">编辑</button>
 								<button class="delete-button button red" data-id="${user.id}">删除</button>
 							</td>
@@ -316,8 +316,12 @@
 	 */
 	function changePage(page) {
 		const keyword = document.getElementById('keyword').value.trim();
-		if (page < 1 || page > totalPages) {
-			alert('页码超出范围！');
+		if (page < 1 ) {
+			alert('当前页面为第一页！');
+			return;
+		}
+		if (page > totalPages) {
+			alert('当前页面为最后一页！');
 			return;
 		}
 		loadReaderList(page, keyword);
