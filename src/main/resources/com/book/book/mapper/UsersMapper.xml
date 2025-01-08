@@ -52,6 +52,7 @@
     <!-- 公共的WHERE条件 -->
     <sql id="whereClause">
         <where>
+            is_admin=0
             <if test="name != null and name != ''">
                 AND (username LIKE CONCAT('%', #{name}, '%')
                 OR nickname LIKE CONCAT('%', #{name}, '%'))
