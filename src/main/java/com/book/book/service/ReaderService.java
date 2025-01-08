@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ReaderService {
     PageResult<UserVO> selectReaderList(QueryRequest queryRequest);
-//    PageResult<Users> selectReaderList(QueryRequest queryRequest);
+
 //    /**
 //     * 模糊查询
 //     */
@@ -28,4 +28,6 @@ public interface ReaderService {
 
     //批量删除
     int deleteReadersById(List<Long> id);
+
+
 }

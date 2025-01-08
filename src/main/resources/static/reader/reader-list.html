@@ -214,17 +214,13 @@
 	 * 加载学生列表数据
 	 */
 	function loadReaderList(page = 1, keyword = '') {
-		let url = keyword ? "http://localhost:8080/reader/selectLike" :
-				 			"http://localhost:8080/reader/list";
-		
-		// 根据不同的请求类型构造不同的请求数据
-		let requestData = keyword ? 
-			{ userText: keyword } : // 模糊查询接口期望的格式
-			{
-				pageNum: page,
-				pageSize: pageSize,
-				keyword: keyword
-			};
+		// 构造请求数据
+		const requestData = {
+			userText: keyword  // 匹配后端 UsersDto 中的 userText 字段
+		};
+
+		// 使用你的接口
+		const url = "http://localhost:8080/reader/selectLike";
 
 		axios({
 			url: url,
@@ -235,32 +231,24 @@
 			}
 		}).then((response) => {
 			if (response.data.code === 200) {
-				const data = response.data.data;
+				const data = response.data.data; // 这里直接是 List<UserVO>
 				
-				// 处理返回的数据
-				// 如果是模糊查询的结果，需要特殊处理
-				const users = Array.isArray(data) ? data : (data.list || []);
+				// 手动处理分页
+				const total = data.length;
+				totalPages = Math.ceil(total / pageSize);
+				currentPage = page;
 				
-				// 更新分页信息
-				if (Array.isArray(data)) {
-					// 模糊查询的情况
-					currentPage = 1;
-					totalPages = 1;	
-				} else {
-					// 普通分页查询的情况
-					currentPage = data.pageNum || 1;
-					totalPages = data.pages || Math.ceil(data.total / pageSize) || 0;
-				}
-				
-				document.getElementById('currentPage').textContent = currentPage;
-				document.getElementById('totalPages').textContent = totalPages;
+				// 手动进行分页切片
+				const start = (page - 1) * pageSize;
+				const end = start + pageSize;
+				const pagedData = data.slice(start, end);
 
 				// 更新表格内容
 				const tbody = document.getElementById('adminTable');
 				tbody.innerHTML = '';
 
-				if (users.length === 0) {
-					tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">没有找到匹配的数据</td></tr>';
+				if (pagedData.length === 0) {
+					tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">没有找到匹配的数据</td></tr>';
 					return;
 				}
 
@@ -272,8 +260,8 @@
 					'3': '管理员'
 				};
 
-				// 遍历用户数据
-				users.forEach(user => {
+				// 渲染数据行
+				pagedData.forEach(user => {
 					if (!user) return;
 
 					// 格式化日期
@@ -300,6 +288,10 @@
 					`;
 					tbody.insertAdjacentHTML('beforeend', row);
 				});
+
+				// 更新页码显示
+				document.getElementById('currentPage').textContent = currentPage;
+				document.getElementById('totalPages').textContent = totalPages;
 			} else {
 				console.error('请求返回错误:', response.data);
 				alert('获取读者列表失败：' + (response.data.message || '未知错误'));
@@ -307,7 +299,7 @@
 		}).catch((error) => {
 			console.error('请求失败：', error);
 			const tbody = document.getElementById('adminTable');
-			tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">加载数据失败，请稍后重试</td></tr>';
+			tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">加载数据失败，请稍后重试</td></tr>';
 		});
 	}
 
@@ -357,12 +349,7 @@
 		const searchBtn = document.getElementById('searchBtn');
 		if (searchBtn) {
 			searchBtn.addEventListener('click', function() {
-				const keyword = document.getElementById('keyword').value.trim();
-				if (!keyword) {
-					alert('请输入搜索关键词');
-					return;
-				}
-				loadReaderList(1, keyword);
+				search();
 			});
 		}
 	});
@@ -372,7 +359,7 @@
 	 */
 	function search() {
 		const keyword = document.getElementById('keyword').value.trim();
-		loadReaderList(1, keyword); // 搜索时从第一页开始
+		loadReaderList(1, keyword);  // 搜索时从第一页开始
 	}
 
 	// 为编辑和删除按钮添加事件监听
