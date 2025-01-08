@@ -237,24 +237,26 @@
 		const tbody = document.getElementById('tbody');
 		tbody.innerHTML = '';
 		data.forEach((book, index) => {
+			// 计算实际序号：(当前页码-1) * 每页条数 + 当前索引 + 1
+			const actualIndex = (currentPage - 1) * pageSize + index + 1;
 			const row = `
-                    <tr align="center">
-                        <td>${index + 1}</td>
-                        <td>${book.name || ''}</td>
-                        <td>${book.author || ''}</td>
-                        <td>${book.isbn || ''}</td>
-                        <td>${book.pages || ''}</td>
-                        <td>${book.price || ''}</td>
-                        <td>${book.publish || ''}</td>
-                        <td>${book.publishTime || ''}</td>
-                        <td>${book.size || ''}</td>
-                        <td>${book.type || ''}</td>
-                        <td>
-                            <button class="action-button edit" onclick="editBook(${book.id})">编辑</button>
-                            <button class="action-button delete" onclick="deleteBook(${book.id})">删除</button>
-                        </td>
-                    </tr>
-                `;
+            <tr align="center">
+                <td>${actualIndex}</td>
+                <td>${book.name || ''}</td>
+                <td>${book.author || ''}</td>
+                <td>${book.isbn || ''}</td>
+                <td>${book.pages || ''}</td>
+                <td>${book.price || ''}</td>
+                <td>${book.publish || ''}</td>
+                <td>${book.publishTime || ''}</td>
+                <td>${book.size || ''}</td>
+                <td>${book.type || ''}</td>
+                <td>
+                    <button class="action-button edit" onclick="editBook(${book.id})">编辑</button>
+                    <button class="action-button delete" onclick="deleteBook(${book.id})">删除</button>
+                </td>
+            </tr>
+        `;
 			tbody.insertAdjacentHTML('beforeend', row);
 		});
 	}
