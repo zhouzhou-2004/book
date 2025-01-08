@@ -6,7 +6,10 @@ import com.book.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class BookServiceImpl implements BookService {
     @Autowired
@@ -80,5 +83,25 @@ public class BookServiceImpl implements BookService {
             default:
                 return null;
         }
+    }
+//分页查询
+@Override
+public Map<String, Object> getBooksByPage(int pageNum, int pageSize) {
+    Map<String, Object> result = new HashMap<>();
+    // 计算起始位置
+    int start = (pageNum - 1) * pageSize;
+    // 获取分页数据
+    List<Book> books = bookMapper.selectByPage(start, pageSize);
+    // 获取总记录数
+    int total = bookMapper.selectTotalCount();
+    // 计算总页数
+    int totalPages = (total + pageSize - 1) / pageSize;
+    // 封装结果
+    result.put("books", books);
+    result.put("total", total);
+    result.put("pageNum", pageNum);
+    result.put("pageSize", pageSize);
+    result.put("totalPages", totalPages);
+    return result;
     }
 }

@@ -91,6 +91,50 @@
 		.btn-cancel:hover {
 			background-color: #c5c8ce;
 		}
+		.pagination {
+			display: flex;
+			justify-content: center;
+			list-style: none;
+			padding: 20px 0;
+		}
+		.pagination li {
+			margin: 0 5px;
+			display: inline-block;
+		}
+		.pagination li a {
+			padding: 8px 15px;
+			border: 1px solid #ddd;
+			color: #333;
+			text-decoration: none;
+			border-radius: 3px;
+			cursor: pointer;
+		}
+		.pagination li.active a {
+			background-color: #2d8cf0;
+			color: white;
+			border-color: #2d8cf0;
+		}
+		.pagination li a:hover:not(.active) {
+			background-color: #f5f5f5;
+		}
+		.page-info {
+			text-align: center;
+			margin-top: 10px;
+			color: #666;
+		}
+		.page-jump {
+			display: inline-block;
+			margin-left: 20px;
+		}
+		.jump-input {
+			width: 50px;
+			height: 28px;
+			padding: 0 5px;
+			margin: 0 5px;
+			border: 1px solid #ddd;
+			border-radius: 3px;
+			text-align: center;
+		}
 	</style>
 </head>
 
@@ -150,10 +194,26 @@
 		</div>
 	</div>
 </div>
+<!-- 分页组件 -->
+<div class="pagination-container">
+	<ul id="pagination" class="pagination"></ul>
+	<div class="page-info">
+		当前第<span id="currentPage">1</span>页，共<span id="totalPages">1</span>页，总计<span id="totalRecords">0</span>条记录
+		<div class="page-jump">
+			跳转到第 <input type="number" id="jumpPage" min="1" class="jump-input"> 页
+			<button class="active" onclick="jumpToPage()">跳转</button>
+		</div>
+	</div>
+</div>
 
 <script>
 	// 当前要删除的图书ID
 	let currentBookId = null;
+	// 分页相关变量
+	let currentPage = 1;
+	const pageSize = 5;
+	let totalPages = 1;
+	let totalRecords = 0;
 
 	// 加载数据
 	function loadData() {
@@ -236,6 +296,109 @@
 			});
 		}
 	}
+	// 分页功能
+	// 渲染分页
+	function renderPagination() {
+		const pagination = document.getElementById('pagination');
+		pagination.innerHTML = '';
+
+		// 上一页按钮
+		if (currentPage > 1) {
+			pagination.innerHTML += `
+                    <li><a onclick="loadData(${currentPage - 1})">上一页</a></li>
+                `;
+		}
+
+		// 页码按钮 - 只显示5个页码
+		const maxVisiblePages = 3;
+		let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+		let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+		// 调整startPage，确保显示5个页码（如果有足够的页数）
+		if (endPage - startPage + 1 < maxVisiblePages && totalPages >= maxVisiblePages) {
+			startPage = Math.max(1, endPage - maxVisiblePages + 1);
+		}
+
+		// 显示页码
+		for (let i = startPage; i <= endPage; i++) {
+			pagination.innerHTML += `
+                    <li class="${i === currentPage ? 'active' : ''}">
+                        <a onclick="loadData(${i})">${i}</a>
+                    </li>
+                `;
+		}
+
+		// 下一页按钮
+		if (currentPage < totalPages) {
+			pagination.innerHTML += `
+                    <li><a onclick="loadData(${currentPage + 1})">下一页</a></li>
+                `;
+		}
+
+		// 更新页面信息
+		document.getElementById('currentPage').textContent = currentPage;
+		document.getElementById('totalPages').textContent = totalPages;
+		document.getElementById('totalRecords').textContent = totalRecords;
+	}
+
+	// 跳转页面功能
+	// 加载数据
+	function loadData(page = 1) {
+		currentPage = page;
+		axios({
+			url: "http://localhost:8080/GetBook/page",
+			method: "get",
+			params: {
+				pageNum: page,
+				pageSize: pageSize
+			}
+		}).then(response => {
+			if (response.data.code === 200) {
+				const data = response.data.data;
+				totalRecords = data.total;
+				totalPages = data.totalPages;
+				renderTable(data.books);
+				renderPagination();
+			} else {
+				javaex.message({
+					content: "获取数据失败",
+					type: "error"
+				});
+			}
+		}).catch(error => {
+			console.error('获取数据失败：', error);
+			javaex.message({
+				content: "获取数据失败",
+				type: "error"
+			});
+		});
+	}
+	function jumpToPage() {
+		const jumpInput = document.getElementById('jumpPage');
+		const pageNum = parseInt(jumpInput.value);
+
+		if (isNaN(pageNum)) {
+			javaex.message({
+				content: "请输入有效的页码",
+				type: "error"
+			});
+			return;
+		}
+
+		if (pageNum < 1 || pageNum > totalPages) {
+			javaex.message({
+				content: `请输入1到${totalPages}之间的页码`,
+				type: "error"
+			});
+			return;
+		}
+
+		loadData(pageNum);
+		jumpInput.value = ''; // 清空输入框
+	}
+
+
+
 
 	// 编辑图书
 	function editBook(id) {
