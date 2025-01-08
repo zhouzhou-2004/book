@@ -348,7 +348,7 @@
 		let checkSize = document.querySelector(".checkSize");
 		const sizeValue = parseInt(this.value);
 
-		if (!isNaN(sizeValue) && sizeValue > 0 && sizeValue <= 20) {
+		if (!isNaN(sizeValue) && sizeValue > 0 && sizeValue <= 3) {
 			checkSize.innerText = '可借数量正确';
 			checkSize.style.color = 'green';
 		} else {
