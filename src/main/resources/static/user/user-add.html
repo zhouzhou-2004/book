@@ -64,8 +64,12 @@
 
 				<div class="unit clear">
 					<div class="left"><span class="required"></span><p class="subtitle">生日</p></div>
-					<div class="right">
-						<input type="text" class="text" id="birthday" name="birthday"/>
+					<div class="right" style="position: relative;">
+						<input type="text" class="text" id="birthday" name="birthday" style="padding-right: 35px;"/>
+						<span class="calendar-icon" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+            <i class="icon-calendar" style="font-size: 18px; color: #666;"></i>
+        </span>
+						<input type="date" id="birthdayCalendar" style="position: absolute; width: 1px; height: 1px; opacity: 0;"/>
 						<span style="color:red;" class="checkBirthday checkMessage"></span>
 					</div>
 				</div>
@@ -140,57 +144,78 @@
 <script src="/js/axios.min.js"></script>
 <script>
 	function usersButton(){
-		//先获取input框span标签的元素
-		let allCheckMessages = document.querySelectorAll('.checkMessage');
-		let checkTrue = true;
-		// 检查是否有任何一个span的颜色不是绿色
-		for (let i = 0; i < allCheckMessages.length; i++) {
-			if (allCheckMessages[i].style.color !== 'green') {
-				checkTrue = false;
-				alert('请确保所有字段都符合要求！');
-				event.preventDefault(); // 阻止表单提交
-				return;
+		// 获取必填字段
+		let nickname = document.querySelector("#nickname").value;
+		let username = document.querySelector("#username").value;
+		let password = document.querySelector("#password").value;
+
+		// 验证必填字段是否填写
+		if (!nickname || !username || !password) {
+			alert('昵称、用户名和密码为必填项，请填写完整！');
+			return;
+		}
+
+		// 验证必填字段的格式是否正确
+		let nicknameCheck = document.querySelector(".checkNickName");
+		let usernameCheck = document.querySelector(".checkUserName");
+		let passwordCheck = document.querySelector(".checkPassWord");
+
+		if (nicknameCheck.style.color !== 'green' ||
+				usernameCheck.style.color !== 'green' ||
+				passwordCheck.style.color !== 'green') {
+			alert('请确保必填字段格式正确！');
+			return;
+		}
+
+		// 获取其他选填字段
+		let birthday = document.querySelector("#birthday").value;
+		let tel = document.querySelector("#tel").value;
+		let identity = document.querySelector("#identity").value;
+		let email = document.querySelector("#email").value;
+		let address = document.querySelector("#address").value;
+		let size = document.querySelector("#size").value;
+
+		// 验证选填字段：如果填写了就必须符合格式要求
+		let isValid = true;
+		if (birthday && document.querySelector(".checkBirthday").style.color !== 'green') isValid = false;
+		if (tel && document.querySelector(".checkTel").style.color !== 'green') isValid = false;
+		if (email && document.querySelector(".checkEmail").style.color !== 'green') isValid = false;
+		if (address && document.querySelector(".checkAddress").style.color !== 'green') isValid = false;
+		if (size && document.querySelector(".checkSize").style.color !== 'green') isValid = false;
+
+		if (!isValid) {
+			alert('已填写的字段必须符合格式要求！');
+			return;
+		}
+
+		// 发送请求到后端
+		axios({
+			url: "http://localhost:8080/user/add",
+			method: "post",
+			data: {
+				nickname: nickname,
+				username: username,
+				password: password,
+				birthday: birthday || null,
+				tel: tel || null,
+				identity: identity ? parseInt(identity) : null,
+				email: email || null,
+				address: address || null,
+				size: size || null
 			}
-		}
-		if(checkTrue == true){
-			//保存按钮
-			let nickname = document.querySelector("#nickname").value;//昵称
-			let username = document.querySelector("#username").value;//用户名
-			let password = document.querySelector("#password").value;//密码
-			let birthday = document.querySelector("#birthday").value;//生日
-			let tel = document.querySelector("#tel").value;//电话
-			let identity = document.querySelector("#identity").value;//身份
-			let email = document.querySelector("#email").value;//邮箱
-			let address = document.querySelector("#address").value;//地址
-			let size = document.querySelector("#size").value;//可接数量
-			//console.log(nickname,username,birthday,tel,email,address,size)//验证是否能够拿到参数
-			//拿到参数之后就需要将他们发送给后端
-			axios({
-				url: "http://localhost:8080/user/add",
-				method: "post",
-				data: {
-					nickname: nickname,
-					username: username,
-					password: password,
-					birthday: birthday,
-					tel: tel,
-					identity: parseInt(identity),
-					email: email,
-					address: address,
-					size: size
-				}
-			}).then((response) => {
-				if (response.data.code == '305'){
-					alert("添加失败")
-				}else if (response.data.code == '306'){
-					alert("添加异常，请联系管理员")
-				} else if (response.data.code == '200') {
-					alert("添加成功")
-				}
-			}).catch((error) => {
-				alert('请求失败：'+ error);
-			});
-		}
+		}).then((response) => {
+			if (response.data.code == '305'){
+				alert("添加失败");
+			}else if (response.data.code == '306'){
+				alert("添加异常，请联系管理员");
+			} else if (response.data.code == '200') {
+				alert("添加成功");
+				// 添加成功后刷新页面
+				window.location.reload();
+			}
+		}).catch((error) => {
+			alert('请求失败：'+ error);
+		});
 	}
 	// 昵称验证
 	nickname.onkeyup = function() {
@@ -210,8 +235,8 @@
 	// 用户名验证
 	username.onkeyup = function() {
 		let checkUsername = document.querySelector(".checkUserName");
-		// 6位字母和数字组合
-		const usernameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6}$/;
+		// 修改正则表达式：至少6位的字母和数字组合
+		const usernameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
 
 		// 先清空之前的提示
 		checkUsername.innerText = '';
@@ -225,7 +250,7 @@
 
 		// 首先验证格式
 		if (!usernameRegex.test(this.value)) {
-			checkUsername.innerText = '用户名必须是6位字母和数字的组合';
+			checkUsername.innerText = '用户名必须至少6位，且包含字母和数字';
 			checkUsername.style.color = 'red';
 			return;
 		}
@@ -255,34 +280,100 @@
 	// 密码验证
 	password.onkeyup = function() {
 		let checkPassword = document.querySelector(".checkPassWord");
-		// 6位，包含字母和数字
-		const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6}$/;
+		// 修改正则表达式：至少6位的字母和数字组合
+		const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
 
 		if (passwordRegex.test(this.value)) {
 			checkPassword.innerText = '密码格式正确';
 			checkPassword.style.color = 'green';
 		} else {
-			checkPassword.innerText = '密码必须是6位，且包含字母和数字';
+			checkPassword.innerText = '密码必须至少6位，且包含字母和数字';
 			checkPassword.style.color = 'red';
 		}
 	}
 
-	// 生日验证
-	birthday.onchange = function() {
+	// 生日验证函数
+	function validateBirthday(input) {
 		let checkBirthday = document.querySelector(".checkBirthday");
 		// 检查日期格式和是否大于当前日期
 		const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 		const currentDate = new Date();
-		const inputDate = new Date(this.value);
+		const inputDate = new Date(input.value);
 
-		if (dateRegex.test(this.value) && inputDate <= currentDate) {
-			checkBirthday.innerText = '日期格式正确';
+		// 如果为空则视为有效（因为是选填项）
+		if (!input.value) {
+			checkBirthday.innerText = '';
 			checkBirthday.style.color = 'green';
-		} else {
-			checkBirthday.innerText = '日期格式为:XXXX-XX-XX或大于当前日期';
-			checkBirthday.style.color = 'red';
+			return;
 		}
+
+		// 检查格式
+		if (!dateRegex.test(input.value)) {
+			checkBirthday.innerText = '请输入正确的日期格式';
+			checkBirthday.style.color = 'red';
+			return;
+		}
+
+		// 检查是否是有效日期
+		if (isNaN(inputDate.getTime())) {
+			checkBirthday.innerText = '请输入有效的日期';
+			checkBirthday.style.color = 'red';
+			return;
+		}
+
+		// 检查是否大于当前日期
+		if (inputDate > currentDate) {
+			checkBirthday.innerText = '日期不能大于今天';
+			checkBirthday.style.color = 'red';
+			return;
+		}
+
+		checkBirthday.innerText = '格式正确';
+		checkBirthday.style.color = 'green';
 	}
+
+	// 格式化日期函数
+	function formatDate(date) {
+		const yyyy = date.getFullYear();
+		const mm = String(date.getMonth() + 1).padStart(2, '0');
+		const dd = String(date.getDate()).padStart(2, '0');
+		return `${yyyy}-${mm}-${dd}`;
+	}
+
+	// 页面加载时设置最大日期
+	window.onload = function() {
+		const today = new Date();
+		const maxDate = formatDate(today);
+		document.getElementById('birthdayCalendar').max = maxDate;
+	}
+
+	// 点击日历图标时触发日期选择
+	document.querySelector('.calendar-icon').addEventListener('click', function() {
+		document.getElementById('birthdayCalendar').showPicker();
+	});
+
+	// 日历选择处理
+	document.getElementById('birthdayCalendar').addEventListener('change', function() {
+		const selectedDate = this.value;
+		document.getElementById('birthday').value = selectedDate;
+		validateBirthday(document.getElementById('birthday'));
+	});
+
+	// 手动输入验证
+	document.getElementById('birthday').addEventListener('keyup', function() {
+		validateBirthday(this);
+	});
+
+	document.getElementById('birthday').addEventListener('change', function() {
+		validateBirthday(this);
+	});
+
+	// 防止表单提交时的默认行为
+	document.getElementById('birthday').addEventListener('keypress', function(e) {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+		}
+	});
 
 	// 电话验证
 	tel.onkeyup = function() {
