@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 用户管理
@@ -113,4 +114,17 @@ public class BookController {
             return new ResponseUtils(400, "查询异常");
         }
     }
+//    分页
+@GetMapping("/page")
+public ResponseUtils getBooksByPage(
+        @RequestParam(defaultValue = "1") int pageNum,
+        @RequestParam(defaultValue = "5") int pageSize) {
+    try {
+        Map<String, Object> pageData = bookService.getBooksByPage(pageNum, pageSize);
+        return new ResponseUtils(200, "查询成功", pageData);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return new ResponseUtils(500, "查询失败：" + e.getMessage());
+    }
+}
 }

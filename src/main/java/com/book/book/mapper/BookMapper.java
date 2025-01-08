@@ -1,10 +1,7 @@
 package com.book.book.mapper;
 
 import com.book.book.model.pojo.Book;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -44,4 +41,9 @@ public interface BookMapper {
     // 按ISBN搜索
     @Select("SELECT * FROM book WHERE isbn LIKE CONCAT('%',#{keyword},'%') AND is_delete = 0")
     List<Book> searchByIsbn(String keyword);
+    // 分页查询
+    List<Book> selectByPage(@Param("start") int start, @Param("pageSize") int pageSize);
+
+    // 获取总记录数
+    int selectTotalCount();
 }

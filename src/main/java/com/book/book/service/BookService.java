@@ -4,6 +4,7 @@ import com.book.book.model.pojo.Book;
 
 
 import java.util.List;
+import java.util.Map;
 
 public interface BookService {
     //查询所有图书
@@ -16,4 +17,6 @@ public interface BookService {
     int addBook(Book book);
     // 搜索图书
     List<Book> searchBooks(String keyword, String type);
+    // 分页查询
+    Map<String, Object> getBooksByPage(int pageNum, int pageSize);
 }
