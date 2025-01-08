@@ -16,7 +16,10 @@
 //                        "/codeImage",
 //                        "/tAdmin/login",
 //                        "/tAdmin/register",
-//                        "/js/*"
+//                        "/tAdmin/sendCode",
+//                        "/tAdmin/checkUserName",
+//                        "/js/*",
+//                        "/javaex/**"
 //                ).order(1);
 //    }
 //}
