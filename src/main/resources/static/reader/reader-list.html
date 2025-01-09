@@ -227,7 +227,8 @@
 	function loadReaderList(page = 1, keyword = '') {
 		// 构造请求数据
 		const requestData = {
-			userText: keyword  // 匹配后端 UsersDto 中的 userText 字段
+			userText: keyword,  // 匹配后端 UsersDto 中的 userText 字段
+			is_admin: 0         // 添加 isAdmin 条件
 		};
 
 		// 使用你的接口

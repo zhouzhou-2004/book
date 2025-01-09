@@ -33,10 +33,8 @@ public interface ReaderMapper {
     /**
      * 模糊查询
      */
-
-    @Select("select * from users where username like concat('%',#{username},'%') or nickname  like concat('%',#{nickname},'%') and is_admin=0")
-    List<UserVO> selectByLike(String LikeName);
-
+    @Select("SELECT * FROM users WHERE (username LIKE CONCAT('%',#{likeName},'%') OR nickname LIKE CONCAT('%',#{likeName},'%')) AND is_admin=0")
+    List<UserVO> selectByLike(@Param("likeName") String likeName);
     //新增功能
     @Insert("insert into users(id, nickname, username, password, birthday, tel, identity, email, address, size, is_admin) values(null, #{nickname}, #{username}, #{password}, #{birthday}, #{tel}, #{identity}, #{email}, #{address}, #{size}, 0)")
     int addReader(Users users);
