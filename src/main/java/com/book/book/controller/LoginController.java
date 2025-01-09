@@ -27,7 +27,7 @@ public class LoginController {
     private LoginService loginService;
 
     //检查用户名是否重复
-    @RequestMapping("checkUserName")
+    @RequestMapping("/checkUserName")
     public ResponseUtils checkUserName(@RequestBody  Users users){
         try {
             System.out.println("前端发送过来的参数"+users);
