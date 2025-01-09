@@ -49,7 +49,9 @@
 				<div class="unit clear">
 					<div class="left"><span class="required">*</span><p class="subtitle">ISBN</p></div>
 					<div class="right">
-						<input type="text" id="isbn" class="text" placeholder="请输入ISBN" />
+						<input type="text" id="isbn" class="text" placeholder="请输入ISBN"
+							   onkeyup="this.value=this.value.replace(/[^A-Za-z0-9]/g,'')"
+							   onafterpaste="this.value=this.value.replace(/[^A-Za-z0-9]/g,'')" />
 					</div>
 				</div>
 
@@ -98,7 +100,7 @@
 					<div class="left"><p class="subtitle">图书分类</p></div>
 					<div class="right">
 						<select id="type">
-							<option value="">请选择</option>
+							<option value="" disabled selected>请选择</option>
 							<option value="马克思主义、列宁主义、毛泽东思想、邓小平理论">马克思主义、列宁主义、毛泽东思想、邓小平理论</option>
 							<option value="哲学、宗教">哲学、宗教</option>
 							<option value="文化、科学、教育、体育">文化、科学、教育、体育</option>
@@ -135,8 +137,17 @@
 	document.getElementById('save').onclick = function() {
 		// 获取select元素
 		const typeSelect = document.getElementById('type');
-		// 获取选中的选项
-		const selectedOption = typeSelect.options[typeSelect.selectedIndex];
+		// 获取选中的值
+		const selectedType = typeSelect.value;
+
+		// 验证图书分类是否选择
+		if (!selectedType) {
+			javaex.message({
+				content: "请选择图书分类",
+				type: "error"
+			});
+			return;
+		}
 
 		// 获取表单数据
 		const formData = {
@@ -148,10 +159,17 @@
 			publish: document.getElementById('publish').value.trim() || null,
 			publishTime: document.getElementById('publishTime').value || null,
 			size: document.getElementById('size').value || null,
-			// 使用选项的文本内容而不是value值
-			type: selectedOption.text
+			type: selectedType
 		};
-
+		// ISBN验证
+		const isbn = document.getElementById('isbn').value.trim();
+		if (!/^[A-Za-z0-9]+$/.test(isbn)) {
+			javaex.message({
+				content: "ISBN只能包含字母和数字",
+				type: "error"
+			});
+			return;
+		}
 		// 验证必填字段
 		if (!formData.name || !formData.author || !formData.isbn) {
 			javaex.message({
