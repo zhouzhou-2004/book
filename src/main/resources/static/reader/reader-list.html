@@ -47,13 +47,24 @@
 <!--			表格上方的删除-->
 			<div class="operation-wrap">
 				<div class="buttons-wrap">
-					<button class="button red radius-3"><span class="icon-close2"></span> 删除</button>
+					<button class="button red radius-3"><span class="icon-close2"></span> 批量删除</button>
 				</div>
 			</div>
 			<table id="table" class="table color2">
 				<thead>
 				<tr align="center">
-					<th>   </th>
+<!--					<th style="width: 68px; text-align: center;">选择</th>-->
+<!--					<th style="width: 64px; text-align: center;">序号</th>-->
+<!--					<th style="width: 80px; text-align: center;">昵称</th>-->
+<!--					<th style="width: 100px; text-align: center;">用户名</th>-->
+<!--					<th style="width: 100px; text-align: center;">生日</th>-->
+<!--					<th style="width: 142px; text-align: center;">电话</th>-->
+<!--					<th style="width: 160px; text-align: center;">邮箱</th>-->
+<!--					<th style="width: 150px; text-align: center;">地址</th>-->
+<!--					<th style="width: 101px; text-align: center;">可借数量</th>-->
+<!--					<th style="width: 100px; text-align: center;">身份</th>-->
+<!--					<th style="width: 120px; text-align: center;">操作</th>-->
+					<th>选择</th>
 					<th>序号</th>
 					<th>昵称</th>
 					<th>用户名</th>
@@ -190,7 +201,7 @@
 	// 定义分页相关变量
 	let currentPage = 1;//当前页
 	let totalPages = 0; //总页数
-	const pageSize = 10; // 每页显示的记录数
+	const pageSize = 6; // 每页显示的记录数
 
 
 
@@ -214,17 +225,13 @@
 	 * 加载学生列表数据
 	 */
 	function loadReaderList(page = 1, keyword = '') {
-		let url = keyword ? "http://localhost:8080/reader/selectLike" :
-				 			"http://localhost:8080/reader/list";
-		
-		// 根据不同的请求类型构造不同的请求数据
-		let requestData = keyword ? 
-			{ userText: keyword } : // 模糊查询接口期望的格式
-			{
-				pageNum: page,
-				pageSize: pageSize,
-				keyword: keyword
-			};
+		// 构造请求数据
+		const requestData = {
+			userText: keyword  // 匹配后端 UsersDto 中的 userText 字段
+		};
+
+		// 使用你的接口
+		const url = "http://localhost:8080/reader/selectLike";
 
 		axios({
 			url: url,
@@ -235,32 +242,24 @@
 			}
 		}).then((response) => {
 			if (response.data.code === 200) {
-				const data = response.data.data;
+				const data = response.data.data; // 这里直接是 List<UserVO>
 				
-				// 处理返回的数据
-				// 如果是模糊查询的结果，需要特殊处理
-				const users = Array.isArray(data) ? data : (data.list || []);
+				// 手动处理分页
+				const total = data.length;
+				totalPages = Math.ceil(total / pageSize);
+				currentPage = page;
 				
-				// 更新分页信息
-				if (Array.isArray(data)) {
-					// 模糊查询的情况
-					currentPage = 1;
-					totalPages = 1;	
-				} else {
-					// 普通分页查询的情况
-					currentPage = data.pageNum || 1;
-					totalPages = data.pages || Math.ceil(data.total / pageSize) || 0;
-				}
-				
-				document.getElementById('currentPage').textContent = currentPage;
-				document.getElementById('totalPages').textContent = totalPages;
+				// 手动进行分页切片
+				const start = (page - 1) * pageSize;
+				const end = start + pageSize;
+				const pagedData = data.slice(start, end);
 
 				// 更新表格内容
 				const tbody = document.getElementById('adminTable');
 				tbody.innerHTML = '';
 
-				if (users.length === 0) {
-					tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">没有找到匹配的数据</td></tr>';
+				if (pagedData.length === 0) {
+					tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">没有找到匹配的数据</td></tr>';
 					return;
 				}
 
@@ -272,8 +271,8 @@
 					'3': '管理员'
 				};
 
-				// 遍历用户数据
-				users.forEach(user => {
+				// 渲染数据行
+				pagedData.forEach(user => {
 					if (!user) return;
 
 					// 格式化日期
@@ -282,17 +281,17 @@
 
 					const row = `
 						<tr>
-							<td bgcolor="#FFFFFF"><input type="checkbox" class="reader-checkbox" value="${user.id}"/></td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.id)}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.nickname || '')}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.username || '')}</td>
-							<td bgcolor="#FFFFFF">${birthdayFormatted}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.tel || '')}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.email || '')}</td>
-							<td bgcolor="#FFFFFF">${escapeHtml(user.address || '')}</td>
-							<td bgcolor="#FFFFFF">${user.size || ''}</td>
-							<td bgcolor="#FFFFFF">${identityText}</td>
-							<td bgcolor="#FFFFFF">
+							<td bgcolor="#FFFFFF" style="text-align: center;"><input type="checkbox" class="reader-checkbox" value="${user.id}"/></td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.id)}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.nickname || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.username || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${birthdayFormatted}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.tel || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.email || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${escapeHtml(user.address || '')}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${user.size || ''}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">${identityText}</td>
+							<td bgcolor="#FFFFFF" style="text-align: center;">
 								<button class="edit-button button blue" data-id="${user.id}">编辑</button>
 								<button class="delete-button button red" data-id="${user.id}">删除</button>
 							</td>
@@ -300,6 +299,10 @@
 					`;
 					tbody.insertAdjacentHTML('beforeend', row);
 				});
+
+				// 更新页码显示
+				document.getElementById('currentPage').textContent = currentPage;
+				document.getElementById('totalPages').textContent = totalPages;
 			} else {
 				console.error('请求返回错误:', response.data);
 				alert('获取读者列表失败：' + (response.data.message || '未知错误'));
@@ -307,7 +310,7 @@
 		}).catch((error) => {
 			console.error('请求失败：', error);
 			const tbody = document.getElementById('adminTable');
-			tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">加载数据失败，请稍后重试</td></tr>';
+			tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">加载数据失败，请稍后重试</td></tr>';
 		});
 	}
 
@@ -316,8 +319,12 @@
 	 */
 	function changePage(page) {
 		const keyword = document.getElementById('keyword').value.trim();
-		if (page < 1 || page > totalPages) {
-			alert('页码超出范围！');
+		if (page < 1 ) {
+			alert('当前页面为第一页！');
+			return;
+		}
+		if (page > totalPages) {
+			alert('当前页面为最后一页！');
 			return;
 		}
 		loadReaderList(page, keyword);
@@ -353,12 +360,7 @@
 		const searchBtn = document.getElementById('searchBtn');
 		if (searchBtn) {
 			searchBtn.addEventListener('click', function() {
-				const keyword = document.getElementById('keyword').value.trim();
-				if (!keyword) {
-					alert('请输入搜索关键词');
-					return;
-				}
-				loadReaderList(1, keyword);
+				search();
 			});
 		}
 	});
@@ -368,7 +370,7 @@
 	 */
 	function search() {
 		const keyword = document.getElementById('keyword').value.trim();
-		loadReaderList(1, keyword); // 搜索时从第一页开始
+		loadReaderList(1, keyword);  // 搜索时从第一页开始
 	}
 
 	// 为编辑和删除按钮添加事件监听
@@ -379,14 +381,14 @@
 			const id = e.target.getAttribute('data-id');
 			
 			// 获取当前行的数据
-			const nickname = row.cells[1].textContent;
-			const username = row.cells[2].textContent;
-			const birthday = row.cells[3].textContent;
-			const tel = row.cells[4].textContent;
-			const email = row.cells[5].textContent;
-			const address = row.cells[6].textContent;
-			const size = row.cells[7].textContent;
-			const identity = getIdentityValue(row.cells[8].textContent);
+			const nickname = row.cells[2].textContent;
+			const username = row.cells[3].textContent;
+			const birthday = row.cells[4].textContent;
+			const tel = row.cells[5].textContent;
+			const email = row.cells[6].textContent;
+			const address = row.cells[7].textContent;
+			const size = row.cells[8].textContent;
+			const identity = getIdentityValue(row.cells[9].textContent);
 
 			// 填充表单
 			document.getElementById('editId').value = id;

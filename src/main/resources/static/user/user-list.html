@@ -266,7 +266,42 @@
 		nextPageBtn.style.display = currentPage === totalPages ? 'none' : 'inline-block';
 		lastPageBtn.style.display = currentPage === totalPages ? 'none' : 'inline-block';
 	}
+	// 跳转到指定页
+	function jumpToPage() {
+		const pageInput = document.getElementById('pageInput').value;
+		const page = parseInt(pageInput);
+		if (page && page > 0) {
+			loadPage(page);
+		} else {
+			alert("请输入有效的页码");
+		}
+	}
 
+	// 模糊查询
+	let selectButton = document.querySelector(".right-button02");
+	selectButton.onclick = function () {
+		// 重置到第一页
+		currentPage = 1;
+		loadPage(1);
+		axios({
+			url: "http://localhost:8080/user/list/selectLike",
+			method: "post",
+			data: {
+				userText: document.querySelector(".userNameText").value
+			}
+		}).then((response) => {
+			if (response.data.code == '400') {
+				alert("查询失败");
+			} else if (response.data.code == '200') {
+				// 获取数据并渲染表格
+				displayData();
+			} else {
+				alert('没有用户数据或数据为空');
+			}
+		}).catch((error) => {
+			alert('请求失败：' + "请输入用户名或昵称");
+		});
+	}
 	// 显示数据
 	function displayData() {
 		const tableBody = document.getElementById('adminTable');
@@ -373,39 +408,7 @@
 		});
 	}
 
-	// 跳转到指定页
-	function jumpToPage() {
-		const pageInput = document.getElementById('pageInput').value;
-		const page = parseInt(pageInput);
-		if (page && page > 0) {
-			loadPage(page);
-		} else {
-			alert("请输入有效的页码");
-		}
-	}
 
-	// 模糊查询
-	let selectButton = document.querySelector(".right-button02");
-	selectButton.onclick = function () {
-		axios({
-			url: "http://localhost:8080/user/list/selectLike",
-			method: "post",
-			data: {
-				userText: document.querySelector(".userNameText").value
-			}
-		}).then((response) => {
-			if (response.data.code == '400') {
-				alert("查询失败");
-			} else if (response.data.code == '200') {
-				// 获取数据并渲染表格
-				renderTable(response.data.data);
-			} else {
-				alert('没有用户数据或数据为空');
-			}
-		}).catch((error) => {
-			alert('请求失败：' + "请输入用户名或昵称");
-		});
-	}
 
 	// 修改渲染表格函数，添加编辑和删除按钮的事件绑定
 	function renderTable(data) {
@@ -630,6 +633,11 @@
 		}
 		if (!nickname) {
 			alert("昵称不能为空！");
+			return;
+		}
+		//可接数量不大于3
+		if (size > 3) {
+			alert("可借数量不能大于3！");
 			return;
 		}
 

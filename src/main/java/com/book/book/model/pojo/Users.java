@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Users {
-//  用户id
   private long id;
   private String address;
   private String birthday;
@@ -19,11 +18,6 @@ public class Users {
   private String password;
   private long size;
   private String tel;
-  private String username;
-  public long getId() {
-    return id;
-  }
-
 
   public String getTel() {
     return tel;
@@ -32,6 +26,12 @@ public class Users {
   public void setTel(String tel) {
     this.tel = tel;
   }
+
+  private String username;
+  public long getId() {
+    return id;
+  }
+
 
   public void setId(long id) {
     this.id = id;
@@ -129,7 +129,6 @@ public class Users {
   public void setCode(String code) {
     this.code = code;
   }
-
 
   @Override
   public String toString() {

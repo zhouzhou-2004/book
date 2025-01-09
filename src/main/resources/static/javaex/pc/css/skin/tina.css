@@ -62,10 +62,6 @@ body {
 .menu-box .menu-item.menu-show {
 	background: rgba(0,0,0,0.03);
 }
-.menu-box .menu-item.hover > a {
-	background-color: rgba(0,0,0,0.06);
-	color: #108CEE;
-}
 
 /*右侧顶部*/
 .admin-header {
